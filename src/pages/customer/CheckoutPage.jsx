@@ -101,8 +101,8 @@ const CheckoutPage = () => {
       const gstAmount = getGST()
       const total = getGrandTotal()
 
-      // Create order record with ALL required fields
-      const orderData = {
+      // Create order record - try with delivery fields first
+      let orderData = {
         order_number: orderNumber,
         customer_id: customerData.id,
         subtotal: subtotal,
@@ -125,11 +125,28 @@ const CheckoutPage = () => {
       // Log the complete payload being sent (for debugging)
       console.log('📦 Order Payload:', JSON.stringify(orderData, null, 2))
 
-      const { data: order, error: orderError } = await supabase
+      let { data: order, error: orderError } = await supabase
         .from('customer_orders')
         .insert(orderData)
         .select()
         .single()
+
+      // If error is about missing delivery_email column, retry without those fields
+      if (orderError && orderError.code === 'PGRST204' && orderError.message.includes('delivery_')) {
+        console.warn('⚠️ Delivery fields not in schema, retrying without them...')
+        
+        // Remove delivery fields and retry
+        const { delivery_name, delivery_phone, delivery_email, ...orderDataWithoutDelivery } = orderData
+        
+        const retry = await supabase
+          .from('customer_orders')
+          .insert(orderDataWithoutDelivery)
+          .select()
+          .single()
+        
+        order = retry.data
+        orderError = retry.error
+      }
 
       if (orderError) {
         console.error('❌ SUPABASE ORDER ERROR:')
