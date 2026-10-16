@@ -101,16 +101,13 @@ const CheckoutPage = () => {
         payment_method: paymentMethod,
         payment_status: paymentMethod === 'COD' ? 'pending' : 'paid',
         order_status: 'pending',
-        delivery_name: customerData.name,
-        delivery_phone: customerData.phone,
-        delivery_email: customerData.email,
         delivery_address: deliveryAddress,
         customer_notes: customerNotes || null,
         razorpay_order_id: razorpayOrderId,
         razorpay_payment_id: razorpayPaymentId,
         razorpay_signature: razorpaySignature
       }
-
+99
       // Log the complete payload being sent (for debugging)
       console.log('📦 Order Payload:', JSON.stringify(orderData, null, 2))
 
