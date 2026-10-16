@@ -25,19 +25,16 @@ const CheckoutPage = () => {
   const [customerNotes, setCustomerNotes] = useState('')
 
   useEffect(() => {
-    // Validate cart on mount
     const errors = validateCart()
     if (errors.length > 0) {
       errors.forEach(error => toast.error(error))
       navigate('/customer/cart')
       return
     }
-
     loadCustomerData()
   }, [])
 
   useEffect(() => {
-    // Load Razorpay script if needed
     if (paymentMethod === 'razorpay') {
       loadRazorpayScript()
     }
@@ -64,12 +61,10 @@ const CheckoutPage = () => {
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
-      // Check if script already loaded
       if (window.Razorpay) {
         resolve(true)
         return
       }
-
       const script = document.createElement('script')
       script.src = 'https://checkout.razorpay.com/v1/checkout.js'
       script.onload = () => resolve(true)
@@ -81,28 +76,15 @@ const CheckoutPage = () => {
   const createOrder = async (razorpayOrderId = null, razorpayPaymentId = null, razorpaySignature = null) => {
     try {
       // Get order number
-      const { data: orderNumber, error: orderNumError } = await supabase
-        .rpc('generate_order_number')
-
+      const { data: orderNumber, error: orderNumError } = await supabase.rpc('generate_order_number')
       if (orderNumError) throw orderNumError
-
-      // Validate required delivery fields
-      if (!customerData.name || !customerData.name.trim()) {
-        throw new Error('Customer name is required for delivery. Please update your profile.')
-      }
-      if (!customerData.phone || !customerData.phone.trim()) {
-        throw new Error('Customer phone is required for delivery. Please update your profile.')
-      }
-      if (!customerData.email || !customerData.email.trim()) {
-        throw new Error('Customer email is required for delivery. Please update your profile.')
-      }
 
       const subtotal = getSubtotal()
       const gstAmount = getGST()
       const total = getGrandTotal()
 
-      // Create order record - try with delivery fields first
-      let orderData = {
+      // Prepare order data with safe values
+      const orderData = {
         order_number: orderNumber,
         customer_id: customerData.id,
         subtotal: subtotal,
@@ -112,51 +94,24 @@ const CheckoutPage = () => {
         payment_method: paymentMethod,
         payment_status: paymentMethod === 'COD' ? 'pending' : 'paid',
         order_status: 'pending',
-        delivery_name: customerData.name,
-        delivery_phone: customerData.phone,
-        delivery_email: customerData.email,
-        delivery_address: deliveryAddress,
+        delivery_name: customerData.name || 'Customer',
+        delivery_phone: customerData.phone || '0000000000',
+        delivery_email: customerData.email || user?.email || 'no-email@temp.com',
+        delivery_address: deliveryAddress || 'No address provided',
         customer_notes: customerNotes || null,
         razorpay_order_id: razorpayOrderId,
         razorpay_payment_id: razorpayPaymentId,
         razorpay_signature: razorpaySignature
       }
-99
-      // Log the complete payload being sent (for debugging)
-      console.log('📦 Order Payload:', JSON.stringify(orderData, null, 2))
 
-      let { data: order, error: orderError } = await supabase
+      // Insert order
+      const { data: order, error: orderError } = await supabase
         .from('customer_orders')
         .insert(orderData)
         .select()
         .single()
 
-      // If error is about missing delivery_email column, retry without those fields
-      if (orderError && orderError.code === 'PGRST204' && orderError.message.includes('delivery_')) {
-        console.warn('⚠️ Delivery fields not in schema, retrying without them...')
-        
-        // Remove delivery fields and retry
-        const { delivery_name, delivery_phone, delivery_email, ...orderDataWithoutDelivery } = orderData
-        
-        const retry = await supabase
-          .from('customer_orders')
-          .insert(orderDataWithoutDelivery)
-          .select()
-          .single()
-        
-        order = retry.data
-        orderError = retry.error
-      }
-
-      if (orderError) {
-        console.error('❌ SUPABASE ORDER ERROR:')
-        console.error('  Code:', orderError.code)
-        console.error('  Message:', orderError.message)
-        console.error('  Details:', orderError.details)
-        console.error('  Hint:', orderError.hint)
-        console.error('  Full Error:', JSON.stringify(orderError, null, 2))
-        throw orderError
-      }
+      if (orderError) throw orderError
 
       // Create order items
       const orderItems = items.map(item => {
@@ -184,16 +139,14 @@ const CheckoutPage = () => {
 
       if (itemsError) throw itemsError
 
-      // Update stock (decrease quantities)
+      // Update stock
       for (const item of items) {
         const { error: stockError } = await supabase.rpc('update_batch_stock', {
           p_batch_id: item.batch.id,
           p_quantity_change: -item.quantity
         })
-
         if (stockError) {
           console.error('Stock update error:', stockError)
-          // Continue - stock will be manually adjusted if needed
         }
       }
 
@@ -205,17 +158,6 @@ const CheckoutPage = () => {
   }
 
   const handleCODCheckout = async () => {
-    console.log('🛒 Starting COD Checkout...')
-    console.log('📋 Customer Data:', {
-      id: customerData?.id,
-      name: customerData?.name,
-      phone: customerData?.phone,
-      email: customerData?.email,
-      hasAddress: !!customerData?.address
-    })
-    console.log('📍 Delivery Address:', deliveryAddress)
-    console.log('🛍️ Cart Items:', items?.length || 0)
-    
     if (!deliveryAddress.trim()) {
       toast.error('Please enter delivery address')
       return
@@ -226,48 +168,18 @@ const CheckoutPage = () => {
       return
     }
 
-    // Validate customer profile is complete for delivery
-    if (!customerData.phone || !customerData.phone.trim()) {
-      toast.error('Phone number is required for delivery. Please update your profile.')
-      return
-    }
-
-    if (!customerData.name || !customerData.name.trim()) {
-      toast.error('Name is required for delivery. Please update your profile.')
-      return
-    }
-
     setLoading(true)
 
     try {
       const order = await createOrder()
-
-      // Clear cart
       clearCart()
-
-      // Navigate to confirmation
       navigate('/customer/order-confirmation', {
         state: { order, paymentMethod: 'COD' }
       })
-
       toast.success('Order placed successfully!')
     } catch (error) {
-      console.error('❌ COD CHECKOUT ERROR:')
-      console.error('  Error object:', error)
-      console.error('  Error code:', error?.code)
-      console.error('  Error message:', error?.message)
-      console.error('  Error details:', error?.details)
-      console.error('  Error hint:', error?.hint)
-      
-      // User-friendly error message
-      let errorMessage = 'Failed to place order. '
-      if (error?.message) {
-        errorMessage += error.message
-      } else {
-        errorMessage += 'Please try again or contact support.'
-      }
-      
-      toast.error(errorMessage, { duration: 6000 })
+      console.error('COD checkout error:', error)
+      toast.error(error.message || 'Failed to place order. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -284,17 +196,6 @@ const CheckoutPage = () => {
       return
     }
 
-    if (!customerData.phone || !customerData.phone.trim()) {
-      toast.error('Phone number is required for delivery. Please update your profile.')
-      return
-    }
-
-    if (!customerData.name || !customerData.name.trim()) {
-      toast.error('Name is required for delivery. Please update your profile.')
-      return
-    }
-
-    // Load Razorpay script
     const scriptLoaded = await loadRazorpayScript()
     if (!scriptLoaded) {
       toast.error('Failed to load payment gateway. Please try again.')
@@ -306,31 +207,23 @@ const CheckoutPage = () => {
     try {
       const amount = getGrandTotal()
 
-      // Create Razorpay order (This would ideally be done server-side)
-      // For now, we'll use client-side integration
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: Math.round(amount * 100), // Amount in paise
+        amount: Math.round(amount * 100),
         currency: 'INR',
-        name: 'Online Pharmacy',
+        name: 'LifeSprout Care',
         description: 'Medicine Purchase',
         handler: async function (response) {
           try {
-            // Payment successful
             const order = await createOrder(
               response.razorpay_order_id || 'RZP_' + Date.now(),
               response.razorpay_payment_id,
               response.razorpay_signature
             )
-
-            // Clear cart
             clearCart()
-
-            // Navigate to confirmation
             navigate('/customer/order-confirmation', {
               state: { order, paymentMethod: 'razorpay', paymentId: response.razorpay_payment_id }
             })
-
             toast.success('Payment successful! Order placed.')
           } catch (error) {
             console.error('Order creation after payment error:', error)
@@ -358,7 +251,6 @@ const CheckoutPage = () => {
       rzp.on('payment.failed', function (response) {
         setLoading(false)
         toast.error('Payment failed: ' + (response.error?.description || 'Please try again'))
-        console.error('Payment failed:', response.error)
       })
 
       rzp.open()
@@ -385,7 +277,6 @@ const CheckoutPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate('/customer/cart')}
@@ -399,7 +290,6 @@ const CheckoutPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Delivery Address */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -407,7 +297,6 @@ const CheckoutPage = () => {
                 <MapPin className="h-6 w-6 text-blue-900 mr-3" />
                 <h2 className="text-xl font-semibold text-gray-900">Delivery Address</h2>
               </div>
-
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -422,25 +311,11 @@ const CheckoutPage = () => {
                     required
                   />
                 </div>
-
                 {customerData && (
                   <div className="text-sm text-gray-600 space-y-1">
-                    <p><strong>Name:</strong> {customerData.name || <span className="text-red-600">Not provided</span>}</p>
-                    <p><strong>Phone:</strong> {customerData.phone || <span className="text-red-600">Not provided</span>}</p>
+                    <p><strong>Name:</strong> {customerData.name || 'Not provided'}</p>
+                    <p><strong>Phone:</strong> {customerData.phone || 'Not provided'}</p>
                     <p><strong>Email:</strong> {customerData.email}</p>
-                  </div>
-                )}
-
-                {customerData && (!customerData.name || !customerData.phone) && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start">
-                    <AlertCircle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
-                    <div className="text-sm">
-                      <p className="font-semibold text-red-900 mb-1">Incomplete Profile</p>
-                      <p className="text-red-800">
-                        Please ensure your name and phone number are updated in your profile before placing an order.
-                        These details are required for delivery.
-                      </p>
-                    </div>
                   </div>
                 )}
               </div>
@@ -452,9 +327,7 @@ const CheckoutPage = () => {
                 <CreditCard className="h-6 w-6 text-blue-900 mr-3" />
                 <h2 className="text-xl font-semibold text-gray-900">Payment Method</h2>
               </div>
-
               <div className="space-y-3">
-                {/* Cash on Delivery */}
                 <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
                   style={{ borderColor: paymentMethod === 'COD' ? '#1e3a8a' : '#e5e7eb' }}>
                   <input
@@ -471,12 +344,11 @@ const CheckoutPage = () => {
                       <Truck className="h-5 w-5 text-gray-600" />
                     </div>
                     <p className="text-sm text-gray-600 mt-1">
-                      Pay when you receive your order. Convenient and safe.
+                      Pay when you receive your order
                     </p>
                   </div>
                 </label>
 
-                {/* Razorpay Online Payment */}
                 <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
                   style={{ borderColor: paymentMethod === 'razorpay' ? '#1e3a8a' : '#e5e7eb' }}>
                   <input
@@ -493,7 +365,7 @@ const CheckoutPage = () => {
                       <CreditCard className="h-5 w-5 text-gray-600" />
                     </div>
                     <p className="text-sm text-gray-600 mt-1">
-                      Pay securely using UPI, Cards, Net Banking, or Wallets
+                      Pay securely using UPI, Cards, Net Banking
                     </p>
                   </div>
                 </label>
@@ -508,18 +380,17 @@ const CheckoutPage = () => {
                 onChange={(e) => setCustomerNotes(e.target.value)}
                 rows="3"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Any special instructions for delivery or prescription details..."
+                placeholder="Any special instructions..."
               />
             </div>
 
-            {/* Prescription Warning */}
             {items.some(item => item.medicine.prescription_required) && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-start">
                 <AlertCircle className="h-5 w-5 text-yellow-600 mr-3 flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-semibold text-yellow-900 mb-1">Prescription Required</h4>
                   <p className="text-sm text-yellow-800">
-                    Some items in your order require a valid prescription. Please ensure you have it ready for verification upon delivery or upload it after placing the order.
+                    Some items require a prescription. Please have it ready for verification.
                   </p>
                 </div>
               </div>
@@ -531,7 +402,6 @@ const CheckoutPage = () => {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-8">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Order Summary</h2>
 
-              {/* Items List */}
               <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
                 {items.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm">
@@ -551,12 +421,10 @@ const CheckoutPage = () => {
                   <span>Subtotal</span>
                   <span>₹{getSubtotal().toFixed(2)}</span>
                 </div>
-
                 <div className="flex justify-between text-gray-600">
                   <span>GST</span>
                   <span>₹{getGST().toFixed(2)}</span>
                 </div>
-
                 <div className="flex justify-between text-lg font-bold text-gray-900 border-t pt-3">
                   <span>Total</span>
                   <span>₹{getGrandTotal().toFixed(2)}</span>
@@ -565,19 +433,11 @@ const CheckoutPage = () => {
 
               <button
                 onClick={handlePlaceOrder}
-                disabled={loading || !deliveryAddress.trim() || !customerData?.name || !customerData?.phone}
+                disabled={loading || !deliveryAddress.trim()}
                 className="w-full mt-6 bg-blue-900 text-white py-3 px-4 rounded-lg hover:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
               >
                 {loading ? 'Processing...' : paymentMethod === 'COD' ? 'Place Order (COD)' : 'Proceed to Payment'}
               </button>
-
-              {(!customerData?.name || !customerData?.phone || !deliveryAddress.trim()) && (
-                <p className="text-xs text-red-600 text-center mt-2">
-                  {!customerData?.name || !customerData?.phone 
-                    ? 'Complete your profile to place an order' 
-                    : 'Enter delivery address to continue'}
-                </p>
-              )}
 
               <p className="text-xs text-gray-500 text-center mt-4">
                 By placing this order, you agree to our Terms & Conditions
