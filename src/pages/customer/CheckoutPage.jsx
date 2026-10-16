@@ -96,7 +96,6 @@ const CheckoutPage = () => {
         order_status: 'pending',
         delivery_name: customerData.name || 'Customer',
         delivery_phone: customerData.phone || '0000000000',
-        delivery_email: customerData.email || user?.email || 'no-email@temp.com',
         delivery_address: deliveryAddress || 'No address provided',
         customer_notes: customerNotes || null,
         razorpay_order_id: razorpayOrderId,
