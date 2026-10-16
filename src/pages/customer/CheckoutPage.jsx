@@ -185,7 +185,6 @@ const CheckoutPage = () => {
           batch_number: item.batch.batch_number,
           quantity: item.quantity,
           price: item.price,
-          discount: 0,
           gst_percentage: item.medicine.gst_percentage || 0,
           gst_amount: itemGstAmount,
           total: itemTotal + itemGstAmount
