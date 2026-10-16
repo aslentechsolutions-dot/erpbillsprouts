@@ -33,20 +33,44 @@ const CustomerOrdersPage = () => {
 
       setOrders(ordersData || [])
 
-      // Fetch customer details for all orders
+      // Fetch customer details for all orders (check customers and profiles)
       if (ordersData && ordersData.length > 0) {
-        const customerIds = [...new Set(ordersData.map(o => o.customer_id))]
-        const { data: customersData, error: customersError } = await supabase
-          .from('customers')
-          .select('*')
-          .in('id', customerIds)
-
-        if (customersError) throw customersError
-
+        const customerIds = [...new Set(ordersData.map(o => o.customer_id).filter(Boolean))]
         const customersMap = {}
-        customersData.forEach(c => {
-          customersMap[c.id] = c
-        })
+
+        if (customerIds.length > 0) {
+          const { data: customersData } = await supabase
+            .from('customers')
+            .select('*')
+            .in('id', customerIds)
+
+          if (customersData) {
+            customersData.forEach(c => {
+              customersMap[c.id] = c
+            })
+          }
+
+          // Also check profiles for any customer_id that is an auth profile ID
+          const missingIds = customerIds.filter(id => !customersMap[id])
+          if (missingIds.length > 0) {
+            const { data: profilesData } = await supabase
+              .from('profiles')
+              .select('*')
+              .in('id', missingIds)
+
+            if (profilesData) {
+              profilesData.forEach(p => {
+                customersMap[p.id] = {
+                  id: p.id,
+                  name: p.full_name,
+                  email: p.email,
+                  phone: p.phone,
+                  address: null
+                }
+              })
+            }
+          }
+        }
         setCustomers(customersMap)
       }
     } catch (error) {
@@ -184,11 +208,14 @@ const CustomerOrdersPage = () => {
 
   const filteredOrders = orders.filter(order => {
     const customer = customers[order.customer_id]
+    const customerName = customer?.name || order.delivery_name || ''
+    const customerEmail = customer?.email || order.delivery_email || ''
+    const customerPhone = customer?.phone || order.delivery_phone || ''
     const matchesSearch = 
       order.order_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer?.phone?.includes(searchTerm)
+      customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customerPhone.includes(searchTerm)
 
     const matchesStatus = statusFilter === 'all' || order.order_status === statusFilter
     const matchesPayment = paymentFilter === 'all' || order.payment_status === paymentFilter
@@ -364,7 +391,7 @@ const CustomerOrdersPage = () => {
                         
                         <div className="flex items-center">
                           <User className="h-4 w-4 mr-2" />
-                          {customer?.name || 'Unknown'}
+                          {customer?.name || order.delivery_name || 'Customer'}
                         </div>
                         
                         <div className="flex items-center">
@@ -400,26 +427,28 @@ const CustomerOrdersPage = () => {
                             <User className="h-5 w-5 mr-2 text-blue-900" />
                             Customer Information
                           </h4>
-                          {customer && (
-                            <div className="space-y-2 text-sm">
-                              <div className="flex items-center text-gray-600">
-                                <User className="h-4 w-4 mr-2" />
-                                <span>{customer.name}</span>
-                              </div>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex items-center text-gray-600">
+                              <User className="h-4 w-4 mr-2" />
+                              <span>{customer?.name || order.delivery_name || 'Customer'}</span>
+                            </div>
+                            {(customer?.phone || order.delivery_phone) && (
                               <div className="flex items-center text-gray-600">
                                 <Phone className="h-4 w-4 mr-2" />
-                                <a href={`tel:${customer.phone}`} className="text-blue-900 hover:underline">
-                                  {customer.phone}
+                                <a href={`tel:${customer?.phone || order.delivery_phone}`} className="text-blue-900 hover:underline">
+                                  {customer?.phone || order.delivery_phone}
                                 </a>
                               </div>
+                            )}
+                            {(customer?.email || order.delivery_email) && (
                               <div className="flex items-center text-gray-600">
                                 <Mail className="h-4 w-4 mr-2" />
-                                <a href={`mailto:${customer.email}`} className="text-blue-900 hover:underline">
-                                  {customer.email}
+                                <a href={`mailto:${customer?.email || order.delivery_email}`} className="text-blue-900 hover:underline">
+                                  {customer?.email || order.delivery_email}
                                 </a>
                               </div>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </div>
 
                         {/* Delivery Address */}

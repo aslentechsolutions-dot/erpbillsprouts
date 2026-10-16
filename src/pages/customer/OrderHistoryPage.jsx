@@ -21,21 +21,28 @@ const OrderHistoryPage = () => {
     try {
       setLoading(true)
 
-      // Get customer ID first
-      const { data: customerData, error: customerError } = await supabase
+      // Get customer ID first (if exists)
+      const { data: customerData } = await supabase
         .from('customers')
         .select('id')
         .eq('email', user?.email)
-        .single()
+        .maybeSingle()
 
-      if (customerError) throw customerError
-
-      // Fetch orders
-      const { data, error } = await supabase
+      // Fetch orders matching customerData.id OR user.id
+      let query = supabase
         .from('customer_orders')
         .select('*')
-        .eq('customer_id', customerData.id)
         .order('created_at', { ascending: false })
+
+      if (customerData?.id && user?.id && customerData.id !== user.id) {
+        query = query.or(`customer_id.eq.${customerData.id},customer_id.eq.${user.id}`)
+      } else if (customerData?.id) {
+        query = query.eq('customer_id', customerData.id)
+      } else if (user?.id) {
+        query = query.eq('customer_id', user.id)
+      }
+
+      const { data, error } = await query
 
       if (error) throw error
 

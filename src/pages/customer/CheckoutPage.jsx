@@ -42,17 +42,41 @@ const CheckoutPage = () => {
 
   const loadCustomerData = async () => {
     try {
-      const { data, error } = await supabase
+      // 1. Try loading from customers table
+      const { data: customerRecord, error: customerError } = await supabase
         .from('customers')
         .select('*')
         .eq('email', user?.email)
-        .single()
+        .maybeSingle()
 
-      if (error && error.code !== 'PGRST116') throw error
+      if (customerError && customerError.code !== 'PGRST116') {
+        console.warn('Customer lookup notice:', customerError)
+      }
 
-      if (data) {
-        setCustomerData(data)
-        setDeliveryAddress(data.address || '')
+      // 2. Also try loading profile for full_name, phone, id
+      let profileRecord = null
+      if (user?.id) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .maybeSingle()
+        profileRecord = profile
+      }
+
+      const mergedData = {
+        id: user?.id || customerRecord?.id || profileRecord?.id,
+        profileId: profileRecord?.id || user?.id,
+        customerId: customerRecord?.id,
+        name: customerRecord?.name || profileRecord?.full_name || user?.user_metadata?.full_name || 'Customer',
+        phone: customerRecord?.phone || profileRecord?.phone || '',
+        email: customerRecord?.email || profileRecord?.email || user?.email,
+        address: customerRecord?.address || ''
+      }
+
+      setCustomerData(mergedData)
+      if (mergedData.address) {
+        setDeliveryAddress(mergedData.address)
       }
     } catch (error) {
       console.error('Error loading customer data:', error)
@@ -83,10 +107,9 @@ const CheckoutPage = () => {
       const gstAmount = getGST()
       const total = getGrandTotal()
 
-      // Prepare order data with safe values
-      const orderData = {
+      // Base order payload with safe values
+      const baseOrderData = {
         order_number: orderNumber,
-        customer_id: customerData.id,
         subtotal: subtotal,
         discount: 0,
         gst_amount: gstAmount,
@@ -94,8 +117,8 @@ const CheckoutPage = () => {
         payment_method: paymentMethod,
         payment_status: paymentMethod === 'COD' ? 'pending' : 'paid',
         order_status: 'pending',
-        delivery_name: customerData.name || 'Customer',
-        delivery_phone: customerData.phone || '0000000000',
+        delivery_name: customerData?.name || user?.user_metadata?.full_name || 'Customer',
+        delivery_phone: customerData?.phone || '0000000000',
         delivery_address: deliveryAddress || 'No address provided',
         customer_notes: customerNotes || null,
         razorpay_order_id: razorpayOrderId,
@@ -103,14 +126,51 @@ const CheckoutPage = () => {
         razorpay_signature: razorpaySignature
       }
 
-      // Insert order
-      const { data: order, error: orderError } = await supabase
+      // Foreign key support:
+      // In production database, customer_orders.customer_id has a foreign key constraint referencing profiles(id).
+      // If customerData.id from customers table is used, PostgreSQL rejects with 23503 ("Key is not present in table profiles").
+      // Hence, primary ID to use is user.id (which exists in profiles).
+      // Fallback ID is customerData.customerId (if the schema references customers(id)).
+      const primaryCustomerId = user?.id || customerData?.profileId || customerData?.id
+      const fallbackCustomerId = customerData?.customerId || customerData?.id
+
+      let order = null
+      const primaryPayload = {
+        ...baseOrderData,
+        customer_id: primaryCustomerId
+      }
+
+      const { data: firstTryOrder, error: firstTryError } = await supabase
         .from('customer_orders')
-        .insert(orderData)
+        .insert(primaryPayload)
         .select()
         .single()
 
-      if (orderError) throw orderError
+      if (firstTryError) {
+        console.warn('First order creation attempt failed, attempting fallback:', firstTryError)
+        // If constraint error (23503) or RLS error (42501) occurs and fallback is available and different, retry
+        if ((firstTryError.code === '23503' || firstTryError.code === '42501') && fallbackCustomerId && fallbackCustomerId !== primaryCustomerId) {
+          const fallbackPayload = {
+            ...baseOrderData,
+            customer_id: fallbackCustomerId
+          }
+          const { data: retryOrder, error: retryError } = await supabase
+            .from('customer_orders')
+            .insert(fallbackPayload)
+            .select()
+            .single()
+
+          if (retryError) {
+            console.error('Retry order creation also failed:', retryError)
+            throw retryError
+          }
+          order = retryOrder
+        } else {
+          throw firstTryError
+        }
+      } else {
+        order = firstTryOrder
+      }
 
       // Create order items
       const orderItems = items.map(item => {
@@ -162,7 +222,7 @@ const CheckoutPage = () => {
       return
     }
 
-    if (!customerData) {
+    if (!customerData && !user) {
       toast.error('Customer data not found')
       return
     }
@@ -190,7 +250,7 @@ const CheckoutPage = () => {
       return
     }
 
-    if (!customerData) {
+    if (!customerData && !user) {
       toast.error('Customer data not found')
       return
     }
