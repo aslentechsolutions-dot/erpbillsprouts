@@ -101,9 +101,6 @@ const CheckoutPage = () => {
         payment_method: paymentMethod,
         payment_status: paymentMethod === 'COD' ? 'pending' : 'paid',
         order_status: 'pending',
-        delivery_name: customerData.name || '',
-        delivery_phone: customerData.phone || '',
-        delivery_email: customerData.email || '',
         delivery_address: deliveryAddress,
         customer_notes: customerNotes || null,
         razorpay_order_id: razorpayOrderId,
@@ -176,6 +173,7 @@ const CheckoutPage = () => {
       return
     }
 
+    // Validate customer profile is complete for delivery
     if (!customerData.phone || !customerData.phone.trim()) {
       toast.error('Phone number is required for delivery. Please update your profile.')
       return
