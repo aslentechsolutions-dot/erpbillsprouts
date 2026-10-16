@@ -126,7 +126,7 @@ const WholesaleInvoice = ({
       <style>{`
         @page {
           size: A4 portrait;
-          margin: 10mm;
+          margin: 8mm;
         }
 
         .wholesale-invoice {
@@ -134,8 +134,7 @@ const WholesaleInvoice = ({
           background: white;
           color: black;
           width: 210mm;
-          min-height: 297mm;
-          padding: 8mm;
+          padding: 0;
           font-size: 9pt;
           line-height: 1.3;
           position: relative;
@@ -149,7 +148,6 @@ const WholesaleInvoice = ({
         .page-border {
           border: 2px solid #000;
           padding: 8px;
-          min-height: 277mm;
         }
 
         /* Header */
@@ -391,8 +389,7 @@ const WholesaleInvoice = ({
           background: white;
           color: black;
           width: 210mm;
-          min-height: 297mm;
-          padding: 8mm;
+          padding: 0;
           font-size: 9pt;
         }
 
@@ -456,13 +453,13 @@ const WholesaleInvoice = ({
         @media print {
           .wholesale-invoice, .terms-page {
             margin: 0;
-            padding: 8mm;
+            padding: 0;
             width: 100%;
           }
 
           @page {
             size: A4 portrait;
-            margin: 10mm;
+            margin: 8mm;
           }
         }
       `}</style>

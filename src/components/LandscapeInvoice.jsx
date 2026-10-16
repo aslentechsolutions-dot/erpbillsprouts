@@ -138,7 +138,6 @@ const LandscapeInvoice = ({
           font-family: Arial, sans-serif;
           background: white;
           width: 210mm;
-          min-height: 297mm;
           margin: 0 auto;
           position: relative;
           page-break-after: always;
@@ -147,8 +146,8 @@ const LandscapeInvoice = ({
         /* Page Indicator */
         .page-indicator {
           position: absolute;
-          top: 3mm;
-          left: 3mm;
+          top: 2mm;
+          left: 2mm;
           display: flex;
           align-items: center;
           font-size: 10pt;
@@ -169,9 +168,8 @@ const LandscapeInvoice = ({
         /* Main Content */
         .invoice-content {
           border: 2px solid #000;
-          margin: 8mm 5mm 5mm 5mm;
+          margin: 6mm 3mm 3mm 3mm;
           padding: 0;
-          min-height: 277mm;
         }
 
         /* Header */
@@ -388,15 +386,13 @@ const LandscapeInvoice = ({
           font-family: Arial, sans-serif;
           background: white;
           width: 210mm;
-          min-height: 297mm;
           margin: 0 auto;
         }
 
         .terms-content {
           border: 2px solid #000;
-          margin: 8mm 5mm;
+          margin: 3mm;
           padding: 15px;
-          min-height: 277mm;
         }
 
         .terms-header {

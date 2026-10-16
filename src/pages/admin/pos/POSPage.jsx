@@ -203,9 +203,7 @@ const POSPage = () => {
 
       const saleData = {
         invoice_number: invoiceData,
-        customer_id: customer?.type === 'customer' ? customer.id : null,
-        retailer_id: customer?.type === 'retailer' ? customer.id : null,
-        wholesaler_id: customer?.type === 'wholesaler' ? customer.id : null,
+        customer_id: customer?.id || null,
         subtotal: getSubtotal(),
         discount: discount,
         gst_amount: getGST(),
@@ -244,6 +242,9 @@ const POSPage = () => {
         .insert(saleItems)
 
       if (itemsError) throw itemsError
+
+      // Generate and print invoice BEFORE clearing cart
+      await generateThermalInvoice(sale, items)
 
       clearCart()
       setDoctorName('')
@@ -400,6 +401,11 @@ const POSPage = () => {
 
     // Open print window
     const printWindow = window.open('', '_blank', 'width=1200,height=800')
+    
+    if (!printWindow) {
+      toast.error('Please allow popups to print invoice')
+      return
+    }
     
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -749,7 +755,7 @@ const POSPage = () => {
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Top Bar */}
-      <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-3">
+      <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-3 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 md:space-x-4">
             <div className="flex items-center space-x-2">
@@ -876,9 +882,9 @@ const POSPage = () => {
         </div>
 
         {/* Right Panel - Billing Cart */}
-        <div className={`w-full md:w-96 bg-white border-l border-gray-200 flex flex-col ${showCart ? 'block' : 'hidden md:flex'}`}>
+        <div className={`w-full md:w-96 bg-white border-l border-gray-200 flex flex-col max-h-screen overflow-hidden ${showCart ? 'block' : 'hidden md:flex'}`}>
           {/* Cart Header */}
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 flex-shrink-0">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-gray-900">Billing Cart</h2>
               <button 
@@ -1010,7 +1016,7 @@ const POSPage = () => {
           </div>
 
           {/* Cart Footer */}
-          <div className="border-t border-gray-200 p-4 space-y-4">
+          <div className="border-t border-gray-200 p-3 space-y-2 flex-shrink-0 bg-white">
             {/* Discount */}
             {items.length > 0 && (
               <div className="flex items-center justify-between text-sm">
@@ -1027,7 +1033,7 @@ const POSPage = () => {
             )}
 
             {/* Totals */}
-            <div className="space-y-2 text-sm">
+            <div className="space-y-1 text-sm">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal (Gross)</span>
                 <span>Rs.{getSubtotal().toFixed(2)}</span>
@@ -1036,37 +1042,33 @@ const POSPage = () => {
                 <span>Total GST</span>
                 <span>Rs.{getGST().toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-lg font-bold border-t pt-2">
+              <div className="flex justify-between text-lg font-bold border-t pt-1">
                 <span>GRAND TOTAL</span>
                 <span>Rs.{getGrandTotal().toFixed(2)}</span>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="space-y-2">
+            <div className="space-y-2 pt-1">
               <button
                 onClick={() => handleProcessSale('cash')}
                 disabled={items.length === 0 || loading}
-                className="w-full bg-blue-900 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="w-full bg-blue-900 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-800 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
-                <CreditCard className="w-5 h-5" />
+                <CreditCard className="w-4 h-4" />
                 <span>{loading ? 'Processing...' : 'CASH'}</span>
               </button>
               
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={handleRazorpayPayment}
-                  disabled={items.length === 0 || loading}
-                  className="flex-1 border-2 border-blue-900 text-blue-900 py-2 rounded-lg font-semibold hover:bg-blue-50 disabled:bg-gray-100 disabled:border-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
-                >
-                  RAZORPAY
-                </button>
-              </div>
+              <button
+                onClick={handleRazorpayPayment}
+                disabled={items.length === 0 || loading}
+                className="w-full border-2 border-blue-900 text-blue-900 py-2 rounded-lg font-semibold hover:bg-blue-50 disabled:bg-gray-100 disabled:border-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
+              >
+                RAZORPAY
+              </button>
 
-              <div className="text-center">
-                <button className="text-sm text-gray-500 hover:text-gray-700">
-                  Invoice Type: <span className="font-medium">TAX INVOICE (Customer)</span>
-                </button>
+              <div className="text-center py-1">
+                <span className="text-xs text-gray-500">Invoice Type: <span className="font-medium">TAX INVOICE (Customer)</span></span>
               </div>
 
               <button

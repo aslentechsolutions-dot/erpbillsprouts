@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Eye, EyeOff, Mail, Lock, AlertCircle, Zap, Package, FileText, RefreshCw, Database, Phone } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Eye, EyeOff, Mail, Lock, AlertCircle, Zap, Package, FileText, RefreshCw, Database, Phone, UserPlus } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
@@ -18,6 +19,7 @@ const LoginPage = () => {
   const [logo, setLogo] = useState(null)
   const [pharmacyName, setPharmacyName] = useState('BillSprout')
   const { signIn } = useAuthStore()
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchSettings()
@@ -235,6 +237,20 @@ const LoginPage = () => {
                 )}
               </button>
             </form>
+
+            {/* Registration Link */}
+            <div className="mt-4 text-center">
+              <p className="text-sm text-gray-600">
+                New customer?{' '}
+                <button
+                  onClick={() => navigate('/register')}
+                  className="text-blue-900 hover:text-blue-700 font-semibold inline-flex items-center"
+                >
+                  <UserPlus className="h-4 w-4 mr-1" />
+                  Register for online shopping
+                </button>
+              </p>
+            </div>
 
             {/* Demo Accounts - For Testing */}
             <div className="mt-6 pt-6 border-t border-gray-200">

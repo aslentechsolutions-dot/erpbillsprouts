@@ -18,7 +18,9 @@ import {
   Search,
   DollarSign,
   FileText,
-  AlertTriangle
+  AlertTriangle,
+  ShoppingBag as OnlineOrders,
+  MessageSquare
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import { supabase } from '../../lib/supabase'
@@ -61,10 +63,12 @@ const AdminLayout = ({ children }) => {
     { name: 'Purchases', href: '/admin/purchases', icon: ShoppingBag },
     { name: 'Sales', href: '/admin/sales', icon: Receipt },
     { name: 'Customers', href: '/admin/customers', icon: Users },
+    { name: 'Customer Orders', href: '/admin/customer-orders', icon: OnlineOrders },
     { name: 'Customer Ledger', href: '/admin/ledger', icon: DollarSign },
     { name: 'Supplier Ledger', href: '/admin/supplier-ledger', icon: Truck },
     { name: 'Prescriptions', href: '/admin/prescriptions', icon: FileText },
     { name: 'Narcotic Report', href: '/admin/narcotic-report', icon: AlertTriangle },
+    { name: 'ERP Inquiries', href: '/admin/erp-inquiries', icon: MessageSquare },
     { name: 'Wholesalers', href: '/admin/wholesalers', icon: Truck },
     { name: 'Users', href: '/admin/users', icon: UserCheck },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
@@ -111,7 +115,7 @@ const AdminLayout = ({ children }) => {
         </div>
 
         {/* Navigation */}
-        <nav className="mt-5 px-2">
+        <nav className="mt-5 px-2 pb-20 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 140px)' }}>
           <div className="space-y-1">
             {navigation.map((item) => {
               const Icon = item.icon
@@ -139,9 +143,9 @@ const AdminLayout = ({ children }) => {
         </nav>
 
         {/* User Profile */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-white">
           <div className="flex items-center">
-            <div className="h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center">
+            <div className="h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
               <span className="text-sm font-medium text-primary-700">
                 {profile?.full_name?.charAt(0) || 'U'}
               </span>
@@ -150,13 +154,13 @@ const AdminLayout = ({ children }) => {
               <p className="text-sm font-medium text-gray-900 truncate">
                 {profile?.full_name || 'User'}
               </p>
-              <p className="text-xs text-gray-500 uppercase">
+              <p className="text-xs text-gray-500 uppercase truncate">
                 {profile?.role || 'Admin'}
               </p>
             </div>
             <button
               onClick={handleSignOut}
-              className="ml-2 text-gray-400 hover:text-gray-600 p-1 rounded"
+              className="ml-2 text-gray-400 hover:text-gray-600 p-1 rounded flex-shrink-0"
               title="Sign out"
             >
               <LogOut className="h-4 w-4" />

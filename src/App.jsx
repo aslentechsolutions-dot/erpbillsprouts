@@ -10,6 +10,15 @@ import ProtectedRoute from './components/ProtectedRoute'
 import LoadingSpinner from './components/LoadingSpinner'
 import SupabaseSetup from './components/SupabaseSetup'
 
+// Customer Components
+import CustomerLayout from './components/CustomerLayout'
+import CustomerRegisterPage from './pages/customer/CustomerRegisterPage'
+import MedicineStorePage from './pages/customer/MedicineStorePage'
+import CustomerCartPage from './pages/customer/CustomerCartPage'
+import CheckoutPage from './pages/customer/CheckoutPage'
+import OrderConfirmationPage from './pages/customer/OrderConfirmationPage'
+import OrderHistoryPage from './pages/customer/OrderHistoryPage'
+
 // Admin Pages
 import AdminLayout from './pages/admin/AdminLayout'
 import AdminDashboard from './pages/admin/dashboard/AdminDashboard'
@@ -26,6 +35,8 @@ import LedgerPage from './pages/admin/ledger/LedgerPage'
 import SupplierLedgerPage from './pages/admin/supplier-ledger/SupplierLedgerPage'
 import PrescriptionsPage from './pages/admin/prescriptions/PrescriptionsPage'
 import NarcoticReportPage from './pages/admin/narcotic-report/NarcoticReportPage'
+import CustomerOrdersPage from './pages/admin/customer-orders/CustomerOrdersPage'
+import ERPInquiriesPage from './pages/admin/erp-inquiries/ERPInquiriesPage'
 
 // Other Role Pages
 import PharmacistDashboard from './pages/pharmacist/PharmacistDashboard'
@@ -61,6 +72,10 @@ function App() {
             path="/login" 
             element={!user ? <LoginPage /> : <Navigate to="/" replace />} 
           />
+          <Route 
+            path="/register" 
+            element={!user ? <CustomerRegisterPage /> : <Navigate to="/" replace />} 
+          />
           
           {/* Root redirect based on role */}
           <Route 
@@ -86,10 +101,12 @@ function App() {
                     <Route path="sales" element={<SalesPage />} />
                     <Route path="purchases" element={<PurchasesPage />} />
                     <Route path="customers" element={<CustomersPage />} />
+                    <Route path="customer-orders" element={<CustomerOrdersPage />} />
                     <Route path="ledger" element={<LedgerPage />} />
                     <Route path="supplier-ledger" element={<SupplierLedgerPage />} />
                     <Route path="prescriptions" element={<PrescriptionsPage />} />
                     <Route path="narcotic-report" element={<NarcoticReportPage />} />
+                    <Route path="erp-inquiries" element={<ERPInquiriesPage />} />
                     <Route path="wholesalers" element={<WholesalersPage />} />
                     <Route path="users" element={<UsersPage />} />
                     <Route path="settings" element={<SettingsPage />} />
@@ -128,6 +145,22 @@ function App() {
               </ProtectedRoute>
             } 
           />
+
+          {/* Customer Routes (using patient role) */}
+          <Route 
+            path="/customer" 
+            element={
+              <ProtectedRoute requiredRole="patient">
+                <CustomerLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="store" element={<MedicineStorePage />} />
+            <Route path="cart" element={<CustomerCartPage />} />
+            <Route path="checkout" element={<CheckoutPage />} />
+            <Route path="order-confirmation" element={<OrderConfirmationPage />} />
+            <Route path="orders" element={<OrderHistoryPage />} />
+          </Route>
 
           {/* Retailer Routes */}
           <Route 
