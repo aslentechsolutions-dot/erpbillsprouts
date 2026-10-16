@@ -207,8 +207,15 @@ function App() {
 
 // Component to redirect based on user role
 function RoleBasedRedirect() {
-  const { getRedirectPath } = useAuthStore()
-  return <Navigate to={getRedirectPath()} replace />
+  const { profile, getRedirectPath } = useAuthStore()
+  
+  console.log('🔄 RoleBasedRedirect - Profile:', profile)
+  console.log('🔄 RoleBasedRedirect - Role:', profile?.role)
+  
+  const redirectPath = getRedirectPath()
+  console.log('🔄 RoleBasedRedirect - Redirecting to:', redirectPath)
+  
+  return <Navigate to={redirectPath} replace />
 }
 
 export default App

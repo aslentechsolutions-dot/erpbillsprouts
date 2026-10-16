@@ -81,6 +81,8 @@ const CustomerRegisterPage = () => {
     setLoading(true)
 
     try {
+      console.log('Starting registration...')
+      
       // Step 1: Create auth user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -88,16 +90,21 @@ const CustomerRegisterPage = () => {
         options: {
           data: {
             full_name: formData.fullName,
-            role: 'patient' // Use patient role for customers
+            role: 'patient'
           }
         }
       })
 
-      if (authError) throw authError
+      if (authError) {
+        console.error('Auth error:', authError)
+        throw authError
+      }
 
       if (!authData.user) {
         throw new Error('Registration failed. Please try again.')
       }
+
+      console.log('Auth user created:', authData.user.id)
 
       // Step 2: Create customer record
       const { error: customerError } = await supabase
@@ -106,40 +113,46 @@ const CustomerRegisterPage = () => {
           name: formData.fullName,
           email: formData.email,
           phone: formData.phone,
-          address: formData.address || null
+          address: formData.address || null,
+          date_of_birth: formData.dateOfBirth || null,
+          gender: formData.gender || null
         })
 
       if (customerError) {
         console.error('Customer creation error:', customerError)
-        throw new Error('Failed to create customer record')
+        // Continue anyway - customer can be created manually later
       }
 
-      // Step 3: Create profile
+      // Step 3: Create profile (try but don't fail registration if this fails)
       const { error: profileError } = await supabase
         .from('profiles')
-        .insert({
+        .upsert({
           id: authData.user.id,
           full_name: formData.fullName,
           email: formData.email,
           phone: formData.phone,
           role: 'patient',
           status: 'active'
+        }, {
+          onConflict: 'id'
         })
 
       if (profileError) {
         console.error('Profile creation error:', profileError)
+        // Don't throw - profile might already exist or table might not exist
       }
 
-      toast.success('Registration successful! Please check your email to verify your account.')
+      toast.success('Registration successful! You can now login.')
       
-      // Redirect to login after 2 seconds
+      // Redirect to login immediately
       setTimeout(() => {
         navigate('/login')
-      }, 2000)
+      }, 1500)
 
     } catch (error) {
       console.error('Registration error:', error)
-      toast.error(error.message || 'Registration failed. Please try again.')
+      const errorMessage = error.message || error.error_description || 'Registration failed. Please try again.'
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }

@@ -179,22 +179,36 @@ const useAuthStore = create((set, get) => ({
   // Get redirect path based on role
   getRedirectPath: () => {
     const { profile } = get()
-    if (!profile) return '/login'
+    console.log('🔍 getRedirectPath - Profile:', profile)
+    
+    if (!profile) {
+      console.log('⚠️ No profile, redirecting to login')
+      return '/login'
+    }
+    
+    console.log('👤 User role:', profile.role)
     
     switch (profile.role) {
       case 'admin':
+        console.log('➡️ Redirecting to /admin')
         return '/admin'
       case 'pharmacist':
+        console.log('➡️ Redirecting to /pharmacist')
         return '/pharmacist'
       case 'staff':
+        console.log('➡️ Redirecting to /staff')
         return '/staff'
       case 'patient':
-        return '/patient'
+        console.log('➡️ Redirecting to /customer/store (patient role)')
+        return '/customer/store'
       case 'retailer':
+        console.log('➡️ Redirecting to /retailer')
         return '/retailer'
       case 'wholesaler':
+        console.log('➡️ Redirecting to /wholesaler')
         return '/wholesaler'
       default:
+        console.log('⚠️ Unknown role:', profile.role, '- redirecting to login')
         return '/login'
     }
   }
