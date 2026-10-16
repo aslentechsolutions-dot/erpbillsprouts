@@ -86,11 +86,22 @@ const CheckoutPage = () => {
 
       if (orderNumError) throw orderNumError
 
+      // Validate required delivery fields
+      if (!customerData.name || !customerData.name.trim()) {
+        throw new Error('Customer name is required for delivery. Please update your profile.')
+      }
+      if (!customerData.phone || !customerData.phone.trim()) {
+        throw new Error('Customer phone is required for delivery. Please update your profile.')
+      }
+      if (!customerData.email || !customerData.email.trim()) {
+        throw new Error('Customer email is required for delivery. Please update your profile.')
+      }
+
       const subtotal = getSubtotal()
       const gstAmount = getGST()
       const total = getGrandTotal()
 
-      // Create order record
+      // Create order record with ALL required fields
       const orderData = {
         order_number: orderNumber,
         customer_id: customerData.id,
@@ -101,6 +112,9 @@ const CheckoutPage = () => {
         payment_method: paymentMethod,
         payment_status: paymentMethod === 'COD' ? 'pending' : 'paid',
         order_status: 'pending',
+        delivery_name: customerData.name,
+        delivery_phone: customerData.phone,
+        delivery_email: customerData.email,
         delivery_address: deliveryAddress,
         customer_notes: customerNotes || null,
         razorpay_order_id: razorpayOrderId,
