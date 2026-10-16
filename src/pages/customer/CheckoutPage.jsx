@@ -111,13 +111,24 @@ const CheckoutPage = () => {
         razorpay_signature: razorpaySignature
       }
 
+      // Log the complete payload being sent (for debugging)
+      console.log('📦 Order Payload:', JSON.stringify(orderData, null, 2))
+
       const { data: order, error: orderError } = await supabase
         .from('customer_orders')
         .insert(orderData)
         .select()
         .single()
 
-      if (orderError) throw orderError
+      if (orderError) {
+        console.error('❌ SUPABASE ORDER ERROR:')
+        console.error('  Code:', orderError.code)
+        console.error('  Message:', orderError.message)
+        console.error('  Details:', orderError.details)
+        console.error('  Hint:', orderError.hint)
+        console.error('  Full Error:', JSON.stringify(orderError, null, 2))
+        throw orderError
+      }
 
       // Create order items
       const orderItems = items.map(item => {
@@ -166,6 +177,17 @@ const CheckoutPage = () => {
   }
 
   const handleCODCheckout = async () => {
+    console.log('🛒 Starting COD Checkout...')
+    console.log('📋 Customer Data:', {
+      id: customerData?.id,
+      name: customerData?.name,
+      phone: customerData?.phone,
+      email: customerData?.email,
+      hasAddress: !!customerData?.address
+    })
+    console.log('📍 Delivery Address:', deliveryAddress)
+    console.log('🛍️ Cart Items:', items?.length || 0)
+    
     if (!deliveryAddress.trim()) {
       toast.error('Please enter delivery address')
       return
@@ -202,8 +224,22 @@ const CheckoutPage = () => {
 
       toast.success('Order placed successfully!')
     } catch (error) {
-      console.error('COD checkout error:', error)
-      toast.error('Failed to place order. Please try again.')
+      console.error('❌ COD CHECKOUT ERROR:')
+      console.error('  Error object:', error)
+      console.error('  Error code:', error?.code)
+      console.error('  Error message:', error?.message)
+      console.error('  Error details:', error?.details)
+      console.error('  Error hint:', error?.hint)
+      
+      // User-friendly error message
+      let errorMessage = 'Failed to place order. '
+      if (error?.message) {
+        errorMessage += error.message
+      } else {
+        errorMessage += 'Please try again or contact support.'
+      }
+      
+      toast.error(errorMessage, { duration: 6000 })
     } finally {
       setLoading(false)
     }
