@@ -101,6 +101,9 @@ const CheckoutPage = () => {
         payment_method: paymentMethod,
         payment_status: paymentMethod === 'COD' ? 'pending' : 'paid',
         order_status: 'pending',
+        delivery_name: customerData.name || '',
+        delivery_phone: customerData.phone || '',
+        delivery_email: customerData.email || '',
         delivery_address: deliveryAddress,
         customer_notes: customerNotes || null,
         razorpay_order_id: razorpayOrderId,
@@ -173,6 +176,16 @@ const CheckoutPage = () => {
       return
     }
 
+    if (!customerData.phone || !customerData.phone.trim()) {
+      toast.error('Phone number is required for delivery. Please update your profile.')
+      return
+    }
+
+    if (!customerData.name || !customerData.name.trim()) {
+      toast.error('Name is required for delivery. Please update your profile.')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -203,6 +216,16 @@ const CheckoutPage = () => {
 
     if (!customerData) {
       toast.error('Customer data not found')
+      return
+    }
+
+    if (!customerData.phone || !customerData.phone.trim()) {
+      toast.error('Phone number is required for delivery. Please update your profile.')
+      return
+    }
+
+    if (!customerData.name || !customerData.name.trim()) {
+      toast.error('Name is required for delivery. Please update your profile.')
       return
     }
 
@@ -337,9 +360,22 @@ const CheckoutPage = () => {
 
                 {customerData && (
                   <div className="text-sm text-gray-600 space-y-1">
-                    <p><strong>Name:</strong> {customerData.name}</p>
-                    <p><strong>Phone:</strong> {customerData.phone}</p>
+                    <p><strong>Name:</strong> {customerData.name || <span className="text-red-600">Not provided</span>}</p>
+                    <p><strong>Phone:</strong> {customerData.phone || <span className="text-red-600">Not provided</span>}</p>
                     <p><strong>Email:</strong> {customerData.email}</p>
+                  </div>
+                )}
+
+                {customerData && (!customerData.name || !customerData.phone) && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start">
+                    <AlertCircle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm">
+                      <p className="font-semibold text-red-900 mb-1">Incomplete Profile</p>
+                      <p className="text-red-800">
+                        Please ensure your name and phone number are updated in your profile before placing an order.
+                        These details are required for delivery.
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -464,11 +500,19 @@ const CheckoutPage = () => {
 
               <button
                 onClick={handlePlaceOrder}
-                disabled={loading || !deliveryAddress.trim()}
+                disabled={loading || !deliveryAddress.trim() || !customerData?.name || !customerData?.phone}
                 className="w-full mt-6 bg-blue-900 text-white py-3 px-4 rounded-lg hover:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
               >
                 {loading ? 'Processing...' : paymentMethod === 'COD' ? 'Place Order (COD)' : 'Proceed to Payment'}
               </button>
+
+              {(!customerData?.name || !customerData?.phone || !deliveryAddress.trim()) && (
+                <p className="text-xs text-red-600 text-center mt-2">
+                  {!customerData?.name || !customerData?.phone 
+                    ? 'Complete your profile to place an order' 
+                    : 'Enter delivery address to continue'}
+                </p>
+              )}
 
               <p className="text-xs text-gray-500 text-center mt-4">
                 By placing this order, you agree to our Terms & Conditions
