@@ -124,6 +124,8 @@ const CustomerRegisterPage = () => {
       }
 
       // Step 3: Create profile (try but don't fail registration if this fails)
+      // TEMPORARILY COMMENTED OUT - Run fix-registration-auth-trigger.sql in Supabase to enable
+      /*
       const { error: profileError } = await supabase
         .from('profiles')
         .upsert({
@@ -141,6 +143,8 @@ const CustomerRegisterPage = () => {
         console.error('Profile creation error:', profileError)
         // Don't throw - profile might already exist or table might not exist
       }
+      */
+      console.log('Profile creation handled by database trigger')
 
       toast.success('Registration successful! You can now login.')
       
