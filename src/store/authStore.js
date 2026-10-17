@@ -191,8 +191,9 @@ const useAuthStore = create((set, get) => ({
 
   // Get redirect path based on role
   getRedirectPath: () => {
-    const { profile } = get()
+    const { profile, user } = get()
     console.log('🔍 getRedirectPath - Profile:', profile)
+    console.log('📧 User email:', user?.email)
     
     if (!profile) {
       console.log('⚠️ No profile, redirecting to login')
@@ -201,10 +202,24 @@ const useAuthStore = create((set, get) => ({
     
     console.log('👤 User role:', profile.role)
     
+    // Whitelist of admin emails - only these can access admin dashboard
+    const ALLOWED_ADMIN_EMAILS = [
+      'aslentechsolutions@gmail.com',
+      // Add more admin emails here as needed
+    ]
+    
+    // If user has admin role but email is not in whitelist, redirect to customer portal
+    if (profile.role === 'admin') {
+      const isAllowedAdmin = ALLOWED_ADMIN_EMAILS.includes(user?.email?.toLowerCase())
+      if (!isAllowedAdmin) {
+        console.log('⚠️ User has admin role but email not in whitelist, redirecting to customer portal')
+        return '/customer/store'
+      }
+      console.log('➡️ Redirecting to /admin (authorized)')
+      return '/admin'
+    }
+    
     switch (profile.role) {
-      case 'admin':
-        console.log('➡️ Redirecting to /admin')
-        return '/admin'
       case 'pharmacist':
         console.log('➡️ Redirecting to /pharmacist')
         return '/pharmacist'
@@ -221,8 +236,8 @@ const useAuthStore = create((set, get) => ({
         console.log('➡️ Redirecting to /wholesaler')
         return '/wholesaler'
       default:
-        console.log('⚠️ Unknown role:', profile.role, '- redirecting to login')
-        return '/login'
+        console.log('⚠️ Unknown role:', profile.role, '- redirecting to customer store')
+        return '/customer/store'
     }
   }
 }))
