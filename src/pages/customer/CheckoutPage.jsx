@@ -20,8 +20,9 @@ const CheckoutPage = () => {
 
   const [loading, setLoading] = useState(false)
   const [customerData, setCustomerData] = useState(null)
-  const [paymentMethod, setPaymentMethod] = useState('razorpay')
+  const [paymentMethod, setPaymentMethod] = useState('COD')
   const [deliveryAddress, setDeliveryAddress] = useState('')
+  const [deliveryPhone, setDeliveryPhone] = useState('')
   const [customerNotes, setCustomerNotes] = useState('')
 
   useEffect(() => {
@@ -78,6 +79,9 @@ const CheckoutPage = () => {
       if (mergedData.address) {
         setDeliveryAddress(mergedData.address)
       }
+      if (mergedData.phone) {
+        setDeliveryPhone(mergedData.phone)
+      }
     } catch (error) {
       console.error('Error loading customer data:', error)
     }
@@ -118,7 +122,7 @@ const CheckoutPage = () => {
         payment_status: paymentMethod === 'COD' ? 'pending' : 'paid',
         order_status: 'pending',
         delivery_name: customerData?.name || user?.user_metadata?.full_name || 'Customer',
-        delivery_phone: customerData?.phone || '0000000000',
+        delivery_phone: deliveryPhone || '0000000000',
         delivery_address: deliveryAddress || 'No address provided',
         customer_notes: customerNotes || null,
         razorpay_order_id: razorpayOrderId,
@@ -213,6 +217,11 @@ const CheckoutPage = () => {
       return
     }
 
+    if (!deliveryPhone.trim()) {
+      toast.error('Please enter phone number')
+      return
+    }
+
     if (!customerData && !user) {
       toast.error('Customer data not found')
       return
@@ -238,6 +247,11 @@ const CheckoutPage = () => {
   const handleRazorpayCheckout = async () => {
     if (!deliveryAddress.trim()) {
       toast.error('Please enter delivery address')
+      return
+    }
+
+    if (!deliveryPhone.trim()) {
+      toast.error('Please enter phone number')
       return
     }
 
@@ -312,7 +326,11 @@ const CheckoutPage = () => {
   }
 
   const handlePlaceOrder = () => {
-    handleRazorpayCheckout()
+    if (paymentMethod === 'COD') {
+      handleCODCheckout()
+    } else {
+      handleRazorpayCheckout()
+    }
   }
 
   if (!items || items.length === 0) {
@@ -346,6 +364,19 @@ const CheckoutPage = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    value={deliveryPhone}
+                    onChange={(e) => setDeliveryPhone(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter phone number"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Full Address *
                   </label>
                   <textarea
@@ -360,7 +391,6 @@ const CheckoutPage = () => {
                 {customerData && (
                   <div className="text-sm text-gray-600 space-y-1">
                     <p><strong>Name:</strong> {customerData.name || 'Not provided'}</p>
-                    <p><strong>Phone:</strong> {customerData.phone || 'Not provided'}</p>
                     <p><strong>Email:</strong> {customerData.email}</p>
                   </div>
                 )}
@@ -374,6 +404,27 @@ const CheckoutPage = () => {
                 <h2 className="text-xl font-semibold text-gray-900">Payment Method</h2>
               </div>
               <div className="space-y-3">
+                <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                  style={{ borderColor: paymentMethod === 'COD' ? '#1e3a8a' : '#e5e7eb' }}>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="COD"
+                    checked={paymentMethod === 'COD'}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="mt-1"
+                  />
+                  <div className="ml-3 flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-gray-900">Cash on Delivery (COD)</span>
+                      <Truck className="h-5 w-5 text-gray-600" />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Pay when you receive your order
+                    </p>
+                  </div>
+                </label>
+
                 <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
                   style={{ borderColor: paymentMethod === 'razorpay' ? '#1e3a8a' : '#e5e7eb' }}>
                   <input
@@ -458,10 +509,10 @@ const CheckoutPage = () => {
 
               <button
                 onClick={handlePlaceOrder}
-                disabled={loading || !deliveryAddress.trim()}
+                disabled={loading || !deliveryAddress.trim() || !deliveryPhone.trim()}
                 className="w-full mt-6 bg-blue-900 text-white py-3 px-4 rounded-lg hover:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
               >
-                {loading ? 'Processing...' : 'Proceed to Payment'}
+                {loading ? 'Processing...' : paymentMethod === 'COD' ? 'Place Order (COD)' : 'Proceed to Payment'}
               </button>
 
               <p className="text-xs text-gray-500 text-center mt-4">
