@@ -173,17 +173,13 @@ const CheckoutPage = () => {
       }
 
       // Create order items
-      const orderItems = items.map(item => {
-        const itemTotal = item.quantity * item.price
-        const itemGstAmount = (itemTotal * (item.medicine.gst_percentage || 0)) / 100
-
-        return {
-          order_id: order.id,
-          medicine_id: item.medicine.id,
-          batch_id: item.batch.id,
-          quantity: item.quantity
-        }
-      })
+      // Create order items with only fields that exist in DB schema
+      const orderItems = items.map(item => ({
+        order_id: order.id,
+        medicine_id: item.medicine.id,
+        batch_id: item.batch.id,
+        quantity: item.quantity
+      }))
 
       const { error: itemsError } = await supabase
         .from('customer_order_items')
