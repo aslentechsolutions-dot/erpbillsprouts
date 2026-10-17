@@ -25,12 +25,14 @@ import {
 import useAuthStore from '../../store/authStore'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
+import NotificationPanel from '../../components/NotificationPanel'
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [logo, setLogo] = useState(null)
   const [pharmacyName, setPharmacyName] = useState('BillSprout ERP')
   const [notificationCount, setNotificationCount] = useState(0)
+  const [notificationPanelOpen, setNotificationPanelOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
   const { profile, signOut } = useAuthStore()
@@ -266,7 +268,9 @@ const AdminLayout = ({ children }) => {
             {/* Right side actions */}
             <div className="flex items-center space-x-4">
               {/* Notifications */}
-              <button className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 relative">
+              <button 
+                onClick={() => setNotificationPanelOpen(true)}
+                className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 relative">
                 <Bell className="h-6 w-6" />
                 {notificationCount > 0 && (
                   <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-semibold">
@@ -300,6 +304,13 @@ const AdminLayout = ({ children }) => {
           onClick={() => setSidebarOpen(false)}
         />
       )}
+
+      {/* Notification Panel */}
+      <NotificationPanel 
+        isOpen={notificationPanelOpen}
+        onClose={() => setNotificationPanelOpen(false)}
+        navigate={navigate}
+      />
     </div>
   )
 }
