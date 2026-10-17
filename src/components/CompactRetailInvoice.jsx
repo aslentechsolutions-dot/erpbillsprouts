@@ -120,9 +120,37 @@ const CompactRetailInvoice = ({
   return (
     <div className="compact-retail-invoice">
       <style>{`
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        html, body {
+          width: ${pageWidth};
+          height: ${pageHeight};
+          margin: 0;
+          padding: 0;
+          background: white;
+        }
+
         @page {
           size: ${pageWidth} ${pageHeight};
-          margin: 3mm;
+          margin: 0;
+        }
+
+        @media print {
+          html, body {
+            width: ${pageWidth};
+            height: ${pageHeight};
+            margin: 0;
+            padding: 0;
+            background: white;
+          }
+          body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
         }
 
         .compact-retail-invoice {
@@ -130,9 +158,14 @@ const CompactRetailInvoice = ({
           background: white;
           color: black;
           width: ${pageWidth};
-          padding: 3mm;
+          height: ${pageHeight};
+          padding: 2mm;
           font-size: 7px;
           line-height: 1.15;
+          display: flex;
+          flex-direction: column;
+          box-sizing: border-box;
+          overflow: hidden;
         }
 
         .compact-retail-invoice * {
@@ -143,103 +176,115 @@ const CompactRetailInvoice = ({
         .header {
           text-align: center;
           border-bottom: 1px solid #000;
-          padding-bottom: 2mm;
-          margin-bottom: 2mm;
+          padding-bottom: 1mm;
+          margin-bottom: 1mm;
+          flex-shrink: 0;
         }
 
         .company-name {
-          font-size: 9px;
+          font-size: 8px;
           font-weight: bold;
           text-transform: uppercase;
-          margin-bottom: 1px;
+          margin-bottom: 0.5px;
           letter-spacing: -0.5px;
         }
 
         .company-info {
-          font-size: 6px;
-          line-height: 1.2;
+          font-size: 5.5px;
+          line-height: 1.1;
         }
 
         .invoice-title {
-          font-size: 8px;
+          font-size: 7px;
           font-weight: bold;
           text-align: center;
-          margin: 2mm 0 1mm;
+          margin: 1mm 0 0.5mm;
           text-decoration: underline;
+          flex-shrink: 0;
         }
 
         .invoice-meta {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 0.5mm;
-          margin-bottom: 1.5mm;
-          font-size: 6.5px;
+          gap: 0.2mm;
+          margin-bottom: 1mm;
+          font-size: 6px;
           border-bottom: 1px solid #000;
-          padding-bottom: 1.5mm;
+          padding-bottom: 1mm;
+          flex-shrink: 0;
         }
 
         .meta-item {
           display: flex;
-          gap: 1mm;
+          gap: 0.5mm;
           justify-content: space-between;
+          font-size: 6px;
         }
 
         .meta-label {
           font-weight: bold;
+          flex-shrink: 0;
         }
 
         .customer-info {
           border-top: 1px solid #000;
           border-bottom: 1px solid #000;
-          padding: 1.5mm 0;
-          margin: 1.5mm 0;
-          font-size: 6.5px;
-          line-height: 1.15;
+          padding: 0.5mm 0;
+          margin: 0.5mm 0;
+          font-size: 6px;
+          line-height: 1.1;
+          flex-shrink: 0;
         }
 
         .info-row {
           display: flex;
-          margin-bottom: 0.5mm;
-          gap: 1mm;
+          margin-bottom: 0.3mm;
+          gap: 0.5mm;
+          font-size: 6px;
         }
 
         .info-label {
-          width: 35%;
+          width: 30%;
           font-weight: bold;
           flex-shrink: 0;
         }
 
         .info-value {
-          width: 65%;
+          width: 70%;
           word-wrap: break-word;
           word-break: break-word;
+          font-size: 6px;
         }
 
         .items-table {
           width: 100%;
           border-collapse: collapse;
-          margin: 1.5mm 0;
-          font-size: 6px;
-          border: 1px solid #000;
+          margin: 0.5mm 0;
+          font-size: 5.5px;
+          border: 0.5px solid #000;
+          flex: 1;
+          overflow: hidden;
         }
 
         .items-table th {
-          border: 1px solid #000;
-          padding: 1mm 0.5mm;
+          border: 0.5px solid #000;
+          padding: 0.4mm 0.3mm;
           text-align: center;
           font-weight: bold;
-          font-size: 6px;
+          font-size: 5.5px;
           background-color: #f0f0f0;
           line-height: 1.0;
           word-break: break-word;
+          height: auto;
         }
 
         .items-table td {
-          padding: 1mm 0.5mm;
-          border: 1px solid #000;
+          padding: 0.4mm 0.3mm;
+          border: 0.5px solid #000;
           vertical-align: top;
-          font-size: 6px;
-          line-height: 1.15;
+          font-size: 5.5px;
+          line-height: 1.1;
+          height: auto;
         }
 
         .items-table .text-right {
@@ -252,67 +297,74 @@ const CompactRetailInvoice = ({
 
         .medicine-name {
           font-weight: bold;
-          font-size: 6px;
+          font-size: 5.5px;
           word-break: break-word;
+          line-height: 1.1;
         }
 
         .tax-summary {
-          border: 1px solid #000;
-          padding: 1.5mm;
-          margin: 1.5mm 0;
-          font-size: 6.5px;
-          line-height: 1.15;
+          border: 0.5px solid #000;
+          padding: 0.5mm;
+          margin: 0.5mm 0;
+          font-size: 6px;
+          line-height: 1.1;
+          flex-shrink: 0;
         }
 
         .tax-summary-row {
           display: block;
-          padding: 0.5mm 0;
-          font-size: 6px;
+          padding: 0.2mm 0;
+          font-size: 5.5px;
           word-wrap: break-word;
+          line-height: 1.0;
         }
 
         .totals-section {
-          border: 1px solid #000;
-          padding: 1.5mm;
-          margin: 1.5mm 0;
-          font-size: 6.5px;
-          line-height: 1.15;
+          border: 0.5px solid #000;
+          padding: 0.5mm;
+          margin: 0.5mm 0;
+          font-size: 6px;
+          line-height: 1.0;
+          flex-shrink: 0;
         }
 
         .total-row {
           display: flex;
           justify-content: space-between;
-          padding: 0.5mm 0;
-          font-size: 6.5px;
-          gap: 1mm;
+          padding: 0.2mm 0;
+          font-size: 6px;
+          gap: 0.5mm;
+          line-height: 1.0;
         }
 
         .total-row.grand {
-          font-size: 8px;
+          font-size: 7px;
           font-weight: bold;
-          border-top: 1px solid #000;
-          border-bottom: 2px solid #000;
-          padding: 1mm 0;
-          margin-top: 1mm;
+          border-top: 0.5px solid #000;
+          border-bottom: 1px solid #000;
+          padding: 0.5mm 0;
+          margin-top: 0.5mm;
         }
 
         .amount-words {
-          margin: 1.5mm 0;
-          font-size: 6px;
+          margin: 0.5mm 0;
+          font-size: 5.5px;
           text-align: center;
-          line-height: 1.15;
-          border: 1px solid #000;
-          padding: 1.5mm;
+          line-height: 1.0;
+          border: 0.5px solid #000;
+          padding: 0.4mm;
           word-wrap: break-word;
+          flex-shrink: 0;
         }
 
         .footer {
-          border-top: 1px solid #000;
-          padding-top: 1.5mm;
-          margin-top: 1.5mm;
+          border-top: 0.5px solid #000;
+          padding-top: 0.4mm;
+          margin-top: 0.5mm;
           text-align: center;
-          font-size: 6px;
-          line-height: 1.15;
+          font-size: 5px;
+          line-height: 1.0;
+          flex-shrink: 0;
         }
 
         @media print {
