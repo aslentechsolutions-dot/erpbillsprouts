@@ -204,12 +204,39 @@ const CheckoutPage = () => {
 
       // Update stock after items are inserted
       for (const item of items) {
-        const { error: stockError } = await supabase.rpc('update_batch_stock', {
-          p_batch_id: item.batch.id,
-          p_quantity_change: -item.quantity
-        })
-        if (stockError) {
-          console.error('Stock update error:', stockError)
+        try {
+          // Get current stock
+          const { data: batch, error: fetchError } = await supabase
+            .from('batch_details')
+            .select('stock_quantity')
+            .eq('id', item.batch.id)
+            .single()
+
+          if (fetchError || !batch) {
+            console.error('Error fetching batch:', fetchError)
+            continue
+          }
+
+          const newStock = batch.stock_quantity - item.quantity
+          
+          if (newStock < 0) {
+            console.warn(`Insufficient stock for batch ${item.batch.id}`)
+            continue
+          }
+
+          // Update stock
+          const { error: updateError } = await supabase
+            .from('batch_details')
+            .update({ stock_quantity: newStock })
+            .eq('id', item.batch.id)
+
+          if (updateError) {
+            console.error('Stock update error:', updateError)
+          } else {
+            console.log(`✅ Stock reduced for batch ${item.batch.id}: ${batch.stock_quantity} → ${newStock}`)
+          }
+        } catch (error) {
+          console.error('Stock update exception:', error)
         }
       }
 
