@@ -30,12 +30,19 @@ const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [logo, setLogo] = useState(null)
   const [pharmacyName, setPharmacyName] = useState('BillSprout ERP')
+  const [notificationCount, setNotificationCount] = useState(0)
   const location = useLocation()
   const navigate = useNavigate()
   const { profile, signOut } = useAuthStore()
 
   useEffect(() => {
     fetchSettings()
+    fetchNotificationCount()
+    
+    // Set up auto-refresh for notification count every 60 seconds
+    const interval = setInterval(fetchNotificationCount, 60000)
+    
+    return () => clearInterval(interval)
   }, [])
 
   const fetchSettings = async () => {
@@ -52,6 +59,57 @@ const AdminLayout = ({ children }) => {
       }
     } catch (error) {
       console.error('Error fetching settings:', error)
+    }
+  }
+
+  const fetchNotificationCount = async () => {
+    try {
+      // Get medicines and batches to calculate alerts
+      const [medicinesRes, batchesRes] = await Promise.all([
+        supabase
+          .from('medicines')
+          .select('id, low_stock_threshold')
+          .eq('status', 'active'),
+        supabase
+          .from('medicine_batches')
+          .select('current_quantity, expiry_date, medicine_id')
+      ])
+
+      let count = 0
+      const currentDate = new Date()
+      const thirtyDaysFromNow = new Date(currentDate.getTime() + (30 * 24 * 60 * 60 * 1000))
+
+      // Count low stock medicines
+      if (medicinesRes.data && batchesRes.data) {
+        const lowStockSet = new Set()
+        
+        medicinesRes.data.forEach(medicine => {
+          const threshold = medicine.low_stock_threshold || 10
+          const medicineStock = batchesRes.data
+            .filter(batch => batch.medicine_id === medicine.id)
+            .reduce((sum, batch) => sum + (batch.current_quantity || 0), 0)
+          
+          if (medicineStock < threshold) {
+            lowStockSet.add(medicine.id)
+          }
+        })
+        
+        count += lowStockSet.size
+      }
+
+      // Count expiring and expired medicines
+      if (batchesRes.data) {
+        batchesRes.data.forEach(batch => {
+          const expiryDate = new Date(batch.expiry_date)
+          if (expiryDate < currentDate || (expiryDate <= thirtyDaysFromNow && expiryDate >= currentDate)) {
+            count++
+          }
+        })
+      }
+
+      setNotificationCount(count)
+    } catch (error) {
+      console.error('Error fetching notifications:', error)
     }
   }
 
@@ -201,9 +259,11 @@ const AdminLayout = ({ children }) => {
               {/* Notifications */}
               <button className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 relative">
                 <Bell className="h-6 w-6" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  3
-                </span>
+                {notificationCount > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-semibold">
+                    {notificationCount > 99 ? '99+' : notificationCount}
+                  </span>
+                )}
               </button>
 
               {/* Profile */}

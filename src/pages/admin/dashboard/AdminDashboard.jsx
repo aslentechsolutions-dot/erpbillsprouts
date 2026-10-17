@@ -45,6 +45,11 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchDashboardData()
+    
+    // Set up auto-refresh every 30 seconds for real-time updates
+    const interval = setInterval(fetchDashboardData, 30000)
+    
+    return () => clearInterval(interval)
   }, [])
 
   const fetchDashboardData = async () => {
@@ -137,6 +142,24 @@ const AdminDashboard = () => {
 
       // Calculate profit (simplified - would need purchase cost data)
       stats.todayProfit = stats.todaySales * 0.25 // Assume 25% margin
+
+      // Calculate low stock medicines based on thresholds
+      if (medicinesResponse.data && batchesResponse.data) {
+        const lowStockSet = new Set()
+        
+        medicinesResponse.data.forEach(medicine => {
+          const threshold = medicine.low_stock_threshold || 10
+          const medicineStock = batchesResponse.data
+            .filter(batch => batch.medicine_id === medicine.id)
+            .reduce((sum, batch) => sum + (batch.current_quantity || 0), 0)
+          
+          if (medicineStock < threshold) {
+            lowStockSet.add(medicine.id)
+          }
+        })
+        
+        stats.lowStockMedicines = lowStockSet.size
+      }
 
       // Calculate expiry data
       const currentDate = new Date()
