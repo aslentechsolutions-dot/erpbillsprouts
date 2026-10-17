@@ -9,7 +9,7 @@ import toast from 'react-hot-toast'
 const CustomerLayout = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { logout, user } = useAuthStore()
+  const { signOut, user } = useAuthStore()
   const { items } = useCustomerCartStore()
   const [showERPModal, setShowERPModal] = useState(false)
 
@@ -17,7 +17,7 @@ const CustomerLayout = () => {
 
   const handleLogout = async () => {
     try {
-      await logout()
+      await signOut()
       toast.success('Logged out successfully')
       navigate('/login')
     } catch (error) {
