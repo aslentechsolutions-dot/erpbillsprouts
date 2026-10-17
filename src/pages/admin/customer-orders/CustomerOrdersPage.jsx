@@ -115,39 +115,53 @@ const CustomerOrdersPage = () => {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      const { error } = await supabase
+      console.log('Attempting to update order status:', { orderId, newStatus })
+      
+      const { data, error } = await supabase
         .from('customer_orders')
         .update({ 
           order_status: newStatus
         })
         .eq('id', orderId)
+        .select()
 
-      if (error) throw error
+      if (error) {
+        console.error('Update order status error details:', error)
+        throw error
+      }
 
+      console.log('Order status updated successfully:', data)
       toast.success('Order status updated successfully')
       loadOrders()
     } catch (error) {
       console.error('Error updating order status:', error)
-      toast.error('Failed to update order status')
+      toast.error(`Failed to update order status: ${error.message || 'Unknown error'}`)
     }
   }
 
   const updatePaymentStatus = async (orderId, newStatus) => {
     try {
-      const { error } = await supabase
+      console.log('Attempting to update payment status:', { orderId, newStatus })
+      
+      const { data, error } = await supabase
         .from('customer_orders')
         .update({ 
           payment_status: newStatus
         })
         .eq('id', orderId)
+        .select()
 
-      if (error) throw error
+      if (error) {
+        console.error('Update payment status error details:', error)
+        throw error
+      }
 
+      console.log('Payment status updated successfully:', data)
       toast.success('Payment status updated successfully')
       loadOrders()
     } catch (error) {
       console.error('Error updating payment status:', error)
-      toast.error('Failed to update payment status')
+      toast.error(`Failed to update payment status: ${error.message || 'Unknown error'}`)
     }
   }
 
