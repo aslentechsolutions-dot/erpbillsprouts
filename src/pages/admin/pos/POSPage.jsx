@@ -6,6 +6,8 @@ import toast from 'react-hot-toast'
 import { createRoot } from 'react-dom/client'
 import LandscapeInvoice from '../../../components/LandscapeInvoice'
 import WholesaleInvoice from '../../../components/WholesaleInvoice'
+import CompactRetailInvoice from '../../../components/CompactRetailInvoice'
+import CompactWholesaleInvoice from '../../../components/CompactWholesaleInvoice'
 
 const POSPage = () => {
   const [medicines, setMedicines] = useState([])
@@ -428,7 +430,7 @@ const POSPage = () => {
     
     // Choose invoice component based on sale type
     const isWholesale = saleType === 'wholesale'
-    const InvoiceComponent = isWholesale ? WholesaleInvoice : LandscapeInvoice
+    const InvoiceComponent = isWholesale ? CompactWholesaleInvoice : CompactRetailInvoice
     
     root.render(
       <InvoiceComponent
@@ -436,6 +438,8 @@ const POSPage = () => {
         items={saleItems}
         customer={customer}
         companyDetails={companyDetails}
+        pageWidth="210mm"
+        pageHeight="100mm"
       />
     )
 
