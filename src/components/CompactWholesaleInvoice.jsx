@@ -45,7 +45,7 @@ const CompactWholesaleInvoice = ({
   items, 
   customer, 
   companyDetails,
-  pageWidth = '90mm',
+  pageWidth = '210mm',
   pageHeight = '297mm'
 }) => {
   // Calculate totals and GST breakdown
@@ -165,7 +165,7 @@ const CompactWholesaleInvoice = ({
           color: black;
           width: ${pageWidth};
           height: ${pageHeight};
-          padding: 2mm;
+          padding: 8mm 20mm;
           font-size: 6px;
           line-height: 1.0;
           display: flex;
@@ -189,55 +189,55 @@ const CompactWholesaleInvoice = ({
         }
 
         .company-name {
-          font-size: 8px;
+          font-size: 10px;
           font-weight: bold;
           text-transform: uppercase;
-          margin-bottom: 0.5px;
+          margin-bottom: 1px;
           letter-spacing: -0.5px;
         }
 
         .company-info {
-          font-size: 5px;
+          font-size: 7px;
           line-height: 1.0;
         }
 
         .invoice-title {
-          font-size: 7px;
+          font-size: 9px;
           font-weight: bold;
           text-align: center;
-          margin: 0.5mm 0;
+          margin: 1mm 0;
           flex-shrink: 0;
         }
 
         .invoice-meta {
           display: flex;
           justify-content: space-between;
-          margin-bottom: 0.5mm;
-          font-size: 5.5px;
-          gap: 1mm;
+          margin-bottom: 1mm;
+          font-size: 7px;
+          gap: 2mm;
           flex-shrink: 0;
         }
 
         .meta-item {
           flex: 1;
           min-width: 0;
-          font-size: 5.5px;
+          font-size: 7px;
         }
 
         .customer-info {
-          border-top: 0.5px solid #000;
-          border-bottom: 0.5px solid #000;
-          padding: 0.4mm 0;
-          margin: 0.4mm 0;
-          font-size: 5.5px;
+          border-top: 1px solid #000;
+          border-bottom: 1px solid #000;
+          padding: 1mm 0;
+          margin: 1mm 0;
+          font-size: 7px;
           line-height: 1.0;
           flex-shrink: 0;
         }
 
         .info-row {
           display: flex;
-          margin-bottom: 0.3mm;
-          font-size: 5.5px;
+          margin-bottom: 0.5mm;
+          font-size: 7px;
         }
 
         .info-label {
@@ -250,35 +250,35 @@ const CompactWholesaleInvoice = ({
           width: 80%;
           word-wrap: break-word;
           overflow-wrap: break-word;
-          font-size: 5.5px;
+          font-size: 7px;
         }
 
         .items-table {
           width: 100%;
           border-collapse: collapse;
-          margin: 0.4mm 0;
-          font-size: 5px;
-          border: 0.5px solid #000;
+          margin: 1mm 0;
+          font-size: 7px;
+          border: 1px solid #000;
           flex-shrink: 0;
         }
 
         .items-table th {
-          border: 0.5px solid #000;
-          padding: 0.3px;
+          border: 1px solid #000;
+          padding: 0.5px;
           text-align: center;
           font-weight: bold;
-          font-size: 5px;
+          font-size: 7px;
           background-color: #f5f5f5;
-          line-height: 0.9;
+          line-height: 1.0;
           word-break: break-word;
           height: auto;
         }
 
         .items-table td {
-          padding: 0.3px;
-          border: 0.5px solid #000;
+          padding: 0.5px;
+          border: 1px solid #000;
           vertical-align: top;
-          font-size: 5px;
+          font-size: 7px;
           line-height: 1.0;
           height: auto;
         }
@@ -290,68 +290,68 @@ const CompactWholesaleInvoice = ({
         .product-name {
           font-weight: 600;
           word-wrap: break-word;
-          font-size: 5px;
+          font-size: 7px;
           line-height: 1.0;
         }
 
         .gst-summary {
-          border: 0.5px solid #000;
-          padding: 0.4mm;
-          margin: 0.4mm 0;
-          font-size: 5.5px;
-          line-height: 0.95;
+          border: 1px solid #000;
+          padding: 1mm;
+          margin: 1mm 0;
+          font-size: 7px;
+          line-height: 1.0;
           flex-shrink: 0;
         }
 
         .gst-summary-row {
           display: flex;
           justify-content: space-between;
-          gap: 0.5mm;
-          padding: 0.2mm 0;
-          font-size: 5.5px;
-          line-height: 0.9;
+          gap: 2mm;
+          padding: 0.5mm 0;
+          font-size: 7px;
+          line-height: 1.0;
         }
 
         .totals-section {
-          border: 0.5px solid #000;
-          padding: 0.4mm;
-          margin: 0.4mm 0;
-          font-size: 5.5px;
-          line-height: 0.95;
+          border: 1px solid #000;
+          padding: 1mm;
+          margin: 1mm 0;
+          font-size: 7px;
+          line-height: 1.0;
           flex-shrink: 0;
         }
 
         .total-row {
           display: flex;
           justify-content: space-between;
-          gap: 0.5mm;
-          padding: 0.2mm 0;
-          font-size: 5.5px;
-          line-height: 0.9;
+          gap: 2mm;
+          padding: 0.5mm 0;
+          font-size: 7px;
+          line-height: 1.0;
         }
 
         .total-row.grand {
-          font-size: 6px;
+          font-size: 8px;
           font-weight: bold;
-          border-top: 0.5px solid #000;
+          border-top: 1px solid #000;
           border-bottom: 1px double #000;
-          padding: 0.3mm 0;
-          margin-top: 0.3mm;
+          padding: 1mm 0;
+          margin-top: 1mm;
         }
 
         .amount-words {
-          margin: 0.4mm 0;
-          font-size: 5.5px;
-          line-height: 0.95;
+          margin: 1mm 0;
+          font-size: 7px;
+          line-height: 1.0;
           flex-shrink: 0;
         }
 
         .footer {
-          border-top: 0.5px solid #000;
-          padding-top: 0.3mm;
+          border-top: 1px solid #000;
+          padding-top: 1mm;
           text-align: center;
-          font-size: 5px;
-          line-height: 0.9;
+          font-size: 6.5px;
+          line-height: 1.0;
           flex-shrink: 0;
         }
 

@@ -438,7 +438,7 @@ const POSPage = () => {
         items={saleItems}
         customer={customer}
         companyDetails={companyDetails}
-        pageWidth="90mm"
+        pageWidth="210mm"
         pageHeight="297mm"
       />
     )

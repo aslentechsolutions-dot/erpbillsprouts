@@ -45,7 +45,7 @@ const CompactRetailInvoice = ({
   items, 
   customer, 
   companyDetails,
-  pageWidth = '90mm',
+  pageWidth = '210mm',
   pageHeight = '297mm'
 }) => {
   // Calculate totals
@@ -159,7 +159,7 @@ const CompactRetailInvoice = ({
           color: black;
           width: ${pageWidth};
           height: ${pageHeight};
-          padding: 2mm;
+          padding: 8mm 20mm;
           font-size: 7px;
           line-height: 1.15;
           display: flex;
@@ -182,23 +182,23 @@ const CompactRetailInvoice = ({
         }
 
         .company-name {
-          font-size: 8px;
+          font-size: 10px;
           font-weight: bold;
           text-transform: uppercase;
-          margin-bottom: 0.5px;
+          margin-bottom: 1px;
           letter-spacing: -0.5px;
         }
 
         .company-info {
-          font-size: 5.5px;
+          font-size: 7px;
           line-height: 1.1;
         }
 
         .invoice-title {
-          font-size: 7px;
+          font-size: 9px;
           font-weight: bold;
           text-align: center;
-          margin: 1mm 0 0.5mm;
+          margin: 2mm 0 1mm;
           text-decoration: underline;
           flex-shrink: 0;
         }
@@ -206,19 +206,19 @@ const CompactRetailInvoice = ({
         .invoice-meta {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 0.2mm;
-          margin-bottom: 1mm;
-          font-size: 6px;
+          gap: 0.5mm;
+          margin-bottom: 1.5mm;
+          font-size: 7px;
           border-bottom: 1px solid #000;
-          padding-bottom: 1mm;
+          padding-bottom: 1.5mm;
           flex-shrink: 0;
         }
 
         .meta-item {
           display: flex;
-          gap: 0.5mm;
+          gap: 1mm;
           justify-content: space-between;
-          font-size: 6px;
+          font-size: 7px;
         }
 
         .meta-label {
@@ -229,48 +229,48 @@ const CompactRetailInvoice = ({
         .customer-info {
           border-top: 1px solid #000;
           border-bottom: 1px solid #000;
-          padding: 0.5mm 0;
-          margin: 0.5mm 0;
-          font-size: 6px;
+          padding: 1mm 0;
+          margin: 1mm 0;
+          font-size: 7px;
           line-height: 1.1;
           flex-shrink: 0;
         }
 
         .info-row {
           display: flex;
-          margin-bottom: 0.3mm;
-          gap: 0.5mm;
-          font-size: 6px;
+          margin-bottom: 0.5mm;
+          gap: 1mm;
+          font-size: 7px;
         }
 
         .info-label {
-          width: 30%;
+          width: 25%;
           font-weight: bold;
           flex-shrink: 0;
         }
 
         .info-value {
-          width: 70%;
+          width: 75%;
           word-wrap: break-word;
           word-break: break-word;
-          font-size: 6px;
+          font-size: 7px;
         }
 
         .items-table {
           width: 100%;
           border-collapse: collapse;
-          margin: 0.5mm 0;
-          font-size: 5.5px;
-          border: 0.5px solid #000;
+          margin: 1mm 0;
+          font-size: 7px;
+          border: 1px solid #000;
           flex-shrink: 0;
         }
 
         .items-table th {
-          border: 0.5px solid #000;
-          padding: 0.4mm 0.3mm;
+          border: 1px solid #000;
+          padding: 0.5mm 0.3mm;
           text-align: center;
           font-weight: bold;
-          font-size: 5.5px;
+          font-size: 7px;
           background-color: #f0f0f0;
           line-height: 1.0;
           word-break: break-word;
@@ -278,10 +278,10 @@ const CompactRetailInvoice = ({
         }
 
         .items-table td {
-          padding: 0.4mm 0.3mm;
-          border: 0.5px solid #000;
+          padding: 0.5mm 0.3mm;
+          border: 1px solid #000;
           vertical-align: top;
-          font-size: 5.5px;
+          font-size: 7px;
           line-height: 1.1;
           height: auto;
         }
@@ -296,33 +296,33 @@ const CompactRetailInvoice = ({
 
         .medicine-name {
           font-weight: bold;
-          font-size: 5.5px;
+          font-size: 7px;
           word-break: break-word;
           line-height: 1.1;
         }
 
         .tax-summary {
-          border: 0.5px solid #000;
-          padding: 0.5mm;
-          margin: 0.5mm 0;
-          font-size: 6px;
+          border: 1px solid #000;
+          padding: 1mm;
+          margin: 1mm 0;
+          font-size: 7px;
           line-height: 1.1;
           flex-shrink: 0;
         }
 
         .tax-summary-row {
           display: block;
-          padding: 0.2mm 0;
-          font-size: 5.5px;
+          padding: 0.5mm 0;
+          font-size: 7px;
           word-wrap: break-word;
           line-height: 1.0;
         }
 
         .totals-section {
-          border: 0.5px solid #000;
-          padding: 0.5mm;
-          margin: 0.5mm 0;
-          font-size: 6px;
+          border: 1px solid #000;
+          padding: 1mm;
+          margin: 1mm 0;
+          font-size: 7px;
           line-height: 1.0;
           flex-shrink: 0;
         }
@@ -330,38 +330,38 @@ const CompactRetailInvoice = ({
         .total-row {
           display: flex;
           justify-content: space-between;
-          padding: 0.2mm 0;
-          font-size: 6px;
-          gap: 0.5mm;
+          padding: 0.5mm 0;
+          font-size: 7px;
+          gap: 1mm;
           line-height: 1.0;
         }
 
         .total-row.grand {
-          font-size: 7px;
+          font-size: 8px;
           font-weight: bold;
-          border-top: 0.5px solid #000;
+          border-top: 1px solid #000;
           border-bottom: 1px solid #000;
           padding: 0.5mm 0;
           margin-top: 0.5mm;
         }
 
         .amount-words {
-          margin: 0.5mm 0;
-          font-size: 5.5px;
+          margin: 1mm 0;
+          font-size: 7px;
           text-align: center;
           line-height: 1.0;
-          border: 0.5px solid #000;
-          padding: 0.4mm;
+          border: 1px solid #000;
+          padding: 0.5mm;
           word-wrap: break-word;
           flex-shrink: 0;
         }
 
         .footer {
-          border-top: 0.5px solid #000;
-          padding-top: 0.4mm;
+          border-top: 1px solid #000;
+          padding-top: 0.5mm;
           margin-top: 0.5mm;
           text-align: center;
-          font-size: 5px;
+          font-size: 6px;
           line-height: 1.0;
           flex-shrink: 0;
         }
