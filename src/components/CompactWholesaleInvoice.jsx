@@ -45,8 +45,8 @@ const CompactWholesaleInvoice = ({
   items, 
   customer, 
   companyDetails,
-  pageWidth = '210mm',
-  pageHeight = '297mm'
+  pageWidth = '100mm',
+  pageHeight = 'auto'
 }) => {
   // Calculate totals and GST breakdown
   const calculateTotals = () => {
@@ -134,21 +134,21 @@ const CompactWholesaleInvoice = ({
 
         html, body {
           width: ${pageWidth};
-          height: ${pageHeight};
+          ${pageHeight !== 'auto' ? `height: ${pageHeight};` : ''}
           margin: 0;
           padding: 0;
           background: white;
         }
 
         @page {
-          size: ${pageWidth} ${pageHeight};
+          size: ${pageWidth} ${pageHeight !== 'auto' ? pageHeight : 'auto'};
           margin: 0;
         }
 
         @media print {
           html, body {
             width: ${pageWidth};
-            height: ${pageHeight};
+            ${pageHeight !== 'auto' ? `height: ${pageHeight};` : ''}
             margin: 0;
             padding: 0;
             background: white;
@@ -164,14 +164,14 @@ const CompactWholesaleInvoice = ({
           background: white;
           color: black;
           width: ${pageWidth};
-          height: ${pageHeight};
-          padding: 5mm 15mm;
-          font-size: 6px;
+          ${pageHeight !== 'auto' ? `height: ${pageHeight};` : ''}
+          padding: 3mm 5mm;
+          font-size: 7px;
           line-height: 1.0;
           display: flex;
           flex-direction: column;
           box-sizing: border-box;
-          overflow: hidden;
+          overflow: visible;
         }
 
         .compact-wholesale-invoice * {
