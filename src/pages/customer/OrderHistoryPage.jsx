@@ -219,17 +219,11 @@ const OrderHistoryPage = () => {
                                   <span className="mx-2">•</span>
                                   <span>Qty: {item.quantity}</span>
                                   <span className="mx-2">•</span>
-                                  <span>₹{item.price.toFixed(2)} each</span>
-                                  {item.gst_percentage > 0 && (
-                                    <>
-                                      <span className="mx-2">•</span>
-                                      <span>GST: {item.gst_percentage}%</span>
-                                    </>
-                                  )}
+                                  <span>₹{(item.unit_price || 0).toFixed(2)} each</span>
                                 </div>
                               </div>
                               <div className="text-right ml-4">
-                                <p className="font-semibold text-gray-900">₹{item.total.toFixed(2)}</p>
+                                <p className="font-semibold text-gray-900">₹{(item.item_total || 0).toFixed(2)}</p>
                               </div>
                             </div>
                           ))}

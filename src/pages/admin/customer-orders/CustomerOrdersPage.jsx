@@ -534,11 +534,11 @@ const CustomerOrdersPage = () => {
                                   <div className="flex-1">
                                     <p className="font-medium text-sm text-gray-900">{item.medicine_name}</p>
                                     <p className="text-xs text-gray-600">
-                                      Batch: {item.batch_number} • Qty: {item.quantity} • ₹{item.price.toFixed(2)} each
+                                      Batch: {item.batch_number} • Qty: {item.quantity} • ₹{(item.unit_price || 0).toFixed(2)} each
                                     </p>
                                   </div>
                                   <div className="text-right ml-2">
-                                    <p className="font-semibold text-sm text-gray-900">₹{item.total.toFixed(2)}</p>
+                                    <p className="font-semibold text-sm text-gray-900">₹{(item.item_total || 0).toFixed(2)}</p>
                                   </div>
                                 </div>
                               ))}
