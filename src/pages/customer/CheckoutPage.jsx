@@ -177,15 +177,22 @@ const CheckoutPage = () => {
       }
 
       // Create order items
-      // Create order items with only fields that exist in DB schema
-      const orderItems = items.map(item => ({
-        order_id: order.id,
-        medicine_id: item.medicine.id,
-        batch_id: item.batch.id,
-        medicine_name: item.medicine.name,
-        batch_number: item.batch.batch_number,
-        quantity: item.quantity
-      }))
+      // Create order items with ALL required fields from DB schema
+      const orderItems = items.map(item => {
+        const unitPrice = item.price
+        const quantity = item.quantity
+        const gstPercent = item.medicine.gst_percentage || 0
+        
+        return {
+          order_id: order.id,
+          medicine_id: item.medicine.id,
+          batch_id: item.batch.id,
+          medicine_name: item.medicine.name,
+          batch_number: item.batch.batch_number,
+          quantity: quantity,
+          unit_price: unitPrice
+        }
+      })
 
       const { error: itemsError } = await supabase
         .from('customer_order_items')
