@@ -202,8 +202,16 @@ const CheckoutPage = () => {
 
       if (itemsError) throw itemsError
 
-      // Stock reduction is now handled by database trigger on order creation
-      // No need to manually reduce stock here anymore
+      // Update stock after items are inserted
+      for (const item of items) {
+        const { error: stockError } = await supabase.rpc('update_batch_stock', {
+          p_batch_id: item.batch.id,
+          p_quantity_change: -item.quantity
+        })
+        if (stockError) {
+          console.error('Stock update error:', stockError)
+        }
+      }
 
       return order
     } catch (error) {
