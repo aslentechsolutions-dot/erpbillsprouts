@@ -65,14 +65,18 @@ const AdminLayout = ({ children }) => {
   const fetchNotificationCount = async () => {
     try {
       // Get medicines and batches to calculate alerts
-      const [medicinesRes, batchesRes] = await Promise.all([
+      const [medicinesRes, batchesRes, ordersRes] = await Promise.all([
         supabase
           .from('medicines')
           .select('id, low_stock_threshold')
           .eq('status', 'active'),
         supabase
           .from('medicine_batches')
-          .select('current_quantity, expiry_date, medicine_id')
+          .select('current_quantity, expiry_date, medicine_id'),
+        supabase
+          .from('customer_orders')
+          .select('id, order_status')
+          .eq('order_status', 'pending')
       ])
 
       let count = 0
@@ -105,6 +109,11 @@ const AdminLayout = ({ children }) => {
             count++
           }
         })
+      }
+
+      // Count pending orders
+      if (ordersRes.data) {
+        count += ordersRes.data.length
       }
 
       setNotificationCount(count)

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -16,6 +17,7 @@ import { supabase } from '../../../lib/supabase'
 import LoadingSpinner from '../../../components/LoadingSpinner'
 
 const AdminDashboard = () => {
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState({
     stats: {
@@ -427,7 +429,10 @@ const AdminDashboard = () => {
       {/* Alerts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Low Stock Alert */}
-        <div className="card border-l-4 border-l-yellow-500">
+        <div 
+          className="card border-l-4 border-l-yellow-500 cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => navigate('/admin/alerts/low-stock')}
+        >
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-semibold text-gray-900">Low Stock Alert</h4>
@@ -441,7 +446,10 @@ const AdminDashboard = () => {
         </div>
 
         {/* Expiry Alert */}
-        <div className="card border-l-4 border-l-red-500">
+        <div 
+          className="card border-l-4 border-l-red-500 cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => navigate('/admin/alerts/expiry')}
+        >
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-semibold text-gray-900">Expiry Alert</h4>
@@ -455,7 +463,10 @@ const AdminDashboard = () => {
         </div>
 
         {/* Pending Payments */}
-        <div className="card border-l-4 border-l-blue-500">
+        <div 
+          className="card border-l-4 border-l-blue-500 cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => navigate('/admin/alerts/pending-payments')}
+        >
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-semibold text-gray-900">Pending Payments</h4>

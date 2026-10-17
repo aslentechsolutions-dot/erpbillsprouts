@@ -37,6 +37,9 @@ import PrescriptionsPage from './pages/admin/prescriptions/PrescriptionsPage'
 import NarcoticReportPage from './pages/admin/narcotic-report/NarcoticReportPage'
 import CustomerOrdersPage from './pages/admin/customer-orders/CustomerOrdersPage'
 import ERPInquiriesPage from './pages/admin/erp-inquiries/ERPInquiriesPage'
+import LowStockAlertPage from './pages/admin/alerts/LowStockAlertPage'
+import ExpiryAlertPage from './pages/admin/alerts/ExpiryAlertPage'
+import PendingPaymentsPage from './pages/admin/alerts/PendingPaymentsPage'
 
 // Other Role Pages
 import PharmacistDashboard from './pages/pharmacist/PharmacistDashboard'
@@ -110,6 +113,10 @@ function App() {
                     <Route path="wholesalers" element={<WholesalersPage />} />
                     <Route path="users" element={<UsersPage />} />
                     <Route path="settings" element={<SettingsPage />} />
+                    {/* Alert Routes */}
+                    <Route path="alerts/low-stock" element={<LowStockAlertPage />} />
+                    <Route path="alerts/expiry" element={<ExpiryAlertPage />} />
+                    <Route path="alerts/pending-payments" element={<PendingPaymentsPage />} />
                   </Routes>
                 </AdminLayout>
               </ProtectedRoute>
