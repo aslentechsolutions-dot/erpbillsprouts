@@ -207,8 +207,8 @@ const CheckoutPage = () => {
         try {
           // Get current stock
           const { data: batch, error: fetchError } = await supabase
-            .from('batch_details')
-            .select('stock_quantity')
+            .from('medicine_batches')
+            .select('current_quantity')
             .eq('id', item.batch.id)
             .single()
 
@@ -217,7 +217,7 @@ const CheckoutPage = () => {
             continue
           }
 
-          const newStock = batch.stock_quantity - item.quantity
+          const newStock = batch.current_quantity - item.quantity
           
           if (newStock < 0) {
             console.warn(`Insufficient stock for batch ${item.batch.id}`)
@@ -226,14 +226,14 @@ const CheckoutPage = () => {
 
           // Update stock
           const { error: updateError } = await supabase
-            .from('batch_details')
-            .update({ stock_quantity: newStock })
+            .from('medicine_batches')
+            .update({ current_quantity: newStock })
             .eq('id', item.batch.id)
 
           if (updateError) {
             console.error('Stock update error:', updateError)
           } else {
-            console.log(`✅ Stock reduced for batch ${item.batch.id}: ${batch.stock_quantity} → ${newStock}`)
+            console.log(`✅ Stock reduced for batch ${item.batch.id}: ${batch.current_quantity} → ${newStock}`)
           }
         } catch (error) {
           console.error('Stock update exception:', error)

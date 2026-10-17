@@ -16,10 +16,9 @@ BEGIN
       WHERE order_id = NEW.id
     LOOP
       -- Restore stock by adding back the quantity
-      PERFORM update_batch_stock(
-        p_batch_id := item.batch_id,
-        p_quantity_change := item.quantity  -- Positive number to ADD back
-      );
+      UPDATE medicine_batches
+      SET current_quantity = current_quantity + item.quantity
+      WHERE id = item.batch_id;
     END LOOP;
   END IF;
   
