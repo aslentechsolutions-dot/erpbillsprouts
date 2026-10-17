@@ -262,8 +262,7 @@ const CompactRetailInvoice = ({
           margin: 0.5mm 0;
           font-size: 5.5px;
           border: 0.5px solid #000;
-          flex: 1;
-          overflow: hidden;
+          flex-shrink: 0;
         }
 
         .items-table th {

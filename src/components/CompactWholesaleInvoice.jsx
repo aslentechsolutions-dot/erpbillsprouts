@@ -259,8 +259,7 @@ const CompactWholesaleInvoice = ({
           margin: 0.4mm 0;
           font-size: 5px;
           border: 0.5px solid #000;
-          flex: 1;
-          overflow: hidden;
+          flex-shrink: 0;
         }
 
         .items-table th {
