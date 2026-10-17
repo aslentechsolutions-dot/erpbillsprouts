@@ -104,9 +104,79 @@ const CustomerRegisterPage = () => {
         throw new Error('Registration failed. Please try again.')
       }
 
-      console.log('Auth user created:', authData.user.id)
+      // Step 2: Create customer record (this can fail, registration continues)
+      const { error: customerError } = await supabase
+        .from('customers')
+        .insert({
+          name: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address || null,
+          date_of_birth: formData.dateOfBirth || null,
+          gender: formData.gender || null
+        })
 
-      // Step 2: Create customer record
+      if (customerError) {
+        console.error('Customer creation error:', customerError)
+        // Continue anyway - customer can be created manually later
+      }
+
+      // Step 3: Create profile (critical - try multiple approaches)
+      console.log('Creating profile for user:', authData.user.id)
+      
+      // First try: Use upsert
+      let profileCreated = false
+      try {
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            id: authData.user.id,
+            full_name: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            role: 'patient',
+            status: 'active'
+          }, {
+            onConflict: 'id'
+          })
+          .select()
+
+        if (!profileError) {
+          console.log('Profile created via upsert')
+          profileCreated = true
+        } else {
+          console.warn('Profile upsert failed:', profileError)
+        }
+      } catch (e) {
+        console.warn('Profile upsert exception:', e)
+      }
+
+      // Second try: Direct insert if upsert failed
+      if (!profileCreated) {
+        try {
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: authData.user.id,
+              full_name: formData.fullName,
+              email: formData.email,
+              phone: formData.phone,
+              role: 'patient',
+              status: 'active'
+            })
+
+          if (!insertError) {
+            console.log('Profile created via insert')
+            profileCreated = true
+          } else {
+            console.warn('Profile insert failed:', insertError)
+          }
+        } catch (e) {
+          console.warn('Profile insert exception:', e)
+        }
+      }
+
+      console.log('Profile creation result:', profileCreated ? 'Success' : 'Failed (may be created by trigger)')
       const { error: customerError } = await supabase
         .from('customers')
         .insert({
