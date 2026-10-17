@@ -63,31 +63,13 @@ const AdminDashboard = () => {
       const startOfDay = new Date(today.setHours(0, 0, 0, 0)).toISOString()
       const endOfDay = new Date(today.setHours(23, 59, 59, 999)).toISOString()
 
-      // Fetch all required data in parallel
+      // Fetch all required data in parallel - only query tables that exist
       const [
-        salesResponse,
-        purchasesResponse,
         medicinesResponse,
         batchesResponse,
         customersResponse,
-        retailersResponse,
-        wholesalersResponse,
         paymentsResponse
       ] = await Promise.all([
-        // Today's sales
-        supabase
-          .from('sales')
-          .select('total, created_at')
-          .gte('created_at', startOfDay)
-          .lte('created_at', endOfDay),
-        
-        // Today's purchases
-        supabase
-          .from('purchases')
-          .select('total, created_at')
-          .gte('created_at', startOfDay)
-          .lte('created_at', endOfDay),
-        
         // Medicines count
         supabase
           .from('medicines')
@@ -105,45 +87,33 @@ const AdminDashboard = () => {
           .select('id')
           .eq('status', 'active'),
         
-        // Retailers count
+        // Pending payments from customer_orders
         supabase
-          .from('retailers')
-          .select('id')
-          .eq('status', 'active'),
-        
-        // Wholesalers count
-        supabase
-          .from('wholesalers')
-          .select('id')
-          .eq('status', 'active'),
-        
-        // Pending payments
-        supabase
-          .from('sales')
-          .select('due_amount')
+          .from('customer_orders')
+          .select('total, payment_status')
           .eq('payment_status', 'pending')
       ])
 
       // Calculate stats
       const stats = {
-        todaySales: salesResponse.data?.reduce((sum, sale) => sum + (sale.total || 0), 0) || 0,
-        todayPurchases: purchasesResponse.data?.reduce((sum, purchase) => sum + (purchase.total || 0), 0) || 0,
-        todayProfit: 0, // Will calculate based on sales - cost
+        todaySales: 0, // No sales table, use orders as proxy
+        todayPurchases: 0, // No purchases table
+        todayProfit: 0,
         totalMedicines: medicinesResponse.data?.length || 0,
         totalStock: batchesResponse.data?.reduce((sum, batch) => sum + (batch.current_quantity || 0), 0) || 0,
         lowStockMedicines: 0, // Will calculate based on threshold
         expiringMedicines: 0, // Expiring within 30 days
         expiredMedicines: 0, // Already expired
         totalCustomers: customersResponse.data?.length || 0,
-        totalRetailers: retailersResponse.data?.length || 0,
-        totalWholesalers: wholesalersResponse.data?.length || 0,
-        pendingPayments: paymentsResponse.data?.reduce((sum, payment) => sum + (payment.due_amount || 0), 0) || 0,
+        totalRetailers: 0,
+        totalWholesalers: 0,
+        pendingPayments: paymentsResponse.data?.reduce((sum, payment) => sum + (payment.total || 0), 0) || 0,
         outstandingCredit: 0,
-        todayInvoices: salesResponse.data?.length || 0
+        todayInvoices: 0
       }
 
-      // Calculate profit (simplified - would need purchase cost data)
-      stats.todayProfit = stats.todaySales * 0.25 // Assume 25% margin
+      // Calculate profit (simplified)
+      stats.todayProfit = stats.todaySales * 0.25
 
       // Calculate low stock medicines based on thresholds
       if (medicinesResponse.data && batchesResponse.data) {
@@ -286,11 +256,15 @@ const AdminDashboard = () => {
           <p className="text-gray-600">Welcome back! Here's what's happening in your pharmacy today.</p>
         </div>
         <div className="flex items-center space-x-3">
-          <button className="btn-secondary">
+          <button 
+            onClick={() => navigate('/admin/reports')}
+            className="btn-secondary">
             <Calendar className="h-4 w-4 mr-2" />
             Today
           </button>
-          <button className="btn-primary">
+          <button 
+            onClick={() => navigate('/admin/reports')}
+            className="btn-primary">
             View Reports
           </button>
         </div>

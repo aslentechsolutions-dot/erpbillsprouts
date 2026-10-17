@@ -40,6 +40,7 @@ import ERPInquiriesPage from './pages/admin/erp-inquiries/ERPInquiriesPage'
 import LowStockAlertPage from './pages/admin/alerts/LowStockAlertPage'
 import ExpiryAlertPage from './pages/admin/alerts/ExpiryAlertPage'
 import PendingPaymentsPage from './pages/admin/alerts/PendingPaymentsPage'
+import ReportsPage from './pages/admin/reports/ReportsPage'
 
 // Other Role Pages
 import PharmacistDashboard from './pages/pharmacist/PharmacistDashboard'
@@ -117,6 +118,8 @@ function App() {
                     <Route path="alerts/low-stock" element={<LowStockAlertPage />} />
                     <Route path="alerts/expiry" element={<ExpiryAlertPage />} />
                     <Route path="alerts/pending-payments" element={<PendingPaymentsPage />} />
+                    {/* Reports Route */}
+                    <Route path="reports" element={<ReportsPage />} />
                   </Routes>
                 </AdminLayout>
               </ProtectedRoute>
