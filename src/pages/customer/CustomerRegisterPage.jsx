@@ -151,7 +151,22 @@ const CustomerRegisterPage = () => {
 
     } catch (error) {
       console.error('Registration error:', error)
-      const errorMessage = error.message || error.error_description || 'Registration failed. Please try again.'
+      
+      // Show more specific error messages
+      let errorMessage = 'Registration failed. Please try again.'
+      
+      if (error.message) {
+        if (error.message.includes('already registered') || error.message.includes('already been registered')) {
+          errorMessage = 'This email is already registered. Please login instead.'
+        } else if (error.message.includes('invalid email')) {
+          errorMessage = 'Please enter a valid email address.'
+        } else if (error.message.includes('weak password')) {
+          errorMessage = 'Password is too weak. Please use a stronger password.'
+        } else {
+          errorMessage = error.message
+        }
+      }
+      
       toast.error(errorMessage)
     } finally {
       setLoading(false)
