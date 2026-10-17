@@ -118,8 +118,7 @@ const CustomerOrdersPage = () => {
       const { error } = await supabase
         .from('customer_orders')
         .update({ 
-          order_status: newStatus,
-          updated_at: new Date().toISOString()
+          order_status: newStatus
         })
         .eq('id', orderId)
 
@@ -138,8 +137,7 @@ const CustomerOrdersPage = () => {
       const { error } = await supabase
         .from('customer_orders')
         .update({ 
-          payment_status: newStatus,
-          updated_at: new Date().toISOString()
+          payment_status: newStatus
         })
         .eq('id', orderId)
 
@@ -168,8 +166,7 @@ const CustomerOrdersPage = () => {
       const { error } = await supabase
         .from('customer_orders')
         .update({ 
-          admin_notes: adminNotes,
-          updated_at: new Date().toISOString()
+          admin_notes: adminNotes
         })
         .eq('id', orderId)
 
