@@ -178,6 +178,8 @@ const CheckoutPage = () => {
         order_id: order.id,
         medicine_id: item.medicine.id,
         batch_id: item.batch.id,
+        medicine_name: item.medicine.name,
+        batch_number: item.batch.batch_number,
         quantity: item.quantity
       }))
 
