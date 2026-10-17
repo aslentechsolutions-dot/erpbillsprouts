@@ -104,7 +104,9 @@ const CustomerRegisterPage = () => {
         throw new Error('Registration failed. Please try again.')
       }
 
-      // Step 2: Create customer record (this can fail, registration continues)
+      console.log('Auth user created:', authData.user.id)
+
+      // Step 2: Create customer record (can fail, registration continues)
       const { error: customerError } = await supabase
         .from('customers')
         .insert({
@@ -118,16 +120,17 @@ const CustomerRegisterPage = () => {
 
       if (customerError) {
         console.error('Customer creation error:', customerError)
-        // Continue anyway - customer can be created manually later
+        // Continue anyway
       }
 
-      // Step 3: Create profile (critical - try multiple approaches)
+      // Step 3: Create profile (try multiple approaches)
       console.log('Creating profile for user:', authData.user.id)
       
-      // First try: Use upsert
       let profileCreated = false
+      
+      // Try upsert first
       try {
-        const { data: profileData, error: profileError } = await supabase
+        const { error: profileError } = await supabase
           .from('profiles')
           .upsert({
             id: authData.user.id,
@@ -139,7 +142,6 @@ const CustomerRegisterPage = () => {
           }, {
             onConflict: 'id'
           })
-          .select()
 
         if (!profileError) {
           console.log('Profile created via upsert')
@@ -151,7 +153,7 @@ const CustomerRegisterPage = () => {
         console.warn('Profile upsert exception:', e)
       }
 
-      // Second try: Direct insert if upsert failed
+      // Try direct insert if upsert failed
       if (!profileCreated) {
         try {
           const { error: insertError } = await supabase
@@ -177,48 +179,10 @@ const CustomerRegisterPage = () => {
       }
 
       console.log('Profile creation result:', profileCreated ? 'Success' : 'Failed (may be created by trigger)')
-      const { error: customerError } = await supabase
-        .from('customers')
-        .insert({
-          name: formData.fullName,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address || null,
-          date_of_birth: formData.dateOfBirth || null,
-          gender: formData.gender || null
-        })
-
-      if (customerError) {
-        console.error('Customer creation error:', customerError)
-        // Continue anyway - customer can be created manually later
-      }
-
-      // Step 3: Create profile (try but don't fail registration if this fails)
-      // TEMPORARILY COMMENTED OUT - Run fix-registration-auth-trigger.sql in Supabase to enable
-      /*
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: authData.user.id,
-          full_name: formData.fullName,
-          email: formData.email,
-          phone: formData.phone,
-          role: 'patient',
-          status: 'active'
-        }, {
-          onConflict: 'id'
-        })
-
-      if (profileError) {
-        console.error('Profile creation error:', profileError)
-        // Don't throw - profile might already exist or table might not exist
-      }
-      */
-      console.log('Profile creation handled by database trigger')
 
       toast.success('Registration successful! You can now login.')
       
-      // Redirect to login immediately
+      // Redirect to login
       setTimeout(() => {
         navigate('/login')
       }, 1500)
@@ -226,7 +190,7 @@ const CustomerRegisterPage = () => {
     } catch (error) {
       console.error('Registration error:', error)
       
-      // Show more specific error messages
+      // Show specific error messages
       let errorMessage = 'Registration failed. Please try again.'
       
       if (error.message) {
