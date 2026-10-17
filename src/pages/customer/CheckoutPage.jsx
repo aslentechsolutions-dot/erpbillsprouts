@@ -182,6 +182,7 @@ const CheckoutPage = () => {
         const unitPrice = item.price
         const quantity = item.quantity
         const gstPercent = item.medicine.gst_percentage || 0
+        const itemTotal = unitPrice * quantity
         
         return {
           order_id: order.id,
@@ -190,7 +191,8 @@ const CheckoutPage = () => {
           medicine_name: item.medicine.name,
           batch_number: item.batch.batch_number,
           quantity: quantity,
-          unit_price: unitPrice
+          unit_price: unitPrice,
+          item_total: itemTotal
         }
       })
 
