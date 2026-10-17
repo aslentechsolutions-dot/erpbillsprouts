@@ -161,8 +161,21 @@ const useAuthStore = create((set, get) => ({
 
   // Check permissions
   hasPermission: (requiredRole) => {
-    const { profile } = get()
-    if (!profile) return false
+    const { profile, user } = get()
+    if (!profile || !user) return false
+    
+    // Whitelist of admin emails - only these can access admin dashboard
+    const ALLOWED_ADMIN_EMAILS = [
+      'aslentechsolutions@gmail.com',
+      // Add more admin emails here as needed
+    ]
+    
+    // If requiring admin role, check email whitelist
+    if (requiredRole === 'admin') {
+      const isAllowedAdmin = ALLOWED_ADMIN_EMAILS.includes(user.email?.toLowerCase())
+      const hasAdminRole = profile.role === 'admin'
+      return isAllowedAdmin && hasAdminRole
+    }
     
     const roleHierarchy = {
       'patient': 1,
