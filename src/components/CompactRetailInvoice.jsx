@@ -159,9 +159,9 @@ const CompactRetailInvoice = ({
           color: black;
           width: ${pageWidth};
           height: ${pageHeight};
-          padding: 8mm 20mm;
-          font-size: 7px;
-          line-height: 1.15;
+          padding: 5mm 15mm;
+          font-size: 6px;
+          line-height: 1.0;
           display: flex;
           flex-direction: column;
           box-sizing: border-box;
@@ -182,23 +182,23 @@ const CompactRetailInvoice = ({
         }
 
         .company-name {
-          font-size: 10px;
+          font-size: 9px;
           font-weight: bold;
           text-transform: uppercase;
-          margin-bottom: 1px;
+          margin-bottom: 0px;
           letter-spacing: -0.5px;
         }
 
         .company-info {
-          font-size: 7px;
-          line-height: 1.1;
+          font-size: 6px;
+          line-height: 0.95;
         }
 
         .invoice-title {
-          font-size: 9px;
+          font-size: 8px;
           font-weight: bold;
           text-align: center;
-          margin: 2mm 0 1mm;
+          margin: 1mm 0 0.5mm;
           text-decoration: underline;
           flex-shrink: 0;
         }
@@ -206,19 +206,19 @@ const CompactRetailInvoice = ({
         .invoice-meta {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 0.5mm;
-          margin-bottom: 1.5mm;
-          font-size: 7px;
-          border-bottom: 1px solid #000;
-          padding-bottom: 1.5mm;
+          gap: 0.3mm;
+          margin-bottom: 0.8mm;
+          font-size: 6px;
+          border-bottom: 0.5px solid #000;
+          padding-bottom: 0.8mm;
           flex-shrink: 0;
         }
 
         .meta-item {
           display: flex;
-          gap: 1mm;
+          gap: 0.5mm;
           justify-content: space-between;
-          font-size: 7px;
+          font-size: 6px;
         }
 
         .meta-label {
@@ -227,20 +227,20 @@ const CompactRetailInvoice = ({
         }
 
         .customer-info {
-          border-top: 1px solid #000;
-          border-bottom: 1px solid #000;
-          padding: 1mm 0;
-          margin: 1mm 0;
-          font-size: 7px;
-          line-height: 1.1;
+          border-top: 0.5px solid #000;
+          border-bottom: 0.5px solid #000;
+          padding: 0.4mm 0;
+          margin: 0.4mm 0;
+          font-size: 6px;
+          line-height: 1.0;
           flex-shrink: 0;
         }
 
         .info-row {
           display: flex;
-          margin-bottom: 0.5mm;
-          gap: 1mm;
-          font-size: 7px;
+          margin-bottom: 0.2mm;
+          gap: 0.5mm;
+          font-size: 6px;
         }
 
         .info-label {
@@ -253,36 +253,36 @@ const CompactRetailInvoice = ({
           width: 75%;
           word-wrap: break-word;
           word-break: break-word;
-          font-size: 7px;
+          font-size: 6px;
         }
 
         .items-table {
           width: 100%;
           border-collapse: collapse;
-          margin: 1mm 0;
-          font-size: 7px;
-          border: 1px solid #000;
+          margin: 0.5mm 0;
+          font-size: 6px;
+          border: 0.5px solid #000;
           flex-shrink: 0;
         }
 
         .items-table th {
-          border: 1px solid #000;
-          padding: 0.5mm 0.3mm;
+          border: 0.5px solid #000;
+          padding: 0.3mm 0.2mm;
           text-align: center;
           font-weight: bold;
-          font-size: 7px;
+          font-size: 6px;
           background-color: #f0f0f0;
-          line-height: 1.0;
+          line-height: 0.95;
           word-break: break-word;
           height: auto;
         }
 
         .items-table td {
-          padding: 0.5mm 0.3mm;
-          border: 1px solid #000;
+          padding: 0.3mm 0.2mm;
+          border: 0.5px solid #000;
           vertical-align: top;
-          font-size: 7px;
-          line-height: 1.1;
+          font-size: 6px;
+          line-height: 1.0;
           height: auto;
         }
 
@@ -296,74 +296,122 @@ const CompactRetailInvoice = ({
 
         .medicine-name {
           font-weight: bold;
-          font-size: 7px;
+          font-size: 6px;
           word-break: break-word;
-          line-height: 1.1;
+          line-height: 1.0;
         }
 
         .tax-summary {
-          border: 1px solid #000;
-          padding: 1mm;
-          margin: 1mm 0;
-          font-size: 7px;
-          line-height: 1.1;
+          border: 0.5px solid #000;
+          padding: 0.4mm;
+          margin: 0.4mm 0;
+          font-size: 6px;
+          line-height: 0.95;
           flex-shrink: 0;
         }
 
         .tax-summary-row {
           display: block;
-          padding: 0.5mm 0;
-          font-size: 7px;
+          padding: 0.2mm 0;
+          font-size: 5.5px;
           word-wrap: break-word;
-          line-height: 1.0;
+          line-height: 0.9;
         }
 
         .totals-section {
-          border: 1px solid #000;
-          padding: 1mm;
-          margin: 1mm 0;
-          font-size: 7px;
-          line-height: 1.0;
+          border: 0.5px solid #000;
+          padding: 0.4mm;
+          margin: 0.4mm 0;
+          font-size: 6px;
+          line-height: 0.95;
           flex-shrink: 0;
         }
 
         .total-row {
           display: flex;
           justify-content: space-between;
-          padding: 0.5mm 0;
-          font-size: 7px;
-          gap: 1mm;
-          line-height: 1.0;
+          padding: 0.2mm 0;
+          font-size: 6px;
+          gap: 0.5mm;
+          line-height: 0.9;
         }
 
         .total-row.grand {
-          font-size: 8px;
+          font-size: 7px;
           font-weight: bold;
-          border-top: 1px solid #000;
-          border-bottom: 1px solid #000;
-          padding: 0.5mm 0;
-          margin-top: 0.5mm;
+          border-top: 0.5px solid #000;
+          border-bottom: 0.5px solid #000;
+          padding: 0.3mm 0;
+          margin-top: 0.3mm;
         }
 
         .amount-words {
-          margin: 1mm 0;
-          font-size: 7px;
+          margin: 0.4mm 0;
+          font-size: 5.5px;
           text-align: center;
-          line-height: 1.0;
-          border: 1px solid #000;
-          padding: 0.5mm;
+          line-height: 0.9;
+          border: 0.5px solid #000;
+          padding: 0.3mm;
           word-wrap: break-word;
           flex-shrink: 0;
         }
 
         .footer {
-          border-top: 1px solid #000;
-          padding-top: 0.5mm;
-          margin-top: 0.5mm;
+          border-top: 0.5px solid #000;
+          padding-top: 0.3mm;
+          margin-top: 0.3mm;
           text-align: center;
-          font-size: 6px;
-          line-height: 1.0;
+          font-size: 5px;
+          line-height: 0.85;
           flex-shrink: 0;
+        }
+
+        .terms-section {
+          margin-top: 0.8mm;
+          padding-top: 0.8mm;
+          border-top: 1px solid #000;
+          font-size: 5.5px;
+          line-height: 0.9;
+          flex-shrink: 0;
+        }
+
+        .terms-title {
+          text-align: center;
+          font-weight: bold;
+          font-size: 6px;
+          margin-bottom: 0.4mm;
+        }
+
+        .terms-content {
+          columns: 2;
+          column-gap: 1mm;
+          font-size: 5px;
+          line-height: 0.85;
+        }
+
+        .terms-subsection {
+          margin: 0.3mm 0;
+          break-inside: avoid;
+        }
+
+        .terms-subsection-title {
+          font-weight: bold;
+          font-size: 5.5px;
+          margin-bottom: 0.2mm;
+        }
+
+        .terms-item {
+          margin: 0.1mm 0;
+          font-size: 5px;
+          line-height: 0.85;
+        }
+
+        .bank-details {
+          border: 0.5px solid #000;
+          padding: 0.3mm;
+          margin-top: 0.3mm;
+          font-size: 5px;
+          line-height: 0.85;
         }
 
         @media print {
@@ -562,7 +610,44 @@ const CompactRetailInvoice = ({
       <div className="footer">
         <div>** Goods once sold are not returnable **</div>
         <div>This is a computer-generated invoice</div>
-        <div>Thank you for your business!</div>
+      </div>
+
+      {/* Terms & Conditions */}
+      <div className="terms-section">
+        <div className="terms-title">Terms & Conditions</div>
+        
+        <div className="terms-content">
+          <div className="terms-subsection">
+            <div className="terms-subsection-title">General Terms:</div>
+            <div className="terms-item">• Goods once sold will not be taken back or exchanged</div>
+            <div className="terms-item">• Bills not paid due date will attract 24% interest</div>
+            <div className="terms-item">• Free goods are included in the quantity charged</div>
+            <div className="terms-item">• All payments must be made within prescribed credit period</div>
+            <div className="terms-item">• Sales Tax declaration will be given as per government norms</div>
+          </div>
+
+          <div className="terms-subsection">
+            <div className="terms-subsection-title">Delivery & Returns:</div>
+            <div className="terms-item">• Goods supplied on our commercial policy of the company are according time to time</div>
+            <div className="terms-item">• Excise products will not be accepted for return</div>
+            <div className="terms-item">• Over supply incidents will result to company policy</div>
+          </div>
+
+          <div className="terms-subsection">
+            <div className="terms-subsection-title">Legal:</div>
+            <div className="terms-item">• All disputes are subject to jurisdiction of 0502640 court only</div>
+            <div className="terms-item">• E&O.E - Errors and Omissions Excepted</div>
+          </div>
+        </div>
+
+        <div className="bank-details">
+          <div><strong>Bank Details: {companyDetails.name || 'LIFESPROUTS CARE'}</strong></div>
+          <div>Bank Name: HDFC BANK</div>
+          <div>Branch: Main Branch</div>
+          <div>A/C No: 50100000000123456</div>
+          <div>IFSC CODE: HDFC0000372</div>
+          <div>NEFT CODE: HDFC000372</div>
+        </div>
       </div>
     </div>
   )

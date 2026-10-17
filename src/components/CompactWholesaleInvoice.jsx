@@ -165,7 +165,7 @@ const CompactWholesaleInvoice = ({
           color: black;
           width: ${pageWidth};
           height: ${pageHeight};
-          padding: 8mm 20mm;
+          padding: 5mm 15mm;
           font-size: 6px;
           line-height: 1.0;
           display: flex;
@@ -347,12 +347,60 @@ const CompactWholesaleInvoice = ({
         }
 
         .footer {
-          border-top: 1px solid #000;
-          padding-top: 1mm;
+          border-top: 0.5px solid #000;
+          padding-top: 0.3mm;
           text-align: center;
-          font-size: 6.5px;
-          line-height: 1.0;
+          font-size: 5.5px;
+          line-height: 0.85;
           flex-shrink: 0;
+        }
+
+        .terms-section {
+          margin-top: 0.6mm;
+          padding-top: 0.6mm;
+          border-top: 0.5px solid #000;
+          font-size: 5px;
+          line-height: 0.8;
+          flex-shrink: 0;
+        }
+
+        .terms-title {
+          text-align: center;
+          font-weight: bold;
+          font-size: 5.5px;
+          margin-bottom: 0.3mm;
+        }
+
+        .terms-content {
+          columns: 2;
+          column-gap: 0.8mm;
+          font-size: 4.5px;
+          line-height: 0.8;
+        }
+
+        .terms-subsection {
+          margin: 0.2mm 0;
+          break-inside: avoid;
+        }
+
+        .terms-subsection-title {
+          font-weight: bold;
+          font-size: 5px;
+          margin-bottom: 0.1mm;
+        }
+
+        .terms-item {
+          margin: 0.05mm 0;
+          font-size: 4.5px;
+          line-height: 0.8;
+        }
+
+        .bank-details {
+          border: 0.5px solid #000;
+          padding: 0.2mm;
+          margin-top: 0.2mm;
+          font-size: 4.5px;
+          line-height: 0.8;
         }
 
         @media print {
@@ -480,7 +528,41 @@ const CompactWholesaleInvoice = ({
 
         {/* Footer */}
         <div className="footer">
-          Goods once sold not returnable | Computer Generated Invoice | Thank You!
+          Goods once sold not returnable | Computer Generated Invoice
+        </div>
+
+        {/* Terms & Conditions */}
+        <div className="terms-section">
+          <div className="terms-title">Terms & Conditions</div>
+          
+          <div className="terms-content">
+            <div className="terms-subsection">
+              <div className="terms-subsection-title">General Terms:</div>
+              <div className="terms-item">• Goods once sold will not be taken back or exchanged</div>
+              <div className="terms-item">• Bills not paid due date will attract 24% interest</div>
+              <div className="terms-item">• Free goods are included in the quantity charged</div>
+              <div className="terms-item">• All payments must be made within prescribed credit period</div>
+              <div className="terms-item">• Sales Tax declaration will be given as per government norms</div>
+            </div>
+
+            <div className="terms-subsection">
+              <div className="terms-subsection-title">Delivery & Returns:</div>
+              <div className="terms-item">• Goods supplied on our commercial policy of the company</div>
+              <div className="terms-item">• Excise products will not be accepted for return</div>
+              <div className="terms-item">• Over supply incidents will result to company policy</div>
+            </div>
+
+            <div className="terms-subsection">
+              <div className="terms-subsection-title">Legal:</div>
+              <div className="terms-item">• All disputes are subject to jurisdiction of court only</div>
+              <div className="terms-item">• E&O.E - Errors and Omissions Excepted</div>
+            </div>
+          </div>
+
+          <div className="bank-details">
+            <div><strong>Bank Details: {companyDetails.pharmacy_name || 'LIFESPROUTS CARE LLP'}</strong></div>
+            <div>Bank Name: HDFC BANK | Branch: Main | A/C No: 50100000000123456 | IFSC: HDFC0000372</div>
+          </div>
         </div>
       </div>
     </>
