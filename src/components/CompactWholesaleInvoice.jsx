@@ -45,7 +45,7 @@ const CompactWholesaleInvoice = ({
   items, 
   customer, 
   companyDetails,
-  pageWidth = '210mm',
+  pageWidth = '90mm',
   pageHeight = '297mm'
 }) => {
   // Calculate totals and GST breakdown
@@ -127,7 +127,7 @@ const CompactWholesaleInvoice = ({
     <>
       <style>{`
         @page {
-          size: ${pageWidth} ${pageHeight} landscape;
+          size: ${pageWidth} ${pageHeight};
           margin: 0;
         }
 
