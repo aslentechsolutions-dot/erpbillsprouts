@@ -20,7 +20,7 @@ const CheckoutPage = () => {
 
   const [loading, setLoading] = useState(false)
   const [customerData, setCustomerData] = useState(null)
-  const [paymentMethod, setPaymentMethod] = useState('COD')
+  const [paymentMethod, setPaymentMethod] = useState('razorpay')
   const [deliveryAddress, setDeliveryAddress] = useState('')
   const [customerNotes, setCustomerNotes] = useState('')
 
@@ -312,11 +312,7 @@ const CheckoutPage = () => {
   }
 
   const handlePlaceOrder = () => {
-    if (paymentMethod === 'COD') {
-      handleCODCheckout()
-    } else {
-      handleRazorpayCheckout()
-    }
+    handleRazorpayCheckout()
   }
 
   if (!items || items.length === 0) {
@@ -378,27 +374,6 @@ const CheckoutPage = () => {
                 <h2 className="text-xl font-semibold text-gray-900">Payment Method</h2>
               </div>
               <div className="space-y-3">
-                <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
-                  style={{ borderColor: paymentMethod === 'COD' ? '#1e3a8a' : '#e5e7eb' }}>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="COD"
-                    checked={paymentMethod === 'COD'}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="mt-1"
-                  />
-                  <div className="ml-3 flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-gray-900">Cash on Delivery (COD)</span>
-                      <Truck className="h-5 w-5 text-gray-600" />
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Pay when you receive your order
-                    </p>
-                  </div>
-                </label>
-
                 <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
                   style={{ borderColor: paymentMethod === 'razorpay' ? '#1e3a8a' : '#e5e7eb' }}>
                   <input
@@ -486,7 +461,7 @@ const CheckoutPage = () => {
                 disabled={loading || !deliveryAddress.trim()}
                 className="w-full mt-6 bg-blue-900 text-white py-3 px-4 rounded-lg hover:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
               >
-                {loading ? 'Processing...' : paymentMethod === 'COD' ? 'Place Order (COD)' : 'Proceed to Payment'}
+                {loading ? 'Processing...' : 'Proceed to Payment'}
               </button>
 
               <p className="text-xs text-gray-500 text-center mt-4">
