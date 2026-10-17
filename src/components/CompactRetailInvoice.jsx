@@ -45,8 +45,8 @@ const CompactRetailInvoice = ({
   items, 
   customer, 
   companyDetails,
-  pageWidth = '100mm',
-  pageHeight = 'auto'
+  pageWidth = '297mm',
+  pageHeight = '190mm'
 }) => {
   // Calculate totals
   const calculateTotals = () => {
@@ -128,21 +128,21 @@ const CompactRetailInvoice = ({
 
         html, body {
           width: ${pageWidth};
-          ${pageHeight !== 'auto' ? `height: ${pageHeight};` : ''}
+          height: ${pageHeight};
           margin: 0;
           padding: 0;
           background: white;
         }
 
         @page {
-          size: ${pageWidth} ${pageHeight !== 'auto' ? pageHeight : 'auto'};
+          size: ${pageWidth} ${pageHeight};
           margin: 0;
         }
 
         @media print {
           html, body {
             width: ${pageWidth};
-            ${pageHeight !== 'auto' ? `height: ${pageHeight};` : ''}
+            height: ${pageHeight};
             margin: 0;
             padding: 0;
             background: white;
@@ -158,14 +158,14 @@ const CompactRetailInvoice = ({
           background: white;
           color: black;
           width: ${pageWidth};
-          ${pageHeight !== 'auto' ? `height: ${pageHeight};` : ''}
-          padding: 3mm 5mm;
-          font-size: 7px;
+          height: ${pageHeight};
+          padding: 4mm 6mm;
+          font-size: 8px;
           line-height: 1.0;
           display: flex;
           flex-direction: column;
           box-sizing: border-box;
-          overflow: visible;
+          overflow: hidden;
         }
 
         .compact-retail-invoice * {
@@ -259,30 +259,30 @@ const CompactRetailInvoice = ({
         .items-table {
           width: 100%;
           border-collapse: collapse;
-          margin: 1mm 0;
-          font-size: 7px;
+          margin: 0.8mm 0;
+          font-size: 7.5px;
           border: 1px solid #000;
           flex-shrink: 0;
         }
 
         .items-table th {
           border: 1px solid #000;
-          padding: 0.5mm 0.3mm;
+          padding: 0.4mm 0.3mm;
           text-align: center;
           font-weight: bold;
-          font-size: 7px;
+          font-size: 7.5px;
           background-color: #f0f0f0;
-          line-height: 1.0;
+          line-height: 0.95;
           word-break: break-word;
           height: auto;
         }
 
         .items-table td {
-          padding: 0.5mm 0.3mm;
+          padding: 0.4mm 0.3mm;
           border: 1px solid #000;
           vertical-align: top;
-          font-size: 7px;
-          line-height: 1.0;
+          font-size: 7.5px;
+          line-height: 0.95;
           height: auto;
         }
 
