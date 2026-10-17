@@ -46,7 +46,7 @@ const CompactRetailInvoice = ({
   customer, 
   companyDetails,
   pageWidth = '210mm',
-  pageHeight = '100mm'
+  pageHeight = '297mm'
 }) => {
   // Calculate totals
   const calculateTotals = () => {
@@ -118,17 +118,21 @@ const CompactRetailInvoice = ({
   const invoiceDate = new Date(sale.created_at)
 
   return (
-    <div className="compact-retail-invoice" style={{width: pageWidth, height: pageHeight}}>
+    <div className="compact-retail-invoice">
       <style>{`
+        @page {
+          size: ${pageWidth} ${pageHeight};
+          margin: 5mm;
+        }
+
         .compact-retail-invoice {
           font-family: 'Courier New', monospace;
           background: white;
           color: black;
-          padding: 4mm;
-          font-size: 7.5px;
-          line-height: 1.1;
-          display: flex;
-          flex-direction: column;
+          width: ${pageWidth};
+          padding: 5mm;
+          font-size: 8px;
+          line-height: 1.2;
         }
 
         .compact-retail-invoice * {
@@ -139,91 +143,102 @@ const CompactRetailInvoice = ({
         .header {
           text-align: center;
           border-bottom: 1px solid #000;
-          padding-bottom: 2mm;
-          margin-bottom: 2mm;
+          padding-bottom: 3mm;
+          margin-bottom: 3mm;
         }
 
         .company-name {
-          font-size: 9px;
+          font-size: 11px;
           font-weight: bold;
           text-transform: uppercase;
-          margin-bottom: 1px;
+          margin-bottom: 2px;
         }
 
         .company-info {
-          font-size: 6.5px;
-          line-height: 1.2;
+          font-size: 7px;
+          line-height: 1.3;
         }
 
         .invoice-title {
-          font-size: 8px;
+          font-size: 10px;
           font-weight: bold;
           text-align: center;
-          margin: 2mm 0;
+          margin: 3mm 0;
+          text-decoration: underline;
         }
 
         .invoice-meta {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 1mm;
-          font-size: 7px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 2mm;
+          margin-bottom: 2mm;
+          font-size: 8px;
+          border-bottom: 1px solid #000;
+          padding-bottom: 2mm;
         }
 
         .meta-item {
-          flex: 1;
+          display: flex;
+          gap: 2mm;
+        }
+
+        .meta-label {
+          font-weight: bold;
+          min-width: 45px;
         }
 
         .customer-info {
           border-top: 1px solid #000;
           border-bottom: 1px solid #000;
-          padding: 1mm 0;
-          margin: 1mm 0;
-          font-size: 6.5px;
-          line-height: 1.1;
+          padding: 2mm 0;
+          margin: 2mm 0;
+          font-size: 7.5px;
+          line-height: 1.2;
         }
 
         .info-row {
           display: flex;
-          margin-bottom: 0.5mm;
+          margin-bottom: 1mm;
         }
 
         .info-label {
-          width: 25%;
+          width: 30%;
           font-weight: bold;
         }
 
         .info-value {
-          width: 75%;
+          width: 70%;
           word-wrap: break-word;
         }
 
         .items-table {
           width: 100%;
           border-collapse: collapse;
-          margin: 1mm 0;
-          font-size: 6px;
-          border: 0.5px solid #000;
+          margin: 2mm 0;
+          font-size: 7px;
+          border: 1px solid #000;
         }
 
         .items-table th {
-          border: 0.5px solid #000;
-          padding: 1px;
-          text-align: left;
+          border: 1px solid #000;
+          padding: 1.5px 1px;
+          text-align: center;
           font-weight: bold;
-          font-size: 6px;
-          background-color: #f5f5f5;
-          line-height: 1.0;
+          font-size: 7px;
+          background-color: #f0f0f0;
+          line-height: 1.1;
         }
 
         .items-table td {
-          padding: 1px;
-          border: 0.5px solid #000;
+          padding: 1.5px 1px;
+          border: 1px solid #000;
           vertical-align: top;
-          font-size: 6px;
+          font-size: 7px;
         }
 
         .items-table .text-right {
           text-align: right;
+          padding-right: 2px;
         }
 
         .items-table .text-center {
@@ -232,76 +247,77 @@ const CompactRetailInvoice = ({
 
         .medicine-name {
           font-weight: bold;
-          font-size: 6.5px;
-          word-wrap: break-word;
+          font-size: 7.5px;
         }
 
         .tax-summary {
-          border: 0.5px solid #000;
-          padding: 1mm;
-          margin: 1mm 0;
-          font-size: 6px;
-          line-height: 1.1;
+          border: 1px solid #000;
+          padding: 2mm;
+          margin: 2mm 0;
+          font-size: 7px;
+          line-height: 1.2;
         }
 
         .tax-summary-row {
           display: flex;
           justify-content: space-between;
-          padding: 0.5mm 0;
-          font-size: 6px;
+          padding: 1mm 0;
+          font-size: 7px;
+          gap: 1mm;
         }
 
         .totals-section {
-          border: 0.5px solid #000;
-          padding: 1mm;
-          margin-top: 1mm;
-          font-size: 6.5px;
-          line-height: 1.1;
+          border: 1px solid #000;
+          padding: 2mm;
+          margin: 2mm 0;
+          font-size: 8px;
+          line-height: 1.2;
         }
 
         .total-row {
           display: flex;
           justify-content: space-between;
-          padding: 0.5mm 0;
-          font-size: 6.5px;
+          padding: 1mm 0;
+          font-size: 8px;
+          gap: 2mm;
         }
 
         .total-row.grand {
-          font-size: 8px;
+          font-size: 10px;
           font-weight: bold;
           border-top: 1px solid #000;
-          border-bottom: 1px double #000;
-          padding: 1mm 0;
-          margin: 1mm 0;
+          border-bottom: 2px solid #000;
+          padding: 2mm 0;
+          margin-top: 1mm;
         }
 
         .amount-words {
-          margin: 1mm 0;
-          font-size: 6px;
+          margin: 2mm 0;
+          font-size: 7px;
           text-align: center;
-          line-height: 1.1;
+          line-height: 1.2;
+          border: 1px solid #000;
+          padding: 2mm;
         }
 
         .footer {
           border-top: 1px solid #000;
-          padding-top: 1mm;
-          margin-top: 1mm;
+          padding-top: 2mm;
+          margin-top: 2mm;
           text-align: center;
-          font-size: 6px;
-          line-height: 1.0;
+          font-size: 7px;
+          line-height: 1.2;
         }
 
         @media print {
           .compact-retail-invoice {
             margin: 0;
-            padding: 4mm;
-            width: ${pageWidth};
-            height: ${pageHeight};
+            padding: 5mm;
+            width: 100%;
           }
 
           @page {
-            size: ${pageWidth} ${pageHeight} landscape;
-            margin: 0;
+            margin: 5mm;
           }
         }
       `}</style>
@@ -310,19 +326,34 @@ const CompactRetailInvoice = ({
       <div className="header">
         <div className="company-name">{companyDetails.name || 'LIFESPROUTS CARE'}</div>
         <div className="company-info">
-          {companyDetails.address || '2-190/6 Peikaji Nagar'} | {companyDetails.city || 'ASIFABAD'} | GSTIN: {companyDetails.gstin || '36CTUPD3541E1ZO'}<br/>
-          D.L: {companyDetails.drug_license || '(20B&21B)TG/AS/2025-139054'} | Ph: {companyDetails.phone || '9666105832'}
+          {companyDetails.address || '2-190/6 Peikaji Nagar Asifabad'}<br/>
+          {companyDetails.city || 'TELANGANA-504203'}<br/>
+          GSTIN: {companyDetails.gstin || '36CTUPD3541E1ZO'} | D.L NO: {companyDetails.drug_license || '(20B&21B)TG/AS/2025-139054'}<br/>
+          Phone: {companyDetails.phone || '9666105832'} | Email: {companyDetails.email || 'vedithapharma@gmail.com'}
         </div>
       </div>
 
-      {/* Invoice Title & Meta */}
+      {/* Invoice Title */}
       <div className="invoice-title">{isWholesale ? 'TAX INVOICE' : 'GST INVOICE'}</div>
 
+      {/* Invoice Metadata */}
       <div className="invoice-meta">
-        <div className="meta-item"><strong>Invoice:</strong> {sale.invoice_number}</div>
-        <div className="meta-item"><strong>Date:</strong> {invoiceDate.toLocaleDateString('en-GB')}</div>
-        <div className="meta-item"><strong>Time:</strong> {invoiceDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</div>
-        <div className="meta-item"><strong>Payment:</strong> {sale.payment_method.toUpperCase()}</div>
+        <div className="meta-item">
+          <span className="meta-label">Invoice No:</span>
+          <span>{sale.invoice_number}</span>
+        </div>
+        <div className="meta-item">
+          <span className="meta-label">Date:</span>
+          <span>{invoiceDate.toLocaleDateString('en-GB')}</span>
+        </div>
+        <div className="meta-item">
+          <span className="meta-label">Time:</span>
+          <span>{invoiceDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</span>
+        </div>
+        <div className="meta-item">
+          <span className="meta-label">Payment:</span>
+          <span>{sale.payment_method.toUpperCase()}</span>
+        </div>
       </div>
 
       {/* Customer Information */}
@@ -331,37 +362,62 @@ const CompactRetailInvoice = ({
           <>
             <div className="info-row">
               <div className="info-label">M/S:</div>
-              <div className="info-value">{customer?.business_name || 'Walk-in'}</div>
+              <div className="info-value">{customer?.business_name || 'Walk-in Customer'}</div>
             </div>
+            {customer?.address && (
+              <div className="info-row">
+                <div className="info-label">Address:</div>
+                <div className="info-value">{customer.address}</div>
+              </div>
+            )}
             {customer?.gstin && (
               <div className="info-row">
                 <div className="info-label">GSTIN:</div>
                 <div className="info-value">{customer.gstin}</div>
               </div>
             )}
+            {customer?.drug_license_number && (
+              <div className="info-row">
+                <div className="info-label">D.L:</div>
+                <div className="info-value">{customer.drug_license_number}</div>
+              </div>
+            )}
+            {customer?.phone && (
+              <div className="info-row">
+                <div className="info-label">Phone:</div>
+                <div className="info-value">{customer.phone}</div>
+              </div>
+            )}
           </>
         ) : (
           <>
             <div className="info-row">
-              <div className="info-label">Cust:</div>
-              <div className="info-value">{customer?.name || customer?.business_name || 'Walk-in'}</div>
+              <div className="info-label">Customer:</div>
+              <div className="info-value">{customer?.name || customer?.business_name || 'Walk-in Customer'}</div>
             </div>
           </>
         )}
       </div>
 
-      {/* Items Table - Compressed */}
+      {/* Items Table - Full columns */}
       <table className="items-table">
         <thead>
           <tr>
-            <th style={{width: '15px'}}>S</th>
-            <th>Item</th>
-            <th style={{width: '25px'}}>Batch</th>
+            <th style={{width: '20px'}}>S.N.</th>
+            <th style={{width: '45px'}}>Item Name</th>
+            <th style={{width: '30px'}}>Mfr</th>
+            <th style={{width: '30px'}}>HSN</th>
+            <th style={{width: '25px'}}>Pack</th>
             <th style={{width: '20px'}}>Qty</th>
-            <th style={{width: '25px'}}>Rate</th>
+            <th style={{width: '20px'}}>Free</th>
+            <th style={{width: '35px'}}>Batch</th>
+            <th style={{width: '25px'}}>Exp</th>
+            <th style={{width: '30px'}}>M.R.P</th>
+            <th style={{width: '30px'}}>Rate</th>
             <th style={{width: '20px'}}>Dis%</th>
-            <th style={{width: '25px'}}>GST%</th>
-            <th style={{width: '30px'}}>Amt</th>
+            <th style={{width: '20px'}}>SGST</th>
+            <th style={{width: '20px'}}>CGST</th>
+            <th style={{width: '35px'}}>Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -371,20 +427,30 @@ const CompactRetailInvoice = ({
             const taxableAmount = itemTotal - discountAmt
             const gstRate = item.medicine.gst_percentage || 0
             const gstAmount = (taxableAmount * gstRate) / 100
+            const sgstAmount = gstAmount / 2
+            const cgstAmount = gstAmount / 2
             const totalWithGst = taxableAmount + gstAmount
             
             return (
               <tr key={index}>
-                <td className="text-center" style={{fontSize: '6px'}}>{index + 1}</td>
+                <td className="text-center">{index + 1}</td>
                 <td>
                   <div className="medicine-name">{item.medicine.name}</div>
-                  <div style={{fontSize: '5.5px'}}>Exp: {new Date(item.batch.expiry_date).toLocaleDateString('en-GB', { month: '2-digit', year: '2-digit' })}</div>
                 </td>
-                <td className="text-center" style={{fontSize: '6px'}}>{item.batch.batch_number}</td>
+                <td className="text-center" style={{fontSize: '6.5px'}}>{item.medicine.manufacturer?.substring(0, 6) || 'N/A'}</td>
+                <td className="text-center">{item.medicine.hsn_code || '3004'}</td>
+                <td className="text-center">{item.medicine.pack_size || '10'}</td>
                 <td className="text-center">{item.quantity}</td>
+                <td className="text-center">{item.freeQuantity || 0}</td>
+                <td className="text-center">{item.batch.batch_number}</td>
+                <td className="text-center">
+                  {new Date(item.batch.expiry_date).toLocaleDateString('en-GB', { month: '2-digit', year: '2-digit' })}
+                </td>
+                <td className="text-right">{(item.batch.mrp || item.price).toFixed(2)}</td>
                 <td className="text-right">{item.price.toFixed(2)}</td>
-                <td className="text-center" style={{fontSize: '6px'}}>{(item.discount || 0).toFixed(0)}%</td>
-                <td className="text-center" style={{fontSize: '6px'}}>{gstRate.toFixed(0)}%</td>
+                <td className="text-center">{(item.discount || 0).toFixed(1)}</td>
+                <td className="text-center" style={{fontSize: '6.5px'}}>{(gstRate / 2).toFixed(1)}</td>
+                <td className="text-center" style={{fontSize: '6.5px'}}>{(gstRate / 2).toFixed(1)}</td>
                 <td className="text-right"><strong>{totalWithGst.toFixed(2)}</strong></td>
               </tr>
             )
@@ -392,39 +458,53 @@ const CompactRetailInvoice = ({
         </tbody>
       </table>
 
-      {/* Tax Summary - Inline */}
+      {/* Tax Summary */}
       <div className="tax-summary">
-        <div><strong>Tax Summary:</strong></div>
+        <strong>Tax Summary:</strong>
         {Object.entries(totals.taxSummary).map(([rate, data]) => (
           <div key={rate} className="tax-summary-row">
             <span>GST {rate}%:</span>
-            <span>Taxable: ₹{data.taxable.toFixed(2)} CGST: ₹{data.cgst.toFixed(2)} SGST: ₹{data.sgst.toFixed(2)}</span>
+            <span>Taxable: ₹{data.taxable.toFixed(2)}</span>
+            <span>CGST: ₹{data.cgst.toFixed(2)}</span>
+            <span>SGST: ₹{data.sgst.toFixed(2)}</span>
           </div>
         ))}
       </div>
 
-      {/* Totals Section - Compact */}
+      {/* Totals Section */}
       <div className="totals-section">
         <div className="total-row">
-          <span>Qty: {totals.totalQty}</span>
+          <span>Total Qty: {totals.totalQty}</span>
+          <span>Total Free: {totals.totalFree}</span>
           <span>Subtotal: ₹{totals.subtotal.toFixed(2)}</span>
-          <span>Discount: ₹{totals.totalDiscount.toFixed(2)}</span>
-          <span>Tax: ₹{totals.totalTax.toFixed(2)}</span>
+          <span>Total Discount: ₹{totals.totalDiscount.toFixed(2)}</span>
+        </div>
+        <div className="total-row">
+          <span>Taxable Value: ₹{totals.taxableValue.toFixed(2)}</span>
+          <span>Total CGST: ₹{totals.cgst.toFixed(2)}</span>
+          <span>Total SGST: ₹{totals.sgst.toFixed(2)}</span>
+          {totals.igst > 0 && <span>Total IGST: ₹{totals.igst.toFixed(2)}</span>}
+        </div>
+        <div className="total-row">
+          <span>Round Off: ₹{totals.roundOff.toFixed(2)}</span>
         </div>
         <div className="total-row grand">
-          <span>TOTAL:</span>
+          <span>NET PAYABLE:</span>
           <span>₹{totals.netPayable.toFixed(2)}</span>
         </div>
       </div>
 
       {/* Amount in Words */}
       <div className="amount-words">
-        <strong>Amt in Words:</strong> {amountToWords(totals.netPayable).toUpperCase()}
+        <strong>Amount in Words:</strong><br/>
+        {amountToWords(totals.netPayable)}
       </div>
 
       {/* Footer */}
       <div className="footer">
-        Goods once sold not returnable | Computer Generated Invoice | Thank You!
+        <div>** Goods once sold are not returnable **</div>
+        <div>This is a computer-generated invoice</div>
+        <div>Thank you for your business!</div>
       </div>
     </div>
   )
