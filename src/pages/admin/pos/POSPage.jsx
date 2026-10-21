@@ -1006,16 +1006,16 @@ const POSPage = () => {
           </div>
 
           {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {items.length === 0 ? (
               <div className="text-center py-12 text-gray-400">
                 <p className="font-medium">Cart is empty</p>
                 <p className="text-sm mt-1">Add items to start billing</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {items.map((item) => (
-                  <div key={item.id} className="bg-gray-50 rounded-lg p-3">
+                  <div key={item.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900 text-sm">{item.medicine.name}</h4>
@@ -1081,7 +1081,7 @@ const POSPage = () => {
           </div>
 
           {/* Cart Footer */}
-          <div className="border-t border-gray-200 p-3 space-y-2 flex-shrink-0 bg-white">
+          <div className="border-t border-gray-200 p-4 space-y-3 flex-shrink-0 bg-white">
             {/* Discount */}
             {items.length > 0 && (
               <div className="flex items-center justify-between text-sm">

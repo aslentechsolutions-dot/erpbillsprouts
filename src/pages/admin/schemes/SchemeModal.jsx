@@ -121,10 +121,10 @@ const SchemeModal = ({ scheme, medicines, onSave, onClose }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-12">
           {/* Scheme Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="pb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
               Scheme Name *
             </label>
             <input
@@ -144,8 +144,8 @@ const SchemeModal = ({ scheme, medicines, onSave, onClose }) => {
           </div>
 
           {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="pb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
               Description
             </label>
             <textarea
@@ -157,8 +157,8 @@ const SchemeModal = ({ scheme, medicines, onSave, onClose }) => {
           </div>
 
           {/* Scheme Type */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="pb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
               Scheme Type *
             </label>
             <select
@@ -173,8 +173,8 @@ const SchemeModal = ({ scheme, medicines, onSave, onClose }) => {
           </div>
 
           {/* Qualifying Product */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="pb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
               Qualifying Product (Buy) *
             </label>
             <select
@@ -200,9 +200,9 @@ const SchemeModal = ({ scheme, medicines, onSave, onClose }) => {
           </div>
 
           {/* Minimum Quantity */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-6 pb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
                 Minimum Quantity to Buy *
               </label>
               <input
@@ -220,7 +220,7 @@ const SchemeModal = ({ scheme, medicines, onSave, onClose }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
                 Unit of Measure *
               </label>
               <input
