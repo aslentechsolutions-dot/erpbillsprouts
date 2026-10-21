@@ -80,6 +80,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
         quantity: 1,
         free_quantity: 0,
         purchase_price: 0,
+        amount: 0,
         mrp: medicine.mrp || 0,
         gst_percentage: medicine.gst_percentage || 12,
         batch_number: '',
@@ -374,6 +375,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Qty</th>
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Free</th>
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">MRP</th>
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">GST%</th>
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Batch</th>
@@ -414,6 +416,16 @@ const PurchaseModal = ({ onClose, onSave }) => {
                                 type="number"
                                 value={item.purchase_price}
                                 onChange={(e) => updateItem(index, 'purchase_price', e.target.value)}
+                                className="w-20 px-2 py-1 border border-gray-300 rounded"
+                                step="0.01"
+                                placeholder="0.00"
+                              />
+                            </td>
+                            <td className="px-3 py-2">
+                              <input
+                                type="number"
+                                value={item.amount}
+                                onChange={(e) => updateItem(index, 'amount', e.target.value)}
                                 className="w-20 px-2 py-1 border border-gray-300 rounded"
                                 step="0.01"
                                 placeholder="0.00"
