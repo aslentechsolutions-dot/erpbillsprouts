@@ -40,6 +40,8 @@ const POSPage = () => {
     getGST,
     getGrandTotal,
     getItemsCount,
+    getPaidQuantity,
+    getFreeQuantity,
     clearCart
   } = useCartStore()
 
@@ -1051,6 +1053,27 @@ const POSPage = () => {
                         <div className="text-xs text-gray-500">@ ₹{item.price.toFixed(2)}</div>
                       </div>
                     </div>
+
+                    {/* Scheme Information */}
+                    {item.appliedScheme && (
+                      <div className="mt-2 p-2 bg-blue-50 border-l-2 border-blue-500 rounded">
+                        <p className="text-xs font-semibold text-blue-900">
+                          ✓ {item.appliedScheme.scheme_name}
+                        </p>
+                        <p className="text-xs text-blue-700 mt-1">
+                          {item.freeQuantity} FREE added to cart
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Free Quantity Display */}
+                    {item.freeQuantity > 0 && (
+                      <div className="mt-2 p-2 bg-green-50 rounded border border-green-200">
+                        <p className="text-xs font-medium text-green-900">
+                          FREE: {item.freeQuantity} {item.batch.batch_number ? '(included)' : ''}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -1076,6 +1099,12 @@ const POSPage = () => {
 
             {/* Totals */}
             <div className="space-y-1 text-sm">
+              {(getPaidQuantity() > 0 || getFreeQuantity() > 0) && (
+                <div className="flex justify-between text-gray-600 pb-1 border-b">
+                  <span>Qty (Paid + Free)</span>
+                  <span>{getPaidQuantity()} + {getFreeQuantity()} = {getItemsCount()}</span>
+                </div>
+              )}
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal (Gross)</span>
                 <span>Rs.{getSubtotal().toFixed(2)}</span>

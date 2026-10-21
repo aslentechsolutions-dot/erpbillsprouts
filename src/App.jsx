@@ -42,6 +42,7 @@ import ExpiryAlertPage from './pages/admin/alerts/ExpiryAlertPage'
 import PendingPaymentsPage from './pages/admin/alerts/PendingPaymentsPage'
 import ReportsPage from './pages/admin/reports/ReportsPage'
 import InvoicePrintPage from './pages/admin/invoice/InvoicePrintPage'
+import SchemesPage from './pages/admin/schemes/SchemesPage'
 
 // Other Role Pages
 import PharmacistDashboard from './pages/pharmacist/PharmacistDashboard'
@@ -115,6 +116,7 @@ function App() {
                     <Route path="wholesalers" element={<WholesalersPage />} />
                     <Route path="users" element={<UsersPage />} />
                     <Route path="settings" element={<SettingsPage />} />
+                    <Route path="schemes" element={<SchemesPage />} />
                     {/* Alert Routes */}
                     <Route path="alerts/low-stock" element={<LowStockAlertPage />} />
                     <Route path="alerts/expiry" element={<ExpiryAlertPage />} />

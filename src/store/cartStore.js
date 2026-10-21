@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { supabase } from '../lib/supabase'
 
 const useCartStore = create((set, get) => ({
   items: [],
@@ -33,19 +34,68 @@ const useCartStore = create((set, get) => ({
         quantity,
         freeQuantity,
         price: saleType === 'wholesale' ? batch.wholesale_price : batch.selling_price,
-        discount: 0
+        discount: 0,
+        appliedScheme: null // Will be populated by checkAndApplyScheme
       }
       set({ items: [...items, newItem] })
     }
   },
 
-  // Update item quantity
-  updateItemQuantity: (itemId, quantity, freeQuantity = 0) => {
+  // Check and apply scheme to an item
+  checkAndApplyScheme: async (itemId) => {
+    const items = get().items
+    const item = items.find(i => i.id === itemId)
+    
+    if (!item) return
+
+    try {
+      const { customer, saleType } = get()
+      
+      // Call RPC to check applicable scheme
+      const { data, error } = await supabase.rpc('get_applicable_scheme', {
+        p_customer_id: customer?.id || null,
+        p_medicine_id: item.medicine.id,
+        p_quantity: item.quantity,
+        p_sale_type: saleType
+      })
+
+      if (error) throw error
+
+      const schemeResult = data?.[0]
+      
+      // Update item with scheme information
+      const updatedItems = items.map(i => 
+        i.id === itemId ? {
+          ...i,
+          freeQuantity: schemeResult?.free_quantity_result || 0,
+          appliedScheme: schemeResult?.scheme_id ? {
+            scheme_id: schemeResult.scheme_id,
+            scheme_name: schemeResult.scheme_name,
+            free_product_id: schemeResult.free_product_id,
+            free_quantity: schemeResult.free_quantity_result,
+            description: schemeResult.scheme_description,
+            is_repeatable: schemeResult.is_repeatable
+          } : null
+        } : i
+      )
+      
+      set({ items: updatedItems })
+    } catch (error) {
+      console.error('Error checking scheme:', error)
+      // Continue without scheme on error
+    }
+  },
+
+  // Update item quantity and check scheme
+  updateItemQuantity: async (itemId, quantity, freeQuantity = 0) => {
     const items = get().items
     const updatedItems = items.map(item => 
-      item.id === itemId ? { ...item, quantity, freeQuantity } : item
+      item.id === itemId ? { ...item, quantity, freeQuantity: 0 } : item // Reset free quantity, will be recalculated
     )
     set({ items: updatedItems })
+    
+    // Check if scheme applies after quantity change
+    await get().checkAndApplyScheme(itemId)
   },
 
   // Update item discount
@@ -83,21 +133,21 @@ const useCartStore = create((set, get) => ({
   // Set discount
   setDiscount: (discount) => set({ discount }),
 
-  // Calculate subtotal
+  // Calculate subtotal (only for paid quantities, not free)
   getSubtotal: () => {
     const items = get().items
     return items.reduce((total, item) => {
-      const itemTotal = item.quantity * item.price
+      const itemTotal = item.quantity * item.price // Only paid quantity
       const itemDiscount = (itemTotal * item.discount) / 100
       return total + (itemTotal - itemDiscount)
     }, 0)
   },
 
-  // Calculate GST
+  // Calculate GST (only on paid quantities)
   getGST: () => {
     const items = get().items
     return items.reduce((total, item) => {
-      const itemTotal = item.quantity * item.price
+      const itemTotal = item.quantity * item.price // Only paid quantity
       const itemDiscount = (itemTotal * item.discount) / 100
       const taxableAmount = itemTotal - itemDiscount
       return total + (taxableAmount * item.medicine.gst_percentage) / 100
@@ -126,9 +176,19 @@ const useCartStore = create((set, get) => ({
     return subtotal + gst - cartDiscount
   },
 
-  // Get total items count
+  // Get total items count (paid + free)
   getItemsCount: () => {
+    return get().items.reduce((total, item) => total + item.quantity + item.freeQuantity, 0)
+  },
+
+  // Get total paid quantity
+  getPaidQuantity: () => {
     return get().items.reduce((total, item) => total + item.quantity, 0)
+  },
+
+  // Get total free quantity
+  getFreeQuantity: () => {
+    return get().items.reduce((total, item) => total + item.freeQuantity, 0)
   },
 
   // Clear cart
@@ -148,10 +208,10 @@ const useCartStore = create((set, get) => ({
       errors.push('Cart is empty')
     }
 
-    // Check stock availability
+    // Check stock availability (paid + free)
     items.forEach(item => {
       if (item.quantity + item.freeQuantity > item.batch.current_quantity) {
-        errors.push(`Insufficient stock for ${item.medicine.name}`)
+        errors.push(`Insufficient stock for ${item.medicine.name}. Available: ${item.batch.current_quantity}, Required: ${item.quantity + item.freeQuantity}`)
       }
       
       // Check expiry
@@ -161,13 +221,13 @@ const useCartStore = create((set, get) => ({
     })
 
     // Validate wholesale requirements
-    if (saleType === 'wholesale') {
+    if (saleType === 'wholesale' || saleType === 'distributor') {
       if (!customer) {
-        errors.push('Customer is required for wholesale billing')
+        errors.push('Customer is required for wholesale/distributor billing')
       } else if (!customer.gstin) {
-        errors.push('GSTIN is required for wholesale billing')
+        errors.push('GSTIN is required for wholesale/distributor billing')
       } else if (!customer.drug_license_number) {
-        errors.push('Drug License Number is required for wholesale billing')
+        errors.push('Drug License Number is required for wholesale/distributor billing')
       }
     }
 
