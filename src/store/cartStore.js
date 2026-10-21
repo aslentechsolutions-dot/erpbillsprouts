@@ -24,6 +24,9 @@ const useCartStore = create((set, get) => ({
         freeQuantity: updatedItems[existingItemIndex].freeQuantity + freeQuantity
       }
       set({ items: updatedItems })
+      
+      // Check scheme for updated item
+      get().checkAndApplyScheme(updatedItems[existingItemIndex].id)
     } else {
       // Add new item
       const saleType = get().saleType
@@ -38,6 +41,9 @@ const useCartStore = create((set, get) => ({
         appliedScheme: null // Will be populated by checkAndApplyScheme
       }
       set({ items: [...items, newItem] })
+      
+      // Check scheme for new item immediately
+      get().checkAndApplyScheme(newItem.id)
     }
   },
 
