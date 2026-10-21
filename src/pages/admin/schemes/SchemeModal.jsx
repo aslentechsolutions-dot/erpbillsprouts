@@ -121,7 +121,7 @@ const SchemeModal = ({ scheme, medicines, onSave, onClose }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-8">
           {/* Scheme Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
