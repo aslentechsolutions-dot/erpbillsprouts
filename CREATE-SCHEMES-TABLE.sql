@@ -151,7 +151,7 @@ BEGIN
   LOOP
     -- Calculate free quantity based on scheme rules
     IF v_scheme.is_repeatable THEN
-      v_free_qty := (p_quantity / v_scheme.minimum_quantity) * v_scheme.free_quantity;
+      v_free_qty := FLOOR(p_quantity::NUMERIC / v_scheme.minimum_quantity)::INTEGER * v_scheme.free_quantity;
     ELSE
       v_free_qty := v_scheme.free_quantity;
     END IF;
