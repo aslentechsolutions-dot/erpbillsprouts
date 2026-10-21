@@ -20,7 +20,8 @@ import {
   FileText,
   AlertTriangle,
   ShoppingBag as OnlineOrders,
-  MessageSquare
+  MessageSquare,
+  Gift
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import { supabase } from '../../lib/supabase'
@@ -129,6 +130,7 @@ const AdminLayout = ({ children }) => {
     { name: 'POS', href: '/admin/pos', icon: ShoppingCart },
     { name: 'Medicines', href: '/admin/medicines', icon: Pill },
     { name: 'Inventory', href: '/admin/inventory', icon: Package },
+    { name: 'Schemes', href: '/admin/schemes', icon: Gift },
     { name: 'Purchases', href: '/admin/purchases', icon: ShoppingBag },
     { name: 'Sales', href: '/admin/sales', icon: Receipt },
     { name: 'Customers', href: '/admin/customers', icon: Users },
