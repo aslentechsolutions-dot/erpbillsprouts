@@ -14,6 +14,7 @@ const schemeSchema = z.object({
   free_product_id: z.string().min(1, 'Free product is required'),
   free_quantity: z.number().min(1, 'Free quantity must be at least 1'),
   unit_of_measure: z.string().min(1, 'Unit of measure is required'),
+  amount: z.number().min(0, 'Amount must be a positive number').optional(),
   is_repeatable: z.boolean().default(true),
   start_date: z.string().min(1, 'Start date is required'),
   end_date: z.string().min(1, 'End date is required'),
