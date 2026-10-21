@@ -106,11 +106,19 @@ const SchemesPage = () => {
         return
       }
 
-      const payload = {
-        ...schemeData,
-        updated_by: user.id,
-        ...(editingScheme ? {} : { created_by: user.id })
-      }
+      // For updates: don't include created_by, only updated_by
+      // For inserts: include both created_by and updated_by
+      const payload = editingScheme
+        ? {
+            ...schemeData,
+            updated_by: user.id
+            // DO NOT include created_by on update
+          }
+        : {
+            ...schemeData,
+            created_by: user.id,
+            updated_by: user.id
+          }
 
       if (editingScheme) {
         const { error } = await supabase

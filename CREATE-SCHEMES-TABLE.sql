@@ -84,14 +84,18 @@ EXECUTE FUNCTION update_schemes_updated_at();
 ALTER TABLE schemes ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policy: Admin can do everything
-CREATE POLICY schemes_admin_policy ON schemes
-  USING ((SELECT role FROM profiles WHERE id = auth.uid()) = 'admin')
-  WITH CHECK ((SELECT role FROM profiles WHERE id = auth.uid()) = 'admin');
+CREATE POLICY schemes_admin_all ON schemes
+  FOR ALL
+  USING (auth.role() = 'authenticated' AND (SELECT role FROM profiles WHERE id = auth.uid()) = 'admin')
+  WITH CHECK (auth.role() = 'authenticated' AND (SELECT role FROM profiles WHERE id = auth.uid()) = 'admin');
 
 -- RLS Policy: Staff can view active schemes only
-CREATE POLICY schemes_staff_view_policy ON schemes
+CREATE POLICY schemes_staff_view ON schemes
   FOR SELECT
-  USING ((SELECT role FROM profiles WHERE id = auth.uid()) IN ('staff', 'pharmacist', 'admin') OR is_active = true);
+  USING (
+    auth.role() = 'authenticated' 
+    AND ((SELECT role FROM profiles WHERE id = auth.uid()) IN ('staff', 'pharmacist', 'admin') OR is_active = true)
+  );
 
 -- ============================================================================
 -- Create function to check applicable scheme for a product/customer/quantity
