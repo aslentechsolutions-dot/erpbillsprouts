@@ -1006,16 +1006,16 @@ const POSPage = () => {
           </div>
 
           {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto p-8 space-y-6 min-h-96">
+          <div className="flex-1 overflow-y-auto p-6 space-y-5">
             {items.length === 0 ? (
               <div className="text-center py-12 text-gray-400">
                 <p className="font-medium">Cart is empty</p>
                 <p className="text-sm mt-1">Add items to start billing</p>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-5">
                 {items.map((item) => (
-                  <div key={item.id} className="bg-gray-50 rounded-lg p-5 border border-gray-300 shadow-sm">
+                  <div key={item.id} className="bg-gray-50 rounded-lg p-4 border border-gray-300">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900 text-sm">{item.medicine.name}</h4>
@@ -1056,11 +1056,11 @@ const POSPage = () => {
 
                     {/* Scheme Information */}
                     {item.appliedScheme && (
-                      <div className="mt-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
-                        <p className="text-sm font-semibold text-blue-900">
+                      <div className="mt-3 p-2 bg-blue-50 border-l-4 border-blue-500 rounded">
+                        <p className="text-xs font-semibold text-blue-900">
                           ✓ {item.appliedScheme.scheme_name}
                         </p>
-                        <p className="text-sm text-blue-700 mt-2">
+                        <p className="text-xs text-blue-700 mt-1">
                           {item.freeQuantity} FREE added to cart
                         </p>
                       </div>
@@ -1068,8 +1068,8 @@ const POSPage = () => {
 
                     {/* Free Quantity Display */}
                     {item.freeQuantity > 0 && (
-                      <div className="mt-4 p-3 bg-green-50 rounded border-l-4 border-green-500">
-                        <p className="text-sm font-medium text-green-900">
+                      <div className="mt-3 p-2 bg-green-50 rounded border-l-4 border-green-500">
+                        <p className="text-xs font-medium text-green-900">
                           FREE: {item.freeQuantity} {item.batch.batch_number ? '(included)' : ''}
                         </p>
                       </div>
