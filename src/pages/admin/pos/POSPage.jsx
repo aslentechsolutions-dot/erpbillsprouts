@@ -1006,21 +1006,21 @@ const POSPage = () => {
           </div>
 
           {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-5">
+          <div className="flex-1 overflow-y-auto p-7 space-y-7">
             {items.length === 0 ? (
               <div className="text-center py-12 text-gray-400">
                 <p className="font-medium">Cart is empty</p>
                 <p className="text-sm mt-1">Add items to start billing</p>
               </div>
             ) : (
-              <div className="space-y-5">
+              <div className="space-y-7">
                 {items.map((item) => (
-                  <div key={item.id} className="bg-gray-50 rounded-lg p-4 border border-gray-300">
-                    <div className="flex items-start justify-between mb-2">
+                  <div key={item.id} className="bg-gray-50 rounded-lg p-5 border border-gray-300">
+                    <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
-                        <h4 className="font-medium text-gray-900 text-sm">{item.medicine.name}</h4>
-                        <p className="text-xs text-gray-500">{item.medicine.generic_name}</p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <h4 className="font-medium text-gray-900 text-base">{item.medicine.name}</h4>
+                        <p className="text-sm text-gray-500">{item.medicine.generic_name}</p>
+                        <p className="text-sm text-gray-500 mt-2">
                           BATCH: {item.batch.batch_number} | Exp: {new Date(item.batch.expiry_date).toLocaleDateString('en-GB', { month: '2-digit', year: '2-digit' })}
                         </p>
                       </div>
@@ -1032,35 +1032,35 @@ const POSPage = () => {
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
+                    <div className="flex items-center justify-between mt-4">
+                      <div className="flex items-center space-y-2">
                         <button
                           onClick={() => updateItemQuantity(item.id, Math.max(1, item.quantity - 1))}
                           className="p-1 bg-gray-200 rounded hover:bg-gray-300"
                         >
-                          <Minus className="w-3 h-3" />
+                          <Minus className="w-4 h-4" />
                         </button>
-                        <span className="w-8 text-center font-medium text-sm">{item.quantity}</span>
+                        <span className="w-10 text-center font-medium text-base">{item.quantity}</span>
                         <button
                           onClick={() => updateItemQuantity(item.id, item.quantity + 1)}
                           className="p-1 bg-blue-900 text-white rounded hover:bg-blue-800"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-4 h-4" />
                         </button>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-gray-900">₹{(item.quantity * item.price).toFixed(2)}</div>
-                        <div className="text-xs text-gray-500">@ ₹{item.price.toFixed(2)}</div>
+                        <div className="font-bold text-gray-900 text-base">₹{(item.quantity * item.price).toFixed(2)}</div>
+                        <div className="text-sm text-gray-500">@ ₹{item.price.toFixed(2)}</div>
                       </div>
                     </div>
 
                     {/* Scheme Information */}
                     {item.appliedScheme && (
-                      <div className="mt-3 p-2 bg-blue-50 border-l-4 border-blue-500 rounded">
-                        <p className="text-xs font-semibold text-blue-900">
+                      <div className="mt-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
+                        <p className="text-sm font-semibold text-blue-900">
                           ✓ {item.appliedScheme.scheme_name}
                         </p>
-                        <p className="text-xs text-blue-700 mt-1">
+                        <p className="text-sm text-blue-700 mt-2">
                           {item.freeQuantity} FREE added to cart
                         </p>
                       </div>
@@ -1068,8 +1068,8 @@ const POSPage = () => {
 
                     {/* Free Quantity Display */}
                     {item.freeQuantity > 0 && (
-                      <div className="mt-3 p-2 bg-green-50 rounded border-l-4 border-green-500">
-                        <p className="text-xs font-medium text-green-900">
+                      <div className="mt-4 p-3 bg-green-50 rounded border-l-4 border-green-500">
+                        <p className="text-sm font-medium text-green-900">
                           FREE: {item.freeQuantity} {item.batch.batch_number ? '(included)' : ''}
                         </p>
                       </div>
