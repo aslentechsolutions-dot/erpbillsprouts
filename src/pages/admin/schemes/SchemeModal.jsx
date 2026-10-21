@@ -101,7 +101,7 @@ const SchemeModal = ({ scheme, medicines, onSave, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg w-full max-w-3xl max-h-[95vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
@@ -179,11 +179,12 @@ const SchemeModal = ({ scheme, medicines, onSave, onClose }) => {
             </label>
             <select
               {...register('qualifying_product_id')}
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
                 errors.qualifying_product_id ? 'border-red-300' : 'border-gray-300'
               }`}
+              size={1}
             >
-              <option value="">Select product</option>
+              <option value="">-- Select product --</option>
               {medicines.map(med => (
                 <option key={med.id} value={med.id}>
                   {med.name}
@@ -240,11 +241,12 @@ const SchemeModal = ({ scheme, medicines, onSave, onClose }) => {
             </label>
             <select
               {...register('free_product_id')}
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
                 errors.free_product_id ? 'border-red-300' : 'border-gray-300'
               }`}
+              size={1}
             >
-              <option value="">Select product</option>
+              <option value="">-- Select product --</option>
               {medicines.map(med => (
                 <option key={med.id} value={med.id}>
                   {med.name}

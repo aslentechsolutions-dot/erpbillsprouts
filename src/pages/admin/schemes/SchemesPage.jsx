@@ -98,20 +98,40 @@ const SchemesPage = () => {
 
   const handleSaveScheme = async (schemeData) => {
     try {
+      // Get current user ID from auth
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      
+      if (authError || !user) {
+        toast.error('Authentication error. Please log in again.')
+        return
+      }
+
+      const payload = {
+        ...schemeData,
+        updated_by: user.id,
+        ...(editingScheme ? {} : { created_by: user.id })
+      }
+
       if (editingScheme) {
         const { error } = await supabase
           .from('schemes')
-          .update(schemeData)
+          .update(payload)
           .eq('id', editingScheme.id)
 
-        if (error) throw error
+        if (error) {
+          console.error('Update error:', error)
+          throw error
+        }
         toast.success('Scheme updated successfully')
       } else {
         const { error } = await supabase
           .from('schemes')
-          .insert(schemeData)
+          .insert(payload)
 
-        if (error) throw error
+        if (error) {
+          console.error('Insert error:', error)
+          throw error
+        }
         toast.success('Scheme created successfully')
       }
 
@@ -119,7 +139,7 @@ const SchemesPage = () => {
       fetchSchemes()
     } catch (error) {
       console.error('Error saving scheme:', error)
-      toast.error('Failed to save scheme')
+      toast.error(error.message || 'Failed to save scheme')
     }
   }
 
