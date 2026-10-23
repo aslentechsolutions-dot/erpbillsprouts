@@ -635,7 +635,7 @@ const LoginPage = () => {
                   </li>
                   <li className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">Unlimited Branches (Max 5)</span>
+                    <span className="text-gray-700 text-sm">5 Branches</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
@@ -661,10 +661,10 @@ const LoginPage = () => {
               </div>
 
               {/* Gold Edition Card - Recommended */}
-              <div className="bg-white border-2 border-orange-500 rounded-lg p-6 relative hover:shadow-lg transition-shadow">
+              <div className="bg-white border-2 border-yellow-500 rounded-lg p-6 relative hover:shadow-lg transition-shadow">
                 {/* Recommended Badge */}
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold">RECOMMENDED</span>
+                  <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold">RECOMMENDED</span>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-1 mt-2">Gold Edition</h3>
                 <span className="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-1 rounded mb-4">🌐 Wholesale & Distributors</span>
@@ -719,6 +719,8 @@ const LoginPage = () => {
   )
 }
 export default LoginPage
+
+
 
 
 
