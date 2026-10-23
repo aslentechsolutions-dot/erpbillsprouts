@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+﻿import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { 
   TrendingUp, 
@@ -398,13 +398,13 @@ const AdminDashboard = () => {
     return <LoadingSpinner text="Loading dashboard..." />
   }
 
-  const StatCard = ({ title, value, icon: Icon, change, changeType = 'positive' }) => (
-    <div className="card">
+  const StatCard = ({ title, value, icon: Icon, change, changeType = 'positive', onClick }) => (
+    <div className="card cursor-pointer hover:shadow-lg transition-all" onClick={onClick}>
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-600">{title}</p>
           <p className="text-2xl font-bold text-gray-900">
-            {typeof value === 'number' && title.includes('₹') ? `₹${value.toLocaleString()}` : value.toLocaleString()}
+            {typeof value === 'number' && title.includes('â‚¹') ? `â‚¹${value.toLocaleString()}` : value.toLocaleString()}
           </p>
           {change && (
             <p className={`text-sm flex items-center mt-1 ${changeType === 'positive' ? 'text-green-600' : 'text-red-600'}`}>
@@ -451,6 +451,7 @@ const AdminDashboard = () => {
           icon={DollarSign}
           change="+12.5%"
           changeType="positive"
+        onClick={() => navigate('/admin/sales')}
         />
         <StatCard
           title="Today's Purchases"
@@ -458,6 +459,7 @@ const AdminDashboard = () => {
           icon={ShoppingCart}
           change="+8.2%"
           changeType="positive"
+        onClick={() => navigate('/admin/purchases')}
         />
         <StatCard
           title="Today's Profit"
@@ -465,6 +467,7 @@ const AdminDashboard = () => {
           icon={TrendingUp}
           change="+15.3%"
           changeType="positive"
+        onClick={() => navigate('/admin/reports')}
         />
         <StatCard
           title="Today's Invoices"
@@ -472,6 +475,7 @@ const AdminDashboard = () => {
           icon={Receipt}
           change="+5"
           changeType="positive"
+        onClick={() => navigate('/admin/invoice')}
         />
       </div>
 
@@ -481,23 +485,27 @@ const AdminDashboard = () => {
           title="Total Medicines"
           value={dashboardData.stats.totalMedicines}
           icon={Package}
+        onClick={() => navigate('/admin/medicines')}
         />
         <StatCard
           title="Low Stock Items"
           value={dashboardData.stats.lowStockMedicines}
           icon={AlertTriangle}
           changeType="warning"
+        onClick={() => navigate('/admin/inventory?filter=low-stock')}
         />
         <StatCard
           title="Expiring Soon"
           value={dashboardData.stats.expiringMedicines}
           icon={Clock}
           changeType="warning"
+        onClick={() => navigate('/admin/inventory?filter=expiring')}
         />
         <StatCard
           title="Total Customers"
           value={dashboardData.stats.totalCustomers}
           icon={Users}
+        onClick={() => navigate('/admin/customers')}
         />
       </div>
 
@@ -588,7 +596,7 @@ const AdminDashboard = () => {
             <AlertTriangle className="h-8 w-8 text-yellow-500" />
           </div>
           <button className="mt-3 text-sm text-yellow-700 hover:text-yellow-800 font-medium">
-            View Details →
+            View Details â†’
           </button>
         </div>
 
@@ -605,7 +613,7 @@ const AdminDashboard = () => {
             <Clock className="h-8 w-8 text-red-500" />
           </div>
           <button className="mt-3 text-sm text-red-700 hover:text-red-800 font-medium">
-            View Details →
+            View Details â†’
           </button>
         </div>
 
@@ -617,12 +625,12 @@ const AdminDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-semibold text-gray-900">Pending Payments</h4>
-              <p className="text-sm text-gray-600">₹{dashboardData.stats.pendingPayments.toLocaleString()} pending</p>
+              <p className="text-sm text-gray-600">â‚¹{dashboardData.stats.pendingPayments.toLocaleString()} pending</p>
             </div>
             <DollarSign className="h-8 w-8 text-blue-500" />
           </div>
           <button className="mt-3 text-sm text-blue-700 hover:text-blue-800 font-medium">
-            View Details →
+            View Details â†’
           </button>
         </div>
       </div>
