@@ -534,9 +534,9 @@ const InventoryPage = () => {
       {/* Add Inventory Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
               <h2 className="text-xl font-semibold text-gray-900">Add New Inventory</h2>
               <button
                 onClick={() => {
@@ -566,7 +566,7 @@ const InventoryPage = () => {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleAddInventory} className="p-6 space-y-6">
+            <form onSubmit={handleAddInventory} className="p-6 space-y-6 overflow-y-auto flex-1">
               {/* Existing Inventory Alert */}
               {selectedMedicineInventory.length > 0 && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -846,7 +846,7 @@ const InventoryPage = () => {
               </div>
 
               {/* Form Actions */}
-              <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+            <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200 flex-shrink-0 mt-auto">
                 <button
                   type="button"
                   onClick={() => {
