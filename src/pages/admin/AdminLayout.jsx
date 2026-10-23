@@ -167,14 +167,14 @@ const AdminLayout = ({ children }) => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Icon-Based Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 w-80 lg:w-24 ${
+      {/* Horizontal Sidebar with Icon + Text */}
+      <div className={`fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 w-80 lg:w-64 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         
         {/* Sidebar Header - Logo & Name */}
-        <div className="flex items-center justify-center h-16 px-2 bg-gradient-to-br from-primary-600 to-primary-700 flex-shrink-0">
-          <div className="flex items-center justify-center w-full">
+        <div className="flex items-center justify-between h-16 px-4 bg-gradient-to-br from-primary-600 to-primary-700 flex-shrink-0">
+          <div className="flex items-center gap-3 flex-1">
             <div className="h-8 w-8 bg-white rounded-lg flex items-center justify-center overflow-hidden shadow-lg flex-shrink-0">
               {logo ? (
                 <img src={logo} alt="Logo" className="h-full w-full object-contain" />
@@ -182,18 +182,21 @@ const AdminLayout = ({ children }) => {
                 <span className="text-sm font-bold text-primary-600">Rx</span>
               )}
             </div>
+            <span className="text-white font-semibold text-sm truncate hidden lg:inline">
+              {pharmacyName}
+            </span>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden text-white hover:bg-primary-700 p-1 rounded absolute right-4"
+            className="lg:hidden text-white hover:bg-primary-700 p-1 rounded"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Navigation - Icon with Text Below Vertical Layout */}
-        <nav className="flex-1 px-2 py-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
-          <div className="space-y-3">
+        {/* Navigation - Icon + Text Horizontal Layout */}
+        <nav className="flex-1 px-3 py-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+          <div className="space-y-2">
             {navigation.map((item) => {
               const Icon = item.icon
               const active = isActive(item.href)
@@ -204,18 +207,17 @@ const AdminLayout = ({ children }) => {
                   to={item.href}
                   onMouseEnter={() => setHoveredItem(item.name)}
                   onMouseLeave={() => setHoveredItem(null)}
-                  className={`group relative flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all duration-200 ${
+                  className={`group relative flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${
                     active
-                      ? 'bg-gradient-to-br from-primary-50 to-primary-100 text-primary-700'
+                      ? 'bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700'
                       : hoveredItem === item.name
                       ? 'bg-indigo-50 text-indigo-700'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                   onClick={() => setSidebarOpen(false)}
-                  title={item.name}
                 >
                   <Icon
-                    className={`h-6 w-6 mb-1 transition-all duration-200 ${
+                    className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
                       active
                         ? 'text-primary-600'
                         : hoveredItem === item.name
@@ -223,7 +225,7 @@ const AdminLayout = ({ children }) => {
                         : 'text-gray-500 group-hover:text-gray-700'
                     }`}
                   />
-                  <span className={`text-xs text-center leading-tight transition-all duration-200 ${
+                  <span className={`text-sm leading-tight truncate transition-all duration-200 ${
                     active
                       ? 'text-primary-700 font-semibold'
                       : hoveredItem === item.name
@@ -233,9 +235,9 @@ const AdminLayout = ({ children }) => {
                     {item.name}
                   </span>
                   
-                  {/* Active indicator dot */}
+                  {/* Active indicator line */}
                   {active && (
-                    <div className="absolute -right-1 -top-1 h-2 w-2 bg-primary-600 rounded-full"></div>
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-600 rounded-r-full"></div>
                   )}
                 </Link>
               )
@@ -244,13 +246,13 @@ const AdminLayout = ({ children }) => {
         </nav>
 
         {/* User Profile Section - Bottom */}
-        <div className="border-t border-gray-200 p-2 space-y-3 flex-shrink-0">
+        <div className="border-t border-gray-200 p-3 space-y-2 flex-shrink-0">
           {/* Settings */}
           <Link
             to="/admin/settings"
-            className={`group relative flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all duration-200 ${
+            className={`group relative flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${
               isActive('/admin/settings')
-                ? 'bg-gradient-to-br from-primary-50 to-primary-100 text-primary-700'
+                ? 'bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700'
                 : hoveredItem === 'Settings' 
                 ? 'bg-indigo-50 text-indigo-700'
                 : 'text-gray-600 hover:text-gray-900'
@@ -258,10 +260,9 @@ const AdminLayout = ({ children }) => {
             onMouseEnter={() => setHoveredItem('Settings')}
             onMouseLeave={() => setHoveredItem(null)}
             onClick={() => setSidebarOpen(false)}
-            title="Settings"
           >
             <Settings
-              className={`h-6 w-6 mb-1 transition-all duration-200 ${
+              className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
                 isActive('/admin/settings')
                   ? 'text-primary-600'
                   : hoveredItem === 'Settings'
@@ -269,7 +270,7 @@ const AdminLayout = ({ children }) => {
                   : 'text-gray-500 group-hover:text-gray-700'
               }`}
             />
-            <span className={`text-xs text-center leading-tight transition-all duration-200 ${
+            <span className={`text-sm leading-tight transition-all duration-200 ${
               isActive('/admin/settings')
                 ? 'text-primary-700 font-semibold'
                 : hoveredItem === 'Settings'
@@ -278,24 +279,26 @@ const AdminLayout = ({ children }) => {
             }`}>
               Settings
             </span>
+            {isActive('/admin/settings') && (
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-600 rounded-r-full"></div>
+            )}
           </Link>
 
           {/* Sign Out */}
           <button
             onClick={handleSignOut}
-            className="w-full group relative flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all duration-200 text-gray-600 hover:bg-red-50 hover:text-red-700"
+            className="w-full group relative flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:bg-red-50 hover:text-red-700"
             onMouseEnter={() => setHoveredItem('SignOut')}
             onMouseLeave={() => setHoveredItem(null)}
-            title="Sign out"
           >
             <LogOut
-              className={`h-6 w-6 mb-1 transition-all duration-200 ${
+              className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
                 hoveredItem === 'SignOut'
                   ? 'text-red-600'
                   : 'text-gray-500 group-hover:text-red-600'
               }`}
             />
-            <span className={`text-xs text-center leading-tight transition-all duration-200 ${
+            <span className={`text-sm leading-tight transition-all duration-200 ${
               hoveredItem === 'SignOut'
                 ? 'text-red-700 font-medium'
                 : 'text-gray-600 group-hover:text-red-700'
@@ -304,12 +307,12 @@ const AdminLayout = ({ children }) => {
             </span>
           </button>
 
-          {/* User Avatar */}
-          <div className="flex flex-col items-center justify-center pt-1 border-t border-gray-200 mt-1">
-            <div className={`h-8 w-8 rounded-md flex items-center justify-center text-xs font-semibold transition-all duration-200 mb-1 ${
+          {/* User Profile Info */}
+          <div className="flex items-center gap-3 px-3 py-2 border-t border-gray-200 mt-2">
+            <div className={`h-8 w-8 rounded-md flex items-center justify-center text-xs font-semibold flex-shrink-0 transition-all duration-200 ${
               hoveredItem === 'Profile'
                 ? 'bg-indigo-100 text-indigo-700'
-                : 'bg-primary-100 text-primary-700 hover:bg-indigo-100 hover:text-indigo-700'
+                : 'bg-primary-100 text-primary-700'
             }`}
               onMouseEnter={() => setHoveredItem('Profile')}
               onMouseLeave={() => setHoveredItem(null)}
@@ -317,8 +320,8 @@ const AdminLayout = ({ children }) => {
             >
               {profile?.full_name?.charAt(0) || 'U'}
             </div>
-            <span className="text-xs text-center text-gray-600 leading-tight max-w-16 truncate">
-              {profile?.full_name?.split(' ')[0] || 'User'}
+            <span className="text-sm text-gray-600 truncate">
+              {profile?.full_name || 'User'}
             </span>
           </div>
         </div>
