@@ -21,7 +21,8 @@ import {
   AlertTriangle,
   ShoppingBag as OnlineOrders,
   MessageSquare,
-  Gift
+  Gift,
+  ChevronRight
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import { supabase } from '../../lib/supabase'
@@ -30,10 +31,12 @@ import NotificationPanel from '../../components/NotificationPanel'
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [logo, setLogo] = useState(null)
   const [pharmacyName, setPharmacyName] = useState('BillSprout ERP')
   const [notificationCount, setNotificationCount] = useState(0)
   const [notificationPanelOpen, setNotificationPanelOpen] = useState(false)
+  const [hoveredItem, setHoveredItem] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
   const { profile, signOut } = useAuthStore()
@@ -164,78 +167,145 @@ const AdminLayout = ({ children }) => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
-        <div className="flex items-center justify-between h-16 px-6 bg-primary-600">
-          <div className="flex items-center">
-            <div className="h-8 w-8 bg-white rounded-lg flex items-center justify-center overflow-hidden">
+      {/* Icon-Based Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      } ${sidebarCollapsed ? 'w-24' : 'w-64 lg:w-24'}`}>
+        
+        {/* Sidebar Header - Logo & Name */}
+        <div className="flex items-center justify-between h-20 px-4 bg-gradient-to-br from-primary-600 to-primary-700 flex-shrink-0">
+          <div className="flex items-center justify-center w-full">
+            <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center overflow-hidden shadow-lg flex-shrink-0">
               {logo ? (
                 <img src={logo} alt="Logo" className="h-full w-full object-contain" />
               ) : (
                 <span className="text-lg font-bold text-primary-600">Rx</span>
               )}
             </div>
-            <span className="ml-3 text-lg font-semibold text-white truncate">{pharmacyName}</span>
+            {!sidebarCollapsed && (
+              <span className="ml-3 text-base font-bold text-white truncate hidden lg:block">
+                {pharmacyName.split(' ')[0]}
+              </span>
+            )}
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden text-white hover:bg-primary-700 p-1 rounded"
+            className="lg:hidden text-white hover:bg-primary-700 p-1 rounded absolute right-4"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Navigation */}
-        <nav className="mt-5 px-2 pb-20 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 140px)' }}>
-          <div className="space-y-1">
-            {navigation.map((item) => {
-              const Icon = item.icon
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                    isActive(item.href)
-                      ? 'bg-primary-50 text-primary-700 border-r-3 border-primary-600'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+        {/* Navigation - Icon-Based Vertical Layout */}
+        <nav className="flex-1 px-3 py-6 overflow-y-auto space-y-2" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+          {navigation.map((item) => {
+            const Icon = item.icon
+            const active = isActive(item.href)
+            
+            return (
+              <Link
+                key={item.name}
+                to={item.href}
+                onMouseEnter={() => setHoveredItem(item.name)}
+                onMouseLeave={() => setHoveredItem(null)}
+                className={`group relative flex flex-col items-center justify-center py-4 px-2 rounded-xl transition-all duration-200 ${
+                  active
+                    ? 'bg-gradient-to-br from-primary-50 to-primary-100 text-primary-700'
+                    : hoveredItem === item.name
+                    ? 'bg-indigo-50 text-indigo-700'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+                onClick={() => setSidebarOpen(false)}
+                title={item.name}
+              >
+                <Icon
+                  className={`h-6 w-6 mb-2 transition-all duration-200 ${
+                    active
+                      ? 'text-primary-600 scale-110'
+                      : hoveredItem === item.name
+                      ? 'text-indigo-600 scale-105'
+                      : 'text-gray-400 group-hover:text-gray-600 group-hover:scale-105'
                   }`}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <Icon
-                    className={`mr-3 h-5 w-5 ${
-                      isActive(item.href) ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-500'
-                    }`}
-                  />
-                  {item.name}
-                </Link>
-              )
-            })}
-          </div>
+                />
+                <span className={`text-xs font-medium text-center leading-tight ${
+                  active
+                    ? 'text-primary-700'
+                    : hoveredItem === item.name
+                    ? 'text-indigo-700'
+                    : 'text-gray-600'
+                }`}>
+                  {item.name.split(' ').slice(0, 2).join('\n')}
+                </span>
+                
+                {/* Active indicator dot */}
+                {active && (
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 h-2 w-2 bg-primary-600 rounded-full"></div>
+                )}
+              </Link>
+            )
+          })}
         </nav>
 
-        {/* User Profile */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-white">
-          <div className="flex items-center">
-            <div className="h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-sm font-medium text-primary-700">
-                {profile?.full_name?.charAt(0) || 'U'}
-              </span>
-            </div>
-            <div className="ml-3 flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
-                {profile?.full_name || 'User'}
-              </p>
-              <p className="text-xs text-gray-500 uppercase truncate">
-                {profile?.role || 'Admin'}
-              </p>
-            </div>
-            <button
-              onClick={handleSignOut}
-              className="ml-2 text-gray-400 hover:text-gray-600 p-1 rounded flex-shrink-0"
-              title="Sign out"
+        {/* User Profile Section - Bottom */}
+        <div className="border-t border-gray-200 p-3 space-y-2 flex-shrink-0">
+          {/* Settings */}
+          <Link
+            to="/admin/settings"
+            className={`group relative flex flex-col items-center justify-center py-3 px-2 rounded-xl transition-all duration-200 ${
+              isActive('/admin/settings')
+                ? 'bg-gradient-to-br from-primary-50 to-primary-100 text-primary-700'
+                : hoveredItem === 'Settings' 
+                ? 'bg-indigo-50 text-indigo-700'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+            onMouseEnter={() => setHoveredItem('Settings')}
+            onMouseLeave={() => setHoveredItem(null)}
+            onClick={() => setSidebarOpen(false)}
+            title="Settings"
+          >
+            <Settings
+              className={`h-5 w-5 mb-1 transition-all duration-200 ${
+                isActive('/admin/settings')
+                  ? 'text-primary-600 scale-110'
+                  : hoveredItem === 'Settings'
+                  ? 'text-indigo-600 scale-105'
+                  : 'text-gray-400 group-hover:text-gray-600 group-hover:scale-105'
+              }`}
+            />
+            <span className="text-xs font-medium">Settings</span>
+          </Link>
+
+          {/* Sign Out */}
+          <button
+            onClick={handleSignOut}
+            className="w-full group relative flex flex-col items-center justify-center py-3 px-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-red-50 hover:text-red-700"
+            onMouseEnter={() => setHoveredItem('SignOut')}
+            onMouseLeave={() => setHoveredItem(null)}
+            title="Sign out"
+          >
+            <LogOut
+              className={`h-5 w-5 mb-1 transition-all duration-200 ${
+                hoveredItem === 'SignOut'
+                  ? 'text-red-600 scale-105'
+                  : 'text-gray-400 group-hover:text-red-600 group-hover:scale-105'
+              }`}
+            />
+            <span className="text-xs font-medium">Logout</span>
+          </button>
+
+          {/* User Avatar */}
+          <div className="flex items-center justify-center pt-2 border-t border-gray-200">
+            <div className={`h-10 w-10 rounded-lg flex items-center justify-center text-sm font-semibold transition-all duration-200 ${
+              hoveredItem === 'Profile'
+                ? 'bg-indigo-100 text-indigo-700'
+                : 'bg-primary-100 text-primary-700 hover:bg-indigo-100 hover:text-indigo-700'
+            }`}
+              onMouseEnter={() => setHoveredItem('Profile')}
+              onMouseLeave={() => setHoveredItem(null)}
+              title={profile?.full_name || 'User'}
             >
-              <LogOut className="h-4 w-4" />
-            </button>
+              {profile?.full_name?.charAt(0) || 'U'}
+            </div>
           </div>
         </div>
       </div>
