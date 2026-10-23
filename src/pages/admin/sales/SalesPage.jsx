@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Receipt, TrendingUp, Calendar, Search, Eye, Printer, Filter, X } from 'lucide-react'
+import { Receipt, TrendingUp, Calendar, Search, Eye, Filter, X } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import toast from 'react-hot-toast'
 
@@ -103,11 +103,6 @@ const SalesPage = () => {
   const handleViewDetails = (sale) => {
     setSelectedSale(sale)
     setShowDetailModal(true)
-  }
-
-  const handlePrint = (sale) => {
-    // Open print dialog for the browser
-    window.print()
   }
 
   return (
@@ -293,15 +288,9 @@ const SalesPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
                         onClick={() => handleViewDetails(sale)}
-                        className="text-primary-600 hover:text-primary-900 mr-3"
+                        className="text-primary-600 hover:text-primary-900"
                       >
                         <Eye className="h-4 w-4 inline" />
-                      </button>
-                      <button
-                        onClick={() => handlePrint(sale)}
-                        className="text-gray-600 hover:text-gray-900"
-                      >
-                        <Printer className="h-4 w-4 inline" />
                       </button>
                     </td>
                   </tr>
@@ -436,13 +425,6 @@ const SalesPage = () => {
 
             {/* Modal Footer */}
             <div className="flex justify-end space-x-3 p-6 border-t border-gray-200 bg-gray-50">
-              <button
-                onClick={() => handlePrint(selectedSale)}
-                className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-              >
-                <Printer className="h-4 w-4 mr-2" />
-                Print
-              </button>
               <button
                 onClick={() => setShowDetailModal(false)}
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
