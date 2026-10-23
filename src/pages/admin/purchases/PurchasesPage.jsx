@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ShoppingBag, Plus, TrendingUp, Package, Search, Eye, Filter } from 'lucide-react'
+import { ShoppingBag, Plus, TrendingUp, Package, Search, Eye, Filter, Printer, X } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import toast from 'react-hot-toast'
 import PurchaseModal from './PurchaseModal'
@@ -9,6 +9,8 @@ const PurchasesPage = () => {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const [selectedPurchase, setSelectedPurchase] = useState(null)
+  const [showDetailModal, setShowDetailModal] = useState(false)
   const [stats, setStats] = useState({
     todayPurchases: 0,
     monthPurchases: 0,
@@ -99,6 +101,16 @@ const PurchasesPage = () => {
       currency: 'INR',
       maximumFractionDigits: 0
     }).format(amount || 0)
+  }
+
+  const handleViewDetails = (purchase) => {
+    setSelectedPurchase(purchase)
+    setShowDetailModal(true)
+  }
+
+  const handlePrint = (purchase) => {
+    // Open print dialog for the browser
+    window.print()
   }
 
   return (
@@ -257,10 +269,16 @@ const PurchasesPage = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
-                        onClick={() => toast('View details feature coming soon', { icon: '👁️' })}
+                        onClick={() => handleViewDetails(purchase)}
                         className="text-primary-600 hover:text-primary-900"
                       >
                         <Eye className="h-4 w-4 inline" />
+                      </button>
+                      <button
+                        onClick={() => handlePrint(purchase)}
+                        className="text-gray-600 hover:text-gray-900 ml-3"
+                      >
+                        <Printer className="h-4 w-4 inline" />
                       </button>
                     </td>
                   </tr>
@@ -281,6 +299,148 @@ const PurchasesPage = () => {
             fetchStats()
           }}
         />
+      )}
+
+      {/* Detail Modal */}
+      {showDetailModal && selectedPurchase && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-2xl shadow-lg">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">Purchase Details</h2>
+                <p className="text-sm text-gray-500 mt-1">Invoice: {selectedPurchase.invoice_number}</p>
+              </div>
+              <button
+                onClick={() => setShowDetailModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto">
+              {/* Basic Information */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Invoice Number</p>
+                  <p className="font-medium text-gray-900">{selectedPurchase.invoice_number}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Date</p>
+                  <p className="font-medium text-gray-900">
+                    {new Date(selectedPurchase.created_at).toLocaleDateString('en-IN')}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Supplier</p>
+                  <p className="font-medium text-gray-900">
+                    {selectedPurchase.supplier?.business_name || 'Unknown Supplier'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Status</p>
+                  <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
+                    selectedPurchase.status === 'completed' 
+                      ? 'bg-green-100 text-green-800' 
+                      : selectedPurchase.status === 'pending'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {selectedPurchase.status || 'pending'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Payment Information */}
+              <div className="border-t border-gray-200 pt-6">
+                <h3 className="font-medium text-gray-900 mb-4">Payment Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Payment Method</p>
+                    <p className="font-medium capitalize text-gray-900">{selectedPurchase.payment_method}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Payment Status</p>
+                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
+                      selectedPurchase.payment_status === 'paid' 
+                        ? 'bg-green-100 text-green-800' 
+                        : selectedPurchase.payment_status === 'pending'
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {selectedPurchase.payment_status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Amount Summary */}
+              <div className="border-t border-gray-200 pt-6">
+                <h3 className="font-medium text-gray-900 mb-4">Amount Summary</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Subtotal:</span>
+                    <span className="font-medium text-gray-900">{formatCurrency(selectedPurchase.subtotal)}</span>
+                  </div>
+                  {selectedPurchase.gst_amount > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">GST:</span>
+                      <span className="font-medium text-gray-900">{formatCurrency(selectedPurchase.gst_amount)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between border-t pt-2 mt-2">
+                    <span className="font-semibold text-gray-900">Total:</span>
+                    <span className="font-bold text-lg text-gray-900">{formatCurrency(selectedPurchase.total_amount)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Supplier Information */}
+              {selectedPurchase.supplier && (
+                <div className="border-t border-gray-200 pt-6">
+                  <h3 className="font-medium text-gray-900 mb-4">Supplier Information</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <p className="text-sm text-gray-500">Business Name</p>
+                      <p className="text-gray-900">{selectedPurchase.supplier.business_name}</p>
+                    </div>
+                    {selectedPurchase.supplier.owner_name && (
+                      <div>
+                        <p className="text-sm text-gray-500">Owner Name</p>
+                        <p className="text-gray-900">{selectedPurchase.supplier.owner_name}</p>
+                      </div>
+                    )}
+                    {selectedPurchase.supplier.phone && (
+                      <div>
+                        <p className="text-sm text-gray-500">Phone</p>
+                        <p className="text-gray-900">{selectedPurchase.supplier.phone}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-end space-x-3 p-6 border-t border-gray-200 bg-gray-50">
+              <button
+                onClick={() => handlePrint(selectedPurchase)}
+                className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Print
+              </button>
+              <button
+                onClick={() => setShowDetailModal(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
