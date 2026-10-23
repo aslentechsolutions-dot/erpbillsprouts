@@ -135,10 +135,12 @@ const LoginPage = () => {
           specific_request: demoFormData.specificRequest
         }])
       if (error) {
-        toast.error("Failed to submit demo request")
+        console.error("Demo request error:", error)
+        toast.error(error.message || "Failed to submit demo request")
       } else {
         // Show success state
         setDemoSuccess(true)
+        toast.success("Demo request submitted successfully!")
         
         // Auto-close after 2 seconds
         setTimeout(() => {
@@ -158,7 +160,8 @@ const LoginPage = () => {
         }, 2000)
       }
     } catch (error) {
-      toast.error("An error occurred")
+      console.error("Demo request exception:", error)
+      toast.error(error.message || "An error occurred")
     } finally {
       setDemoLoading(false)
     }
