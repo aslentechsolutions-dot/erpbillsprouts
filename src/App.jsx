@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+﻿import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { supabase } from './lib/supabase'
@@ -6,6 +6,7 @@ import useAuthStore from './store/authStore'
 
 // Components
 import LoginPage from './pages/auth/LoginPage'
+import FreeTrialPage from './pages/auth/FreeTrialPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import LoadingSpinner from './components/LoadingSpinner'
 import SupabaseSetup from './components/SupabaseSetup'
@@ -81,6 +82,10 @@ function App() {
           <Route 
             path="/register" 
             element={!user ? <CustomerRegisterPage /> : <Navigate to="/" replace />} 
+          />
+          <Route 
+            path="/free-trial" 
+            element={<FreeTrialPage />} 
           />
           
           {/* Root redirect based on role */}
@@ -224,11 +229,11 @@ function App() {
 function RoleBasedRedirect() {
   const { profile, getRedirectPath } = useAuthStore()
   
-  console.log('🔄 RoleBasedRedirect - Profile:', profile)
-  console.log('🔄 RoleBasedRedirect - Role:', profile?.role)
+  console.log('ðŸ”„ RoleBasedRedirect - Profile:', profile)
+  console.log('ðŸ”„ RoleBasedRedirect - Role:', profile?.role)
   
   const redirectPath = getRedirectPath()
-  console.log('🔄 RoleBasedRedirect - Redirecting to:', redirectPath)
+  console.log('ðŸ”„ RoleBasedRedirect - Redirecting to:', redirectPath)
   
   return <Navigate to={redirectPath} replace />
 }

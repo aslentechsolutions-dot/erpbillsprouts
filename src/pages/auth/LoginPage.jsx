@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Mail, Lock, AlertCircle, Zap, Package, FileText, RefreshCw, Database, Phone, UserPlus } from 'lucide-react'
-import useAuthStore from '../../store/authStore'
-import { supabase } from '../../lib/supabase'
-import toast from 'react-hot-toast'
+﻿import React, { useState, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { useNavigate } from "react-router-dom"
+import { Eye, EyeOff, AlertCircle, Zap, Package, FileText, RefreshCw, Database, Phone, UserPlus } from "lucide-react"
+import useAuthStore from "../../store/authStore"
+import { supabase } from "../../lib/supabase"
+import toast from "react-hot-toast"
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters')
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters")
 })
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [logo, setLogo] = useState(null)
-  const [pharmacyName, setPharmacyName] = useState('BillSprout')
+  const [pharmacyName, setPharmacyName] = useState("BillSprout")
   const { signIn } = useAuthStore()
   const navigate = useNavigate()
 
@@ -28,8 +28,8 @@ const LoginPage = () => {
   const fetchSettings = async () => {
     try {
       const { data, error } = await supabase
-        .from('settings')
-        .select('logo_url, pharmacy_name')
+        .from("settings")
+        .select("logo_url, pharmacy_name")
         .limit(1)
         .single()
 
@@ -38,7 +38,7 @@ const LoginPage = () => {
         if (data.pharmacy_name) setPharmacyName(data.pharmacy_name)
       }
     } catch (error) {
-      // Silently handle - use defaults
+      // Silently handle
     }
   }
 
@@ -55,12 +55,12 @@ const LoginPage = () => {
     try {
       const result = await signIn(data.email, data.password)
       if (result.success) {
-        toast.success('Login successful!')
+        toast.success("Login successful!")
       } else {
-        toast.error(result.error || 'Login failed')
+        toast.error(result.error || "Login failed")
       }
     } catch (error) {
-      toast.error('An unexpected error occurred')
+      toast.error("An unexpected error occurred")
     } finally {
       setIsLoading(false)
     }
@@ -83,7 +83,7 @@ const LoginPage = () => {
             <div>
               <h1 className="text-2xl font-bold">{pharmacyName}</h1>
               <p className="text-sm text-blue-200">Smart ERP & Fast POS Billing System</p>
-              <p className="text-xs text-blue-300">Powered by BillSprout</p>
+              <p className="text-xs text-blue-300">by LIFESPROUT Care</p>
             </div>
           </div>
 
@@ -150,33 +150,27 @@ const LoginPage = () => {
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
+      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-gradient-to-b from-gray-50 to-gray-100">
+        <div className="w-full max-w-md space-y-6">
           {/* Portal Access Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-4">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Portal Access</h2>
-            <p className="text-gray-500 text-sm">Select your portal and sign in.</p>
+            <p className="text-gray-600 text-sm">Select your portal and sign in.</p>
           </div>
 
           {/* Login Form Card */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 space-y-6">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <div className="bg-white rounded-xl shadow-md border border-gray-200 p-8 space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* Email Field */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  <div className="flex items-center space-x-2">
-                    <Mail className="w-4 h-4" />
-                    <span>Email Address</span>
-                  </div>
-                </label>
                 <input
-                  {...register('email')}
+                  {...register("email")}
                   type="email"
                   autoComplete="email"
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    errors.email ? 'border-red-300' : 'border-gray-300'
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 ${
+                    errors.email ? "border-red-300" : "border-gray-300"
                   }`}
-                  placeholder="Enter your email"
+                  placeholder="Email Address"
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -188,21 +182,15 @@ const LoginPage = () => {
 
               {/* Password Field */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  <div className="flex items-center space-x-2">
-                    <Lock className="w-4 h-4" />
-                    <span>Password</span>
-                  </div>
-                </label>
                 <div className="relative">
                   <input
-                    {...register('password')}
-                    type={showPassword ? 'text' : 'password'}
+                    {...register("password")}
+                    type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.password ? 'border-red-300' : 'border-gray-300'
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 ${
+                      errors.password ? "border-red-300" : "border-gray-300"
                     }`}
-                    placeholder="Enter your password"
+                    placeholder="Password"
                   />
                   <button
                     type="button"
@@ -233,49 +221,59 @@ const LoginPage = () => {
                 {isLoading ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                 ) : (
-                  'Sign In'
+                  "Sign In"
                 )}
               </button>
             </form>
+          </div>
 
-            {/* Registration Link */}
-            <div className="mt-4 text-center">
-              <p className="text-sm text-gray-600">
-                New customer?{' '}
-                <button
-                  onClick={() => navigate('/register')}
-                  className="text-blue-900 hover:text-blue-700 font-semibold inline-flex items-center"
-                >
-                  <UserPlus className="h-4 w-4 mr-1" />
-                  Register for online shopping
-                </button>
-              </p>
+          {/* Promotional Card */}
+          <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border border-gray-300 p-8 text-center space-y-4">
+            <div className="flex justify-center mb-2">
+              <span className="text-3xl">🚀</span>
             </div>
-
-            {/* Demo Accounts - For Testing */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-xs text-gray-500 text-center mb-3">Demo Accounts (Development Only):</p>
-              <div className="space-y-2 text-xs text-gray-600">
-                <div className="flex justify-between bg-gray-50 p-2 rounded">
-                  <span className="font-medium">Admin:</span>
-                  <span className="font-mono">admin@pharmacy.com / admin123</span>
-                </div>
-                <div className="flex justify-between bg-gray-50 p-2 rounded">
-                  <span className="font-medium">Pharmacist:</span>
-                  <span className="font-mono">pharmacist@pharmacy.com / pharma123</span>
-                </div>
-                <div className="flex justify-between bg-gray-50 p-2 rounded">
-                  <span className="font-medium">Staff:</span>
-                  <span className="font-mono">staff@pharmacy.com / staff123</span>
-                </div>
-              </div>
+            <h3 className="text-xl font-bold text-gray-900">Start Your Pharmacy Software Journey</h3>
+            <p className="text-gray-600 text-sm">Join hundreds of pharmacies using BillSprout</p>
+            
+            <button onClick={() => navigate("/free-trial")} className="w-full bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+              <span>📊</span>
+              Start Free Trial
+            </button>
+            
+            <p className="text-xs text-gray-500">No credit card required • 7-day free trial</p>
+            
+            <div className="pt-4 border-t border-gray-300">
+              <p className="text-sm text-gray-600 mb-3">Are you a customer?</p>
+              <button
+                onClick={() => navigate("/register")}
+                className="w-full border-2 border-blue-900 text-blue-900 hover:bg-blue-50 font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+              >
+                <UserPlus className="h-4 w-4" />
+                Create Customer Account
+              </button>
             </div>
           </div>
 
-          {/* Footer Links */}
-          <div className="mt-6 text-center text-sm text-gray-500">
+          {/* Support Links */}
+          <div className="text-center space-y-3 text-sm text-gray-600">
+            <div className="flex items-center justify-center gap-1">
+              <span>❓</span>
+              <button className="hover:text-blue-900 font-medium">Need Help? Contact Lifessprout Care Support</button>
+            </div>
+            <div className="flex items-center justify-center gap-4">
+              <button className="hover:text-blue-900 flex items-center gap-1">
+                <span>▶</span> Request a Demo
+              </button>
+              <span>•</span>
+              <button className="hover:text-blue-900 flex items-center gap-1">
+                <span>🏷️</span> View Pricing
+              </button>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="text-center text-xs text-gray-500 pt-4 border-t border-gray-200">
             <p>© 2024 BillSprout Smart ERP - LIFESPROUT Care</p>
-            <p className="mt-1">Need help? Contact: <a href="mailto:support@billsprout.online" className="text-blue-900 hover:underline">support@billsprout.online</a></p>
           </div>
         </div>
       </div>
@@ -284,3 +282,4 @@ const LoginPage = () => {
 }
 
 export default LoginPage
+
