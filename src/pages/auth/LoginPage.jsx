@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useNavigate } from "react-router-dom"
-import { Eye, EyeOff, AlertCircle, Zap, Package, FileText, RefreshCw, Database, Phone, UserPlus } from "lucide-react"
+import { Eye, EyeOff, AlertCircle, Zap, Package, FileText, RefreshCw, Database, Phone, UserPlus, X } from "lucide-react"
 import useAuthStore from "../../store/authStore"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
@@ -18,6 +18,7 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [logo, setLogo] = useState(null)
   const [pharmacyName, setPharmacyName] = useState("BillSprout")
+  const [showSupportModal, setShowSupportModal] = useState(false)
   const { signIn } = useAuthStore()
   const navigate = useNavigate()
 
@@ -258,7 +259,7 @@ const LoginPage = () => {
           <div className="text-center space-y-3 text-sm text-gray-600">
             <div className="flex items-center justify-center gap-1">
               <span>❓</span>
-              <button className="hover:text-blue-900 font-medium">Need Help? Contact Lifessprout Care Support</button>
+              <button onClick={() => setShowSupportModal(true)} className="hover:text-blue-900 font-medium">Need Help? Contact Lifessprout Care Support</button>
             </div>
             <div className="flex items-center justify-center gap-4">
               <button className="hover:text-blue-900 flex items-center gap-1">
@@ -277,9 +278,73 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Support Modal */}
+      {showSupportModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8 text-center">
+            <div className="flex justify-end mb-4">
+              <button onClick={() => setShowSupportModal(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="mb-6">
+              <div className="flex justify-center mb-3">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center">
+                  <span className="text-3xl">🛟</span>
+                </div>
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 mb-1">LIFESPROUT Care Support Desk</h2>
+              <p className="text-sm text-gray-600">BillSprout ERP Technical & Operational Assistance</p>
+            </div>
+            <div className="space-y-4">
+              <div className="border-2 border-green-500 rounded-lg p-4 flex items-center justify-between gap-4">
+                <div className="flex items-start gap-3 flex-1">
+                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-white font-bold text-lg">💬</span>
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-gray-900 text-sm">WhatsApp Support & Leads Desk</h3>
+                    <p className="text-xs text-gray-600">+44 7747 571513</p>
+                  </div>
+                </div>
+                <a href="https://wa.me/447747571513" target="_blank" rel="noopener noreferrer" className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-3 rounded-lg text-xs whitespace-nowrap">
+                  Chat Now
+                </a>
+              </div>
+              <div className="border border-gray-300 rounded-lg p-4 flex items-start gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="text-lg">✉️</span>
+                </div>
+                <div className="text-left flex-1">
+                  <h3 className="font-semibold text-gray-900 text-sm">Technical Support Email</h3>
+                  <a href="mailto:Support@billsprout.online" className="text-blue-600 hover:underline text-xs">
+                    Support@billsprout.online
+                  </a>
+                </div>
+              </div>
+              <div className="border border-gray-300 rounded-lg p-4 flex items-start gap-3">
+                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="text-lg">📧</span>
+                </div>
+                <div className="text-left flex-1">
+                  <h3 className="font-semibold text-gray-900 text-sm">Customer Care Email</h3>
+                  <a href="mailto:info@lifessproutcare.com" className="text-blue-600 hover:underline text-xs">
+                    info@lifessproutcare.com
+                  </a>
+                </div>
+              </div>
+            </div>
+            <button onClick={() => setShowSupportModal(false)} className="w-full mt-6 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-2 px-4 rounded-lg text-sm">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
-
 export default LoginPage
+
 
