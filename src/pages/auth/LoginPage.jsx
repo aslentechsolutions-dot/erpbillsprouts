@@ -586,7 +586,8 @@ const LoginPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Basic Plan Card */}
               <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Basic Plan</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-1">Basic Plan</h3>
+                <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded mb-4">🏪 Retail Only</span>
                 <div className="mb-4">
                   <span className="text-4xl font-bold text-gray-900">₹5000</span>
                   <p className="text-sm text-gray-600 mt-1">+ 18% GST</p>
@@ -621,7 +622,8 @@ const LoginPage = () => {
 
               {/* Professional Plan Card */}
               <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Professional Plan</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-1">Professional Plan</h3>
+                <span className="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded mb-4">🏢 Retail + Wholesale</span>
                 <div className="mb-4">
                   <span className="text-4xl font-bold text-gray-900">₹20000</span>
                   <p className="text-sm text-gray-600 mt-1">+ 18% GST</p>
@@ -629,7 +631,7 @@ const LoginPage = () => {
                 <ul className="space-y-3">
                   <li className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">Unlimited Users (Max 5)</span>
+                    <span className="text-gray-700 text-sm">5 Users</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
@@ -664,7 +666,8 @@ const LoginPage = () => {
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                   <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold">RECOMMENDED</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2 mt-2">Gold Edition</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-1 mt-2">Gold Edition</h3>
+                <span className="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-1 rounded mb-4">🌐 Wholesale & Distributors</span>
                 <div className="mb-4">
                   <span className="text-4xl font-bold text-gray-900">₹35000</span>
                   <p className="text-sm text-gray-600 mt-1">+ 18% GST</p>
@@ -672,7 +675,7 @@ const LoginPage = () => {
                 <ul className="space-y-3">
                   <li className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">Unlimited Users (Max 5)</span>
+                    <span className="text-gray-700 text-sm">Unlimited Users</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
