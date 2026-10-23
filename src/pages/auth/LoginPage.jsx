@@ -156,6 +156,7 @@ const LoginPage = () => {
     }
   }
 
+  return (
     <div className="min-h-screen flex bg-gray-50">
       {/* Left Panel - Features */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white p-12 flex-col justify-between">
