@@ -167,7 +167,7 @@ const MedicineModal = ({ medicine, onClose, onSave }) => {
 
           if (batchError) {
             console.error('Error creating initial batch:', batchError)
-            toast.warning('Medicine added but failed to create initial batch')
+            toast.error('Medicine added but failed to create initial batch')
           } else {
             toast.success('Medicine and initial stock added successfully')
           }
