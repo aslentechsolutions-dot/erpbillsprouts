@@ -359,106 +359,114 @@ const DemoRequests = () => {
       {/* Detail Modal */}
       {showDetailModal && selectedRequest && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full p-8">
-            <div className="flex justify-between items-start mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Demo Request Details</h2>
+          <div className="bg-white rounded-lg shadow-lg w-96 max-w-[90vw] max-h-[90vh] flex flex-col box-border" style={{ boxSizing: 'border-box' }}>
+            {/* Header */}
+            <div className="flex justify-between items-start px-4 py-3 border-b border-gray-200 flex-shrink-0">
+              <h2 style={{ fontSize: '16px' }} className="font-semibold text-gray-900">Demo Request Details</h2>
               <button
                 onClick={() => setShowDetailModal(false)}
-                className="text-gray-400 hover:text-gray-600 p-2 rounded hover:bg-gray-100"
+                className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100 flex-shrink-0"
               >
                 ✕
               </button>
             </div>
 
-            <div className="space-y-6">
-              {/* Personal Info */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4">Personal Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm text-gray-600">Name</label>
-                    <p className="text-gray-900 font-medium">{selectedRequest.name}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600">Mobile Number</label>
-                    <a href={`tel:${selectedRequest.mobile_number}`} className="text-blue-600 hover:underline font-medium">
-                      {selectedRequest.mobile_number}
-                    </a>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600">Email</label>
-                    <a href={`mailto:${selectedRequest.email}`} className="text-blue-600 hover:underline font-medium">
-                      {selectedRequest.email}
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Business Info */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4">Business Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm text-gray-600">Business Name</label>
-                    <p className="text-gray-900 font-medium">{selectedRequest.business_name}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600">Business Type</label>
-                    <p className="text-gray-900 font-medium">{selectedRequest.business_type}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600">Branches</label>
-                    <p className="text-gray-900 font-medium">{selectedRequest.branches}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600">Location</label>
-                    <p className="text-gray-900 font-medium">{selectedRequest.city}, {selectedRequest.pincode}</p>
+            {/* Scrollable Content */}
+            <div className="overflow-y-auto flex-1 px-4 py-3" style={{ maxHeight: 'calc(90vh - 140px)' }}>
+              <div className="space-y-3">
+                {/* Personal Info */}
+                <div className="pb-3 border-b border-gray-200">
+                  <h3 style={{ fontSize: '13px' }} className="font-semibold text-gray-900 mb-2">Personal Information</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Name</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedRequest.name}</p>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Mobile Number</label>
+                      <a href={'tel:' + selectedRequest.mobile_number} style={{ fontSize: '12px' }} className="text-blue-600 hover:underline font-medium">
+                        {selectedRequest.mobile_number}
+                      </a>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Email</label>
+                      <a href={'mailto:' + selectedRequest.email} style={{ fontSize: '12px' }} className="text-blue-600 hover:underline font-medium break-all">
+                        {selectedRequest.email}
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Request Details */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4">Request</h3>
+                {/* Business Info */}
+                <div className="pb-3 border-b border-gray-200">
+                  <h3 style={{ fontSize: '13px' }} className="font-semibold text-gray-900 mb-2">Business Information</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Business Name</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedRequest.business_name}</p>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Business Type</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedRequest.business_type}</p>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Branches</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedRequest.branches}</p>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Location</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedRequest.city}, {selectedRequest.pincode}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Request Details */}
+                <div className="pb-3 border-b border-gray-200">
+                  <h3 style={{ fontSize: '13px' }} className="font-semibold text-gray-900 mb-2">Request</h3>
+                  <div>
+                    <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-1">Specific Request</label>
+                    <p style={{ fontSize: '12px' }} className="text-gray-900 p-2 bg-gray-50 rounded text-gray-700 max-h-24 overflow-y-auto">
+                      {selectedRequest.specific_request || 'No specific request provided'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Metadata */}
                 <div>
-                  <label className="text-sm text-gray-600">Specific Request</label>
-                  <p className="text-gray-900 mt-1 p-4 bg-gray-50 rounded-lg">
-                    {selectedRequest.specific_request || 'No specific request provided'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Metadata */}
-              <div className="border-t border-gray-200 pt-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm text-gray-600">Submitted On</label>
-                    <p className="text-gray-900 font-medium">{formatDate(selectedRequest.created_at)}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600">Status</label>
-                    <p className="text-gray-900 font-medium">{selectedRequest.status || 'Pending'}</p>
+                  <div className="space-y-2">
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Submitted On</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{formatDate(selectedRequest.created_at)}</p>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Status</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedRequest.status || 'Pending'}</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-8 flex gap-3">
+            {/* Footer Buttons */}
+            <div className="flex gap-2 px-4 py-3 border-t border-gray-200 flex-shrink-0" style={{ boxSizing: 'border-box' }}>
               <a
-                href={`tel:${selectedRequest.mobile_number}`}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg text-center transition-colors"
+                href={'tel:' + selectedRequest.mobile_number}
+                style={{ fontSize: '13px', height: '32px' }}
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold px-3 rounded-md text-center flex items-center justify-center transition-colors"
               >
                 Call
               </a>
               <a
-                href={`mailto:${selectedRequest.email}`}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg text-center transition-colors"
+                href={'mailto:' + selectedRequest.email}
+                style={{ fontSize: '13px', height: '32px' }}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-3 rounded-md text-center flex items-center justify-center transition-colors"
               >
                 Email
               </a>
               <button
                 onClick={() => setShowDetailModal(false)}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-2 px-4 rounded-lg transition-colors"
+                style={{ fontSize: '13px', height: '32px' }}
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold px-3 rounded-md transition-colors"
               >
                 Close
               </button>
