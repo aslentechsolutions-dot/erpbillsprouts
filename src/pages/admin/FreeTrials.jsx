@@ -469,120 +469,128 @@ const FreeTrials = () => {
 
       {/* Detail Modal */}
       {showDetailModal && selectedTrial && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 my-8">
-            <div className="flex justify-between items-start mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Free Trial Details</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-lg w-96 max-w-[90vw] max-h-[90vh] flex flex-col box-border" style={{ boxSizing: 'border-box' }}>
+            {/* Header */}
+            <div className="flex justify-between items-start px-4 py-3 border-b border-gray-200 flex-shrink-0">
+              <h2 style={{ fontSize: '16px' }} className="font-semibold text-gray-900">Free Trial Details</h2>
               <button
                 onClick={() => setShowDetailModal(false)}
-                className="text-gray-400 hover:text-gray-600 p-2 rounded hover:bg-gray-100"
+                className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100 flex-shrink-0"
               >
                 ✕
               </button>
             </div>
 
-            <div className="space-y-4">
-              {/* Pharmacy Info */}
-              <div className="pb-4 border-b border-gray-200">
-                <h3 className="text-base font-semibold text-gray-900 mb-4">Pharmacy Information</h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm text-gray-600 block mb-1">Pharmacy Name</label>
-                    <p className="text-gray-900 font-medium text-sm">{selectedTrial.pharmacy_name}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600 block mb-1">Drug License Number</label>
-                    <p className="text-gray-900 font-medium text-sm">{selectedTrial.drug_license_number}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Owner Info */}
-              <div className="pb-4 border-b border-gray-200">
-                <h3 className="text-base font-semibold text-gray-900 mb-4">Owner Information</h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm text-gray-600 block mb-1">Owner Name</label>
-                    <p className="text-gray-900 font-medium text-sm">{selectedTrial.owner_name}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600 block mb-1">Email</label>
-                    <a href={`mailto:${selectedTrial.email}`} className="text-blue-600 hover:underline font-medium text-sm">
-                      {selectedTrial.email}
-                    </a>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600 block mb-1">Phone Number</label>
-                    <a href={`tel:${selectedTrial.phone_number}`} className="text-blue-600 hover:underline font-medium text-sm">
-                      {selectedTrial.phone_number}
-                    </a>
+            {/* Scrollable Content */}
+            <div className="overflow-y-auto flex-1 px-4 py-3" style={{ maxHeight: 'calc(90vh - 140px)' }}>
+              <div className="space-y-3">
+                {/* Pharmacy Info */}
+                <div className="pb-3 border-b border-gray-200">
+                  <h3 style={{ fontSize: '13px' }} className="font-semibold text-gray-900 mb-2">Pharmacy Information</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Pharmacy Name</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedTrial.pharmacy_name}</p>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Drug License Number</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium break-words">{selectedTrial.drug_license_number}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Address Info */}
-              <div className="pb-4 border-b border-gray-200">
-                <h3 className="text-base font-semibold text-gray-900 mb-4">Address Information</h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm text-gray-600 block mb-1">Address</label>
-                    <p className="text-gray-900 font-medium text-sm">{selectedTrial.address}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600 block mb-1">City</label>
-                    <p className="text-gray-900 font-medium text-sm">{selectedTrial.city}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600 block mb-1">State</label>
-                    <p className="text-gray-900 font-medium text-sm">{selectedTrial.state}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600 block mb-1">Pincode</label>
-                    <p className="text-gray-900 font-medium text-sm">{selectedTrial.pincode}</p>
+                {/* Owner Info */}
+                <div className="pb-3 border-b border-gray-200">
+                  <h3 style={{ fontSize: '13px' }} className="font-semibold text-gray-900 mb-2">Owner Information</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Owner Name</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedTrial.owner_name}</p>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Email</label>
+                      <a href={'mailto:' + selectedTrial.email} style={{ fontSize: '12px' }} className="text-blue-600 hover:underline font-medium break-all">
+                        {selectedTrial.email}
+                      </a>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Phone Number</label>
+                      <a href={'tel:' + selectedTrial.phone_number} style={{ fontSize: '12px' }} className="text-blue-600 hover:underline font-medium">
+                        {selectedTrial.phone_number}
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Plan Info */}
-              <div className="pb-4 border-b border-gray-200">
-                <h3 className="text-base font-semibold text-gray-900 mb-4">Plan Information</h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm text-gray-600 block mb-1">Selected Plan</label>
-                    <span className={`inline-block ${getPlanColor(selectedTrial.selected_plan)} px-3 py-1 rounded-full text-sm font-semibold`}>
-                      {getPlanLabel(selectedTrial.selected_plan)}
-                    </span>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600 block mb-1">Status</label>
-                    <p className="text-gray-900 font-medium text-sm">{selectedTrial.status}</p>
+                {/* Address Info */}
+                <div className="pb-3 border-b border-gray-200">
+                  <h3 style={{ fontSize: '13px' }} className="font-semibold text-gray-900 mb-2">Address Information</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Address</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedTrial.address}</p>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">City</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedTrial.city}</p>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">State</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedTrial.state}</p>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Pincode</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedTrial.pincode}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Metadata */}
-              <div>
-                <label className="text-sm text-gray-600 block mb-1">Registered On</label>
-                <p className="text-gray-900 font-medium text-sm">{formatDate(selectedTrial.created_at)}</p>
+                {/* Plan Info */}
+                <div className="pb-3 border-b border-gray-200">
+                  <h3 style={{ fontSize: '13px' }} className="font-semibold text-gray-900 mb-2">Plan Information</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Selected Plan</label>
+                      <span style={{ fontSize: '12px' }} className={'inline-block ' + getPlanColor(selectedTrial.selected_plan) + ' px-2 py-1 rounded text-xs font-semibold'}>
+                        {getPlanLabel(selectedTrial.selected_plan)}
+                      </span>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Status</label>
+                      <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{selectedTrial.status}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Metadata */}
+                <div>
+                  <label style={{ fontSize: '11px' }} className="text-gray-600 block mb-0.5">Registered On</label>
+                  <p style={{ fontSize: '12px' }} className="text-gray-900 font-medium">{formatDate(selectedTrial.created_at)}</p>
+                </div>
               </div>
             </div>
 
-            <div className="mt-6 flex gap-3">
+            {/* Footer Buttons */}
+            <div className="flex gap-2 px-4 py-3 border-t border-gray-200 flex-shrink-0" style={{ boxSizing: 'border-box' }}>
               <a
-                href={`tel:${selectedTrial.phone_number}`}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg text-sm text-center transition-colors"
+                href={'tel:' + selectedTrial.phone_number}
+                style={{ fontSize: '13px', height: '32px' }}
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold px-3 rounded-md text-center flex items-center justify-center transition-colors"
               >
                 Call
               </a>
               <a
-                href={`mailto:${selectedTrial.email}`}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg text-sm text-center transition-colors"
+                href={'mailto:' + selectedTrial.email}
+                style={{ fontSize: '13px', height: '32px' }}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-3 rounded-md text-center flex items-center justify-center transition-colors"
               >
                 Email
               </a>
               <button
                 onClick={() => setShowDetailModal(false)}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-2 px-4 rounded-lg text-sm transition-colors"
+                style={{ fontSize: '13px', height: '32px' }}
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold px-3 rounded-md transition-colors"
               >
                 Close
               </button>
