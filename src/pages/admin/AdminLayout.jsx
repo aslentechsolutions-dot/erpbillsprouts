@@ -145,7 +145,6 @@ const AdminLayout = ({ children }) => {
     { name: 'ERP Inquiries', href: '/admin/erp-inquiries', icon: MessageSquare },
     { name: 'Wholesalers', href: '/admin/wholesalers', icon: Truck },
     { name: 'Users', href: '/admin/users', icon: UserCheck },
-    { name: 'Settings', href: '/admin/settings', icon: Settings },
   ]
 
   const handleSignOut = async () => {
@@ -168,12 +167,12 @@ const AdminLayout = ({ children }) => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Vertical Card Sidebar with Icon Above Text */}
-      <div className={`fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 w-screen sm:w-80 lg:w-24 ${
+      <div className={`fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 w-screen sm:w-80 lg:w-[88px] flex flex-col ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         
         {/* Sidebar Header - Logo Only (Compact) */}
-        <div className="flex items-center justify-between h-20 px-2 bg-gradient-to-br from-primary-600 to-primary-700 flex-shrink-0 flex-col sm:flex-row lg:flex-col">
+        <div className="flex items-center justify-between h-16 px-2 bg-gradient-to-br from-primary-600 to-primary-700 flex-shrink-0 flex-col sm:flex-row lg:flex-col">
           <div className="flex items-center justify-center w-16 h-16 mx-auto lg:mx-0">
             <div className="h-10 w-10 bg-white rounded-lg flex items-center justify-center overflow-hidden shadow-lg">
               {logo ? (
@@ -191,9 +190,9 @@ const AdminLayout = ({ children }) => {
           </button>
         </div>
 
-        {/* Navigation - Minimal Design */}
-        <nav className="flex-1 px-2 py-3 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
-          <div className="flex flex-wrap lg:flex-col gap-2">
+        {/* Navigation - Vertical Column Layout */}
+        <nav className="flex-1 px-2 py-1 overflow-y-auto flex flex-col">
+          <div className="flex flex-col gap-1">
             {navigation.map((item) => {
               const Icon = item.icon
               const active = isActive(item.href)
@@ -204,7 +203,7 @@ const AdminLayout = ({ children }) => {
                   to={item.href}
                   onMouseEnter={() => setHoveredItem(item.name)}
                   onMouseLeave={() => setHoveredItem(null)}
-                  className={`group relative flex flex-col items-center justify-center w-20 h-24 sm:w-24 sm:h-24 rounded-lg transition-all duration-200 flex-shrink-0 ${
+                  className={`group relative flex flex-col items-center justify-center py-1.5 px-2 rounded-lg transition-all duration-200 flex-shrink-0 w-full min-h-[62px] ${
                     active
                       ? 'bg-blue-500'
                       : hoveredItem === item.name
@@ -214,9 +213,9 @@ const AdminLayout = ({ children }) => {
                   onClick={() => setSidebarOpen(false)}
                   title={item.name}
                 >
-                  {/* Icon */}
+                  {/* Icon - 24px */}
                   <Icon
-                    className={`h-6 w-6 mb-1 transition-all duration-200 ${
+                    className={`h-6 w-6 mb-1 transition-all duration-200 flex-shrink-0 ${
                       active
                         ? 'text-white'
                         : hoveredItem === item.name
@@ -225,12 +224,12 @@ const AdminLayout = ({ children }) => {
                     }`}
                   />
                   
-                  {/* Text */}
-                  <span className={`text-xs leading-tight text-center transition-all duration-200 line-clamp-2 px-1 ${
+                  {/* Text - 9px, single line only */}
+                  <span className={`text-[9px] font-medium leading-tight text-center transition-all duration-200 truncate w-full ${
                     active
-                      ? 'text-white font-medium'
+                      ? 'text-white'
                       : hoveredItem === item.name
-                      ? 'text-gray-700 font-medium'
+                      ? 'text-gray-700'
                       : 'text-gray-600'
                   }`}>
                     {item.name}
@@ -241,17 +240,17 @@ const AdminLayout = ({ children }) => {
           </div>
         </nav>
 
-        {/* User Profile Section - Bottom */}
-        <div className="border-t border-gray-200 p-2 flex-shrink-0">
-          {/* Settings Card */}
+        {/* Bottom Section - Settings, Logout, Profile */}
+        <div className="border-t border-gray-200 p-1 flex-shrink-0 flex flex-col gap-1">
+          {/* Settings Card - Blue Background */}
           <Link
             to="/admin/settings"
-            className={`group relative flex flex-col items-center justify-center w-full h-20 rounded-lg transition-all duration-200 mb-2 ${
+            className={`group relative flex flex-col items-center justify-center w-full py-1.5 px-2 rounded-lg transition-all duration-200 ${
               isActive('/admin/settings')
-                ? 'bg-blue-500'
+                ? 'bg-blue-500 text-white'
                 : hoveredItem === 'Settings' 
-                ? 'bg-gray-100'
-                : ''
+                ? 'bg-blue-50'
+                : 'bg-gray-50 hover:bg-blue-500 hover:text-white'
             }`}
             onMouseEnter={() => setHoveredItem('Settings')}
             onMouseLeave={() => setHoveredItem(null)}
@@ -259,47 +258,43 @@ const AdminLayout = ({ children }) => {
             title="Settings"
           >
             <Settings
-              className={`h-6 w-6 mb-1 transition-all duration-200 ${
-                isActive('/admin/settings')
+              className={`h-6 w-6 mb-1 transition-all duration-200 flex-shrink-0 ${
+                isActive('/admin/settings') || hoveredItem === 'Settings'
                   ? 'text-white'
-                  : hoveredItem === 'Settings'
-                  ? 'text-gray-700'
-                  : 'text-gray-500'
+                  : 'text-blue-500'
               }`}
             />
-            <span className={`text-xs leading-tight text-center transition-all duration-200 px-1 ${
-              isActive('/admin/settings')
-                ? 'text-white font-medium'
-                : hoveredItem === 'Settings'
-                ? 'text-gray-700 font-medium'
-                : 'text-gray-600'
+            <span className={`text-[9px] font-medium leading-tight text-center transition-all duration-200 truncate w-full ${
+              isActive('/admin/settings') || hoveredItem === 'Settings'
+                ? 'text-white'
+                : 'text-blue-600'
             }`}>
               Settings
             </span>
           </Link>
 
-          {/* Sign Out Card */}
+          {/* Logout Card */}
           <button
             onClick={handleSignOut}
-            className={`w-full group relative flex flex-col items-center justify-center h-20 rounded-lg transition-all duration-200 ${
+            className={`w-full group relative flex flex-col items-center justify-center py-1.5 px-2 rounded-lg transition-all duration-200 ${
               hoveredItem === 'SignOut'
-                ? 'bg-gray-100 text-red-700'
-                : 'text-gray-600'
+                ? 'bg-red-50 text-red-600'
+                : 'bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600'
             }`}
             onMouseEnter={() => setHoveredItem('SignOut')}
             onMouseLeave={() => setHoveredItem(null)}
             title="Logout"
           >
             <LogOut
-              className={`h-6 w-6 mb-1 transition-all duration-200 ${
+              className={`h-6 w-6 mb-1 transition-all duration-200 flex-shrink-0 ${
                 hoveredItem === 'SignOut'
                   ? 'text-red-600'
                   : 'text-gray-500'
               }`}
             />
-            <span className={`text-xs leading-tight text-center transition-all duration-200 px-1 ${
+            <span className={`text-[9px] font-medium leading-tight text-center transition-all duration-200 truncate w-full ${
               hoveredItem === 'SignOut'
-                ? 'text-red-700 font-medium'
+                ? 'text-red-700'
                 : 'text-gray-600'
             }`}>
               Logout
@@ -307,23 +302,23 @@ const AdminLayout = ({ children }) => {
           </button>
 
           {/* User Profile Card */}
-          <div className={`flex flex-col items-center justify-center h-20 rounded-lg mt-2 transition-all duration-200 ${
+          <div className={`flex flex-col items-center justify-center py-1.5 px-2 rounded-lg transition-all duration-200 ${
             hoveredItem === 'Profile'
               ? 'bg-gray-100'
-              : ''
+              : 'bg-gray-50'
           }`}
             onMouseEnter={() => setHoveredItem('Profile')}
             onMouseLeave={() => setHoveredItem(null)}
             title={profile?.full_name || 'User'}
           >
-            <div className={`h-8 w-8 rounded-md flex items-center justify-center text-xs font-semibold transition-all duration-200 ${
+            <div className={`h-6 w-6 rounded-md flex items-center justify-center text-xs font-semibold flex-shrink-0 transition-all duration-200 ${
               hoveredItem === 'Profile'
                 ? 'bg-gray-300 text-gray-700'
                 : 'bg-gray-200 text-gray-600'
             }`}>
               {profile?.full_name?.charAt(0) || 'U'}
             </div>
-            <span className="text-xs text-gray-600 text-center mt-1 px-1 line-clamp-2">
+            <span className="text-[9px] text-gray-600 text-center mt-1 font-medium leading-tight truncate w-full">
               {profile?.full_name ? profile.full_name.split(' ')[0] : 'User'}
             </span>
           </div>
