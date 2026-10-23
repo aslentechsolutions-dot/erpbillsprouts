@@ -60,15 +60,32 @@ const AdminDashboard = () => {
       
       // Get today's date range
       const today = new Date()
-      const startOfDay = new Date(today.setHours(0, 0, 0, 0)).toISOString()
-      const endOfDay = new Date(today.setHours(23, 59, 59, 999)).toISOString()
+      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString()
+      const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999).toISOString()
 
-      // Fetch all required data in parallel - only query tables that exist
+      // Get last 7 days for charts
+      const sevenDaysAgo = new Date(today)
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
+      const sevenDaysAgoStart = new Date(sevenDaysAgo.getFullYear(), sevenDaysAgo.getMonth(), sevenDaysAgo.getDate()).toISOString()
+
+      // Get last 6 months for monthly chart
+      const sixMonthsAgo = new Date(today)
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5)
+      const sixMonthsAgoStart = new Date(sixMonthsAgo.getFullYear(), sixMonthsAgo.getMonth(), 1).toISOString()
+
+      // Fetch all required data in parallel
       const [
         medicinesResponse,
         batchesResponse,
         customersResponse,
-        paymentsResponse
+        paymentsResponse,
+        todaySalesResponse,
+        todayPurchasesResponse,
+        sevenDaysSalesResponse,
+        sevenDaysPurchasesResponse,
+        monthlyResponse,
+        topMedicinesResponse,
+        categorySalesResponse
       ] = await Promise.all([
         // Medicines count
         supabase
@@ -91,14 +108,73 @@ const AdminDashboard = () => {
         supabase
           .from('customer_orders')
           .select('total, payment_status')
-          .eq('payment_status', 'pending')
+          .eq('payment_status', 'pending'),
+        
+        // Today's sales total
+        supabase
+          .from('sales')
+          .select('id, total')
+          .gte('created_at', startOfDay)
+          .lte('created_at', endOfDay),
+        
+        // Today's purchases total
+        supabase
+          .from('purchases')
+          .select('id, total')
+          .gte('created_at', startOfDay)
+          .lte('created_at', endOfDay),
+        
+        // Last 7 days sales for chart
+        supabase
+          .from('sales')
+          .select('total, created_at')
+          .gte('created_at', sevenDaysAgoStart)
+          .lte('created_at', endOfDay),
+        
+        // Last 7 days purchases for chart
+        supabase
+          .from('purchases')
+          .select('total, created_at')
+          .gte('created_at', sevenDaysAgoStart)
+          .lte('created_at', endOfDay),
+        
+        // Last 6 months sales for monthly chart
+        supabase
+          .from('sales')
+          .select('total, created_at')
+          .gte('created_at', sixMonthsAgoStart)
+          .lte('created_at', endOfDay),
+        
+        // Top selling medicines
+        supabase
+          .from('sale_items')
+          .select('medicine_id, quantity, medicines(name)')
+          .gte('created_at', sevenDaysAgoStart)
+          .order('quantity', { ascending: false })
+          .limit(5),
+        
+        // Category sales data
+        supabase
+          .from('sale_items')
+          .select('medicines(category), quantity, total')
+          .gte('created_at', sevenDaysAgoStart)
       ])
+
+      // Calculate today's sales and invoices
+      const todaySalesTotal = todaySalesResponse.data?.reduce((sum, sale) => sum + (sale.total || 0), 0) || 0
+      const todayInvoicesCount = todaySalesResponse.data?.length || 0
+
+      // Calculate today's purchases
+      const todayPurchasesTotal = todayPurchasesResponse.data?.reduce((sum, purchase) => sum + (purchase.total || 0), 0) || 0
+
+      // Calculate profit (25% of sales as simplified profit margin)
+      const todayProfit = todaySalesTotal * 0.25
 
       // Calculate stats
       const stats = {
-        todaySales: 0, // No sales table, use orders as proxy
-        todayPurchases: 0, // No purchases table
-        todayProfit: 0,
+        todaySales: todaySalesTotal,
+        todayPurchases: todayPurchasesTotal,
+        todayProfit: todayProfit,
         totalMedicines: medicinesResponse.data?.length || 0,
         totalStock: batchesResponse.data?.reduce((sum, batch) => sum + (batch.current_quantity || 0), 0) || 0,
         lowStockMedicines: 0, // Will calculate based on threshold
@@ -109,11 +185,8 @@ const AdminDashboard = () => {
         totalWholesalers: 0,
         pendingPayments: paymentsResponse.data?.reduce((sum, payment) => sum + (payment.total || 0), 0) || 0,
         outstandingCredit: 0,
-        todayInvoices: 0
+        todayInvoices: todayInvoicesCount
       }
-
-      // Calculate profit (simplified)
-      stats.todayProfit = stats.todaySales * 0.25
 
       // Calculate low stock medicines based on thresholds
       if (medicinesResponse.data && batchesResponse.data) {
@@ -148,13 +221,19 @@ const AdminDashboard = () => {
         })
       }
 
-      // Generate sample chart data (in production, this would come from real data)
+      // Generate real chart data from database
+      const dailySalesChart = generateRealSalesData(sevenDaysSalesResponse.data, sevenDaysPurchasesResponse.data)
+      const monthlySalesChart = generateRealMonthlyData(monthlyResponse.data)
+      const purchaseVsSalesChart = generateRealComparisonData(sevenDaysSalesResponse.data, sevenDaysPurchasesResponse.data)
+      const topMedicinesChart = generateRealTopMedicines(topMedicinesResponse.data)
+      const categorySalesChart = generateRealCategoryData(categorySalesResponse.data)
+
       const charts = {
-        dailySales: generateSampleSalesData(),
-        monthlySales: generateSampleMonthlyData(),
-        purchaseVsSales: generateSampleComparisonData(),
-        topMedicines: generateSampleTopMedicines(),
-        categorySales: generateSampleCategoryData()
+        dailySales: dailySalesChart,
+        monthlySales: monthlySalesChart,
+        purchaseVsSales: purchaseVsSalesChart,
+        topMedicines: topMedicinesChart,
+        categorySales: categorySalesChart
       }
 
       setDashboardData({ stats, charts })
@@ -165,60 +244,154 @@ const AdminDashboard = () => {
     }
   }
 
-  // Sample data generators (replace with real data in production)
-  const generateSampleSalesData = () => {
-    const data = []
+  // Generate real sales data from database (last 7 days)
+  const generateRealSalesData = (salesData, purchasesData) => {
+    const data = {}
+    
+    // Initialize last 7 days
     for (let i = 6; i >= 0; i--) {
       const date = new Date()
       date.setDate(date.getDate() - i)
-      data.push({
-        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        sales: Math.floor(Math.random() * 5000) + 2000,
-        purchases: Math.floor(Math.random() * 3000) + 1000
+      const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      data[dateStr] = { date: dateStr, sales: 0, purchases: 0 }
+    }
+
+    // Aggregate sales by date
+    if (salesData) {
+      salesData.forEach(sale => {
+        const saleDate = new Date(sale.created_at)
+        const dateStr = saleDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        if (data[dateStr]) {
+          data[dateStr].sales += sale.total || 0
+        }
       })
     }
-    return data
+
+    // Aggregate purchases by date
+    if (purchasesData) {
+      purchasesData.forEach(purchase => {
+        const purchaseDate = new Date(purchase.created_at)
+        const dateStr = purchaseDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        if (data[dateStr]) {
+          data[dateStr].purchases += purchase.total || 0
+        }
+      })
+    }
+
+    return Object.values(data)
   }
 
-  const generateSampleMonthlyData = () => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
-    return months.map(month => ({
-      month,
-      sales: Math.floor(Math.random() * 50000) + 30000,
-      profit: Math.floor(Math.random() * 15000) + 8000
-    }))
+  // Generate real monthly sales data
+  const generateRealMonthlyData = (monthlyData) => {
+    const monthlyMap = {}
+
+    // Initialize last 6 months
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date()
+      date.setMonth(date.getMonth() - i)
+      const monthStr = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
+      monthlyMap[monthStr] = { month: date.toLocaleDateString('en-US', { month: 'short' }), sales: 0, profit: 0 }
+    }
+
+    // Aggregate by month
+    if (monthlyData) {
+      monthlyData.forEach(sale => {
+        const saleDate = new Date(sale.created_at)
+        const monthStr = saleDate.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
+        if (monthlyMap[monthStr]) {
+          monthlyMap[monthStr].sales += sale.total || 0
+          monthlyMap[monthStr].profit += (sale.total || 0) * 0.25
+        }
+      })
+    }
+
+    return Object.values(monthlyMap)
   }
 
-  const generateSampleComparisonData = () => {
-    return [
-      { name: 'Mon', purchases: 4000, sales: 2400 },
-      { name: 'Tue', purchases: 3000, sales: 1398 },
-      { name: 'Wed', purchases: 2000, sales: 9800 },
-      { name: 'Thu', purchases: 2780, sales: 3908 },
-      { name: 'Fri', purchases: 1890, sales: 4800 },
-      { name: 'Sat', purchases: 2390, sales: 3800 },
-      { name: 'Sun', purchases: 3490, sales: 4300 }
-    ]
+  // Generate real comparison data (purchase vs sales by day of week)
+  const generateRealComparisonData = (salesData, purchasesData) => {
+    const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    const dayMap = {}
+
+    // Initialize days
+    daysOfWeek.forEach(day => {
+      dayMap[day] = { name: day, purchases: 0, sales: 0 }
+    })
+
+    // Aggregate sales by day of week
+    if (salesData) {
+      salesData.forEach(sale => {
+        const saleDate = new Date(sale.created_at)
+        const dayOfWeek = daysOfWeek[saleDate.getDay()]
+        if (dayMap[dayOfWeek]) {
+          dayMap[dayOfWeek].sales += sale.total || 0
+        }
+      })
+    }
+
+    // Aggregate purchases by day of week
+    if (purchasesData) {
+      purchasesData.forEach(purchase => {
+        const purchaseDate = new Date(purchase.created_at)
+        const dayOfWeek = daysOfWeek[purchaseDate.getDay()]
+        if (dayMap[dayOfWeek]) {
+          dayMap[dayOfWeek].purchases += purchase.total || 0
+        }
+      })
+    }
+
+    return Object.values(dayMap)
   }
 
-  const generateSampleTopMedicines = () => {
-    return [
-      { name: 'Paracetamol', sales: 150 },
-      { name: 'Aspirin', sales: 120 },
-      { name: 'Amoxicillin', sales: 100 },
-      { name: 'Ibuprofen', sales: 85 },
-      { name: 'Metformin', sales: 70 }
-    ]
+  // Generate real top medicines data
+  const generateRealTopMedicines = (topMedicinesData) => {
+    if (!topMedicinesData || topMedicinesData.length === 0) {
+      return []
+    }
+
+    // Group by medicine and sum quantities
+    const medicineMap = {}
+    topMedicinesData.forEach(item => {
+      const medicineName = item.medicines?.name || 'Unknown'
+      if (!medicineMap[medicineName]) {
+        medicineMap[medicineName] = 0
+      }
+      medicineMap[medicineName] += item.quantity || 0
+    })
+
+    // Convert to array and sort
+    return Object.entries(medicineMap)
+      .map(([name, sales]) => ({ name, sales }))
+      .sort((a, b) => b.sales - a.sales)
+      .slice(0, 5)
   }
 
-  const generateSampleCategoryData = () => {
-    return [
-      { name: 'Antibiotics', value: 35, color: '#0088FE' },
-      { name: 'Pain Relief', value: 25, color: '#00C49F' },
-      { name: 'Diabetes', value: 20, color: '#FFBB28' },
-      { name: 'Vitamins', value: 15, color: '#FF8042' },
-      { name: 'Others', value: 5, color: '#8884D8' }
-    ]
+  // Generate real category sales data
+  const generateRealCategoryData = (categorySalesData) => {
+    const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
+    
+    if (!categorySalesData || categorySalesData.length === 0) {
+      return []
+    }
+
+    // Group by category
+    const categoryMap = {}
+    categorySalesData.forEach((item, index) => {
+      const categoryName = item.medicines?.category || 'Other'
+      if (!categoryMap[categoryName]) {
+        categoryMap[categoryName] = 0
+      }
+      categoryMap[categoryName] += item.quantity || 0
+    })
+
+    // Convert to array with colors
+    return Object.entries(categoryMap)
+      .map(([name, value], index) => ({
+        name,
+        value,
+        color: colors[index % colors.length]
+      }))
+      .sort((a, b) => b.value - a.value)
   }
 
   if (loading) {
