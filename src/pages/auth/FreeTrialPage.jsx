@@ -1,6 +1,8 @@
 ﻿import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ChevronLeft, Check, Eye, EyeOff } from "lucide-react"
+import toast from 'react-hot-toast'
+import { supabase } from '../../lib/supabase'
 
 const FreeTrialPage = () => {
   const navigate = useNavigate()
@@ -8,6 +10,7 @@ const FreeTrialPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     pharmacyName: "",
     drugLicenseNumber: "",
@@ -18,10 +21,49 @@ const FreeTrialPage = () => {
     city: "",
     state: "",
     pincode: "",
+    selectedPlan: "",
     password: "",
     confirmPassword: ""
   })
   const [errors, setErrors] = useState({})
+
+  const plans = [
+    {
+      id: 'basic',
+      name: 'Basic Plan',
+      price: 5000,
+      gst: 18,
+      features: [
+        '5 Users',
+        '1 Branch',
+        'Basic Inventory Management'
+      ]
+    },
+    {
+      id: 'professional',
+      name: 'Professional Plan',
+      price: 20000,
+      gst: 18,
+      features: [
+        '5 Users',
+        '5 Branches',
+        'Unlimited Products',
+        'Advanced Reporting'
+      ]
+    },
+    {
+      id: 'gold',
+      name: 'Gold Edition',
+      price: 35000,
+      gst: 18,
+      features: [
+        'Unlimited Users',
+        'Unlimited Branches',
+        'Unlimited Products',
+        'Premium Support'
+      ]
+    }
+  ]
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -59,6 +101,13 @@ const FreeTrialPage = () => {
 
   const validateStep3 = () => {
     const newErrors = {}
+    if (!formData.selectedPlan) newErrors.selectedPlan = "Please select a plan"
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const validateStep4 = () => {
+    const newErrors = {}
     if (!formData.password) newErrors.password = "Password is required"
     else if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters"
     
@@ -73,15 +122,52 @@ const FreeTrialPage = () => {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (currentStep === 1 && validateStep1()) {
       setCurrentStep(2)
     } else if (currentStep === 2 && validateStep2()) {
       setCurrentStep(3)
     } else if (currentStep === 3 && validateStep3()) {
-      console.log("Form submitted:", formData)
-      alert("Registration successful! Please sign in with your credentials.")
-      navigate("/login")
+      setCurrentStep(4)
+    } else if (currentStep === 4 && validateStep4()) {
+      await handleRegistration()
+    }
+  }
+
+  const handleRegistration = async () => {
+    try {
+      setLoading(true)
+      
+      // Save to free_trials table
+      const { error } = await supabase
+        .from('free_trials')
+        .insert([{
+          pharmacy_name: formData.pharmacyName,
+          drug_license_number: formData.drugLicenseNumber,
+          owner_name: formData.ownerName,
+          email: formData.email,
+          phone_number: formData.phoneNumber,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pincode,
+          selected_plan: formData.selectedPlan,
+          status: 'active'
+        }])
+
+      if (error) {
+        console.error('Error saving free trial:', error)
+        setErrors({ submit: 'Failed to save registration. Please try again.' })
+        return
+      }
+
+      toast.success('Registration successful! Please sign in with your credentials.')
+      navigate('/login')
+    } catch (error) {
+      console.error('Registration error:', error)
+      setErrors({ submit: 'An unexpected error occurred. Please try again.' })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -118,7 +204,7 @@ const FreeTrialPage = () => {
 
         {/* Step Progress */}
         <div className="flex justify-center gap-8 mb-12">
-          {[1, 2, 3].map((step) => (
+          {[1, 2, 3, 4].map((step) => (
             <div key={step} className="flex items-center gap-3">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
                 step < currentStep ? "bg-green-500 text-white" :
@@ -128,9 +214,9 @@ const FreeTrialPage = () => {
                 {step < currentStep ? <Check className="w-6 h-6" /> : step}
               </div>
               <span className="text-sm font-medium text-gray-700 hidden sm:inline">
-                {step === 1 ? "Business Info" : step === 2 ? "Contact Info" : "Password"}
+                {step === 1 ? "Business Info" : step === 2 ? "Contact Info" : step === 3 ? "Plan Selection" : "Password"}
               </span>
-              {step < 3 && <div className="hidden sm:block w-12 h-0.5 bg-gray-300"></div>}
+              {step < 4 && <div className="hidden sm:block w-12 h-0.5 bg-gray-300"></div>}
             </div>
           ))}
         </div>
@@ -344,11 +430,86 @@ const FreeTrialPage = () => {
             </div>
           )}
 
-          {/* Step 3: Create Password */}
+          {/* Step 3: Plan Selection */}
           {currentStep === 3 && (
             <div className="space-y-6">
               <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                 <span className="bg-blue-900 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm">3</span>
+                Select Your Plan
+              </h3>
+
+              <p className="text-gray-600">Choose the plan that best fits your pharmacy's needs</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {plans.map((plan) => {
+                  const totalPrice = plan.price + (plan.price * plan.gst / 100)
+                  const isSelected = formData.selectedPlan === plan.id
+                  
+                  return (
+                    <div
+                      key={plan.id}
+                      onClick={() => setFormData(prev => ({ ...prev, selectedPlan: plan.id }))}
+                      className={`relative border-2 rounded-lg p-6 cursor-pointer transition-all ${
+                        isSelected
+                          ? 'border-blue-900 bg-blue-50'
+                          : 'border-gray-300 bg-white hover:border-blue-500'
+                      }`}
+                    >
+                      {isSelected && (
+                        <div className="absolute top-3 right-3 w-6 h-6 bg-blue-900 text-white rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4" />
+                        </div>
+                      )}
+                      
+                      <h4 className="text-lg font-bold text-gray-900 mb-2">{plan.name}</h4>
+                      
+                      <div className="mb-4">
+                        <span className="text-3xl font-bold text-gray-900">₹{plan.price.toLocaleString('en-IN')}</span>
+                        <div className="text-sm text-gray-600 mt-1">
+                          <span>+ ₹{Math.round(plan.price * plan.gst / 100).toLocaleString('en-IN')} GST ({plan.gst}%)</span>
+                          <div className="text-base font-semibold text-blue-900 mt-1">
+                            Total: ₹{Math.round(totalPrice).toLocaleString('en-IN')}
+                          </div>
+                        </div>
+                      </div>
+
+                      <ul className="space-y-3">
+                        {plan.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-center gap-2 text-sm text-gray-700">
+                            <div className="w-1.5 h-1.5 bg-blue-900 rounded-full"></div>
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {errors.selectedPlan && <p className="text-red-600 text-sm">{errors.selectedPlan}</p>}
+
+              <div className="flex gap-4 pt-4">
+                <button
+                  onClick={handleContinue}
+                  className="flex-1 bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+                >
+                  Continue
+                </button>
+                <button
+                  onClick={handleBack}
+                  className="flex-1 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-3 px-4 rounded-lg transition-colors"
+                >
+                  Back
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Create Password */}
+          {currentStep === 4 && (
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <span className="bg-blue-900 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm">4</span>
                 Create Password
               </h3>
 
@@ -425,17 +586,20 @@ const FreeTrialPage = () => {
                 </label>
               </div>
               {errors.terms && <p className="text-red-600 text-sm">{errors.terms}</p>}
+              {errors.submit && <p className="text-red-600 text-sm">{errors.submit}</p>}
 
               <div className="flex gap-4 pt-4">
                 <button
                   onClick={handleContinue}
-                  className="flex-1 bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+                  disabled={loading}
+                  className="flex-1 bg-blue-900 hover:bg-blue-800 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
                 >
-                  Register
+                  {loading ? 'Registering...' : 'Register'}
                 </button>
                 <button
                   onClick={handleBack}
-                  className="flex-1 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-3 px-4 rounded-lg transition-colors"
+                  disabled={loading}
+                  className="flex-1 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:bg-gray-100 font-semibold py-3 px-4 rounded-lg transition-colors"
                 >
                   Back
                 </button>

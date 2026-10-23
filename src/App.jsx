@@ -45,6 +45,7 @@ import ReportsPage from './pages/admin/reports/ReportsPage'
 import InvoicePrintPage from './pages/admin/invoice/InvoicePrintPage'
 import SchemesPage from './pages/admin/schemes/SchemesPage'
 import DemoRequests from './pages/admin/DemoRequests'
+import FreeTrials from './pages/admin/FreeTrials'
 
 // Other Role Pages
 import PharmacistDashboard from './pages/pharmacist/PharmacistDashboard'
@@ -120,6 +121,7 @@ function App() {
                     <Route path="narcotic-report" element={<NarcoticReportPage />} />
                     <Route path="erp-inquiries" element={<ERPInquiriesPage />} />
                     <Route path="demo-requests" element={<DemoRequests />} />
+                    <Route path="free-trials" element={<FreeTrials />} />
                     <Route path="wholesalers" element={<WholesalersPage />} />
                     <Route path="users" element={<UsersPage />} />
                     <Route path="settings" element={<SettingsPage />} />
