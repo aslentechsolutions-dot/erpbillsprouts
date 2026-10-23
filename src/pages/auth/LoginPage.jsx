@@ -34,6 +34,7 @@ const LoginPage = () => {
   })
   const [demoErrors, setDemoErrors] = useState({})
   const [demoLoading, setDemoLoading] = useState(false)
+  const [demoSuccess, setDemoSuccess] = useState(false)
   const { signIn } = useAuthStore()
   const navigate = useNavigate()
 
@@ -136,19 +137,25 @@ const LoginPage = () => {
       if (error) {
         toast.error("Failed to submit demo request")
       } else {
-        toast.success("Demo request submitted! We'll contact you soon.")
-        setShowDemoModal(false)
-        setDemoFormData({
-          yourName: "",
-          businessName: "",
-          mobileNumber: "",
-          email: "",
-          city: "",
-          pincode: "",
-          businessType: "Pharmacy / Medical",
-          branches: "1",
-          specificRequest: ""
-        })
+        // Show success state
+        setDemoSuccess(true)
+        
+        // Auto-close after 2 seconds
+        setTimeout(() => {
+          setShowDemoModal(false)
+          setDemoSuccess(false)
+          setDemoFormData({
+            yourName: "",
+            businessName: "",
+            mobileNumber: "",
+            email: "",
+            city: "",
+            pincode: "",
+            businessType: "Pharmacy / Medical",
+            branches: "1",
+            specificRequest: ""
+          })
+        }, 2000)
       }
     } catch (error) {
       toast.error("An error occurred")
@@ -436,133 +443,153 @@ const LoginPage = () => {
       {showDemoModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
           <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8 my-8">
-            {/* Header */}
-            <div className="flex justify-between items-start mb-2">
-              <h2 className="text-2xl font-bold text-gray-900">Request a Demo</h2>
-              <button onClick={() => setShowDemoModal(false)} className="text-gray-400 hover:text-gray-600 -mt-1">
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            <p className="text-sm text-gray-600 mb-6">Tell us about your business and we will set up a walkthrough.</p>
-
-            <form onSubmit={handleDemoSubmit} className="space-y-4">
-              {/* Row 1: Your Name (Full Width) */}
-              <input
-                type="text"
-                name="yourName"
-                value={demoFormData.yourName}
-                onChange={handleDemoInputChange}
-                placeholder="Your Name *"
-                className="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
-              />
-
-              {/* Row 2: Business Name (Full Width) */}
-              <input
-                type="text"
-                name="businessName"
-                value={demoFormData.businessName}
-                onChange={handleDemoInputChange}
-                placeholder="Business Name"
-                className="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
-              />
-
-              {/* Row 3: Mobile Number & Email (2-column grid) */}
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  type="tel"
-                  name="mobileNumber"
-                  value={demoFormData.mobileNumber}
-                  onChange={handleDemoInputChange}
-                  placeholder="Mobile Number *"
-                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  value={demoFormData.email}
-                  onChange={handleDemoInputChange}
-                  placeholder="Email"
-                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
-                />
+            {demoSuccess ? (
+              // Success Screen
+              <div className="text-center py-8">
+                <div className="mb-6">
+                  <div className="flex justify-center mb-4">
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center animate-pulse">
+                      <Check className="w-10 h-10 text-green-500" />
+                    </div>
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Request Sent!</h2>
+                  <p className="text-sm text-gray-600">
+                    Thank you for your interest. Our team will contact you shortly to schedule a demo.
+                  </p>
+                </div>
               </div>
+            ) : (
+              // Form Screen
+              <>
+                {/* Header */}
+                <div className="flex justify-between items-start mb-2">
+                  <h2 className="text-2xl font-bold text-gray-900">Request a Demo</h2>
+                  <button onClick={() => setShowDemoModal(false)} className="text-gray-400 hover:text-gray-600 -mt-1">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+                <p className="text-sm text-gray-600 mb-6">Tell us about your business and we will set up a walkthrough.</p>
 
-              {/* Row 4: City & Pincode (2-column grid) */}
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  name="city"
-                  value={demoFormData.city}
-                  onChange={handleDemoInputChange}
-                  placeholder="City"
-                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
-                />
-                <input
-                  type="text"
-                  name="pincode"
-                  value={demoFormData.pincode}
-                  onChange={handleDemoInputChange}
-                  placeholder="Pincode"
-                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
-                />
-              </div>
+                <form onSubmit={handleDemoSubmit} className="space-y-4">
+                  {/* Row 1: Your Name (Full Width) */}
+                  <input
+                    type="text"
+                    name="yourName"
+                    value={demoFormData.yourName}
+                    onChange={handleDemoInputChange}
+                    placeholder="Your Name *"
+                    className="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
+                  />
 
-              {/* Row 5: Business Type & Branches (2-column grid) */}
-              <div className="grid grid-cols-2 gap-3">
-                <select
-                  name="businessType"
-                  value={demoFormData.businessType}
-                  onChange={handleDemoInputChange}
-                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white text-gray-700 transition-colors"
-                >
-                  <option value="Pharmacy / Medical">Business Type</option>
-                  <option value="Pharmacy / Medical">Pharmacy / Medical</option>
-                  <option value="Retail">Retail</option>
-                  <option value="Supermarket">Supermarket</option>
-                  <option value="Other">Other</option>
-                </select>
-                <select
-                  name="branches"
-                  value={demoFormData.branches}
-                  onChange={handleDemoInputChange}
-                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white text-gray-700 transition-colors"
-                >
-                  <option value="1">Branches</option>
-                  <option value="1">1</option>
-                  <option value="2-5">2-5</option>
-                  <option value="6-10">6-10</option>
-                  <option value="10+">10+</option>
-                </select>
-              </div>
+                  {/* Row 2: Business Name (Full Width) */}
+                  <input
+                    type="text"
+                    name="businessName"
+                    value={demoFormData.businessName}
+                    onChange={handleDemoInputChange}
+                    placeholder="Business Name"
+                    className="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
+                  />
 
-              {/* Row 6: Specific Request (Full Width) */}
-              <textarea
-                name="specificRequest"
-                value={demoFormData.specificRequest}
-                onChange={handleDemoInputChange}
-                rows="3"
-                placeholder="Anything specific you want to see?"
-                className="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors resize-none"
-              />
+                  {/* Row 3: Mobile Number & Email (2-column grid) */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      type="tel"
+                      name="mobileNumber"
+                      value={demoFormData.mobileNumber}
+                      onChange={handleDemoInputChange}
+                      placeholder="Mobile Number *"
+                      className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
+                    />
+                    <input
+                      type="email"
+                      name="email"
+                      value={demoFormData.email}
+                      onChange={handleDemoInputChange}
+                      placeholder="Email"
+                      className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
+                    />
+                  </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={demoLoading}
-                className="w-full bg-blue-900 hover:bg-blue-800 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center mt-6 gap-2"
-              >
-                {demoLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Request Demo</span>
-                  </>
-                ) : (
-                  <>
-                    <span>▶</span>
-                    <span>Request Demo</span>
-                  </>
-                )}
-              </button>
-            </form>
+                  {/* Row 4: City & Pincode (2-column grid) */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      type="text"
+                      name="city"
+                      value={demoFormData.city}
+                      onChange={handleDemoInputChange}
+                      placeholder="City"
+                      className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
+                    />
+                    <input
+                      type="text"
+                      name="pincode"
+                      value={demoFormData.pincode}
+                      onChange={handleDemoInputChange}
+                      placeholder="Pincode"
+                      className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
+                    />
+                  </div>
+
+                  {/* Row 5: Business Type & Branches (2-column grid) */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <select
+                      name="businessType"
+                      value={demoFormData.businessType}
+                      onChange={handleDemoInputChange}
+                      className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white text-gray-700 transition-colors"
+                    >
+                      <option value="Pharmacy / Medical">Business Type</option>
+                      <option value="Pharmacy / Medical">Pharmacy / Medical</option>
+                      <option value="Retail">Retail</option>
+                      <option value="Supermarket">Supermarket</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <select
+                      name="branches"
+                      value={demoFormData.branches}
+                      onChange={handleDemoInputChange}
+                      className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white text-gray-700 transition-colors"
+                    >
+                      <option value="1">Branches</option>
+                      <option value="1">1</option>
+                      <option value="2-5">2-5</option>
+                      <option value="6-10">6-10</option>
+                      <option value="10+">10+</option>
+                    </select>
+                  </div>
+
+                  {/* Row 6: Specific Request (Full Width) */}
+                  <textarea
+                    name="specificRequest"
+                    value={demoFormData.specificRequest}
+                    onChange={handleDemoInputChange}
+                    rows="3"
+                    placeholder="Anything specific you want to see?"
+                    className="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors resize-none"
+                  />
+
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={demoLoading}
+                    className="w-full bg-blue-900 hover:bg-blue-800 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center mt-6 gap-2"
+                  >
+                    {demoLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Request Demo</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>▶</span>
+                        <span>Request Demo</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </>
+            )}
           </div>
         </div>
       )}

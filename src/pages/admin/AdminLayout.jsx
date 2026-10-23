@@ -22,7 +22,8 @@ import {
   ShoppingBag as OnlineOrders,
   MessageSquare,
   Gift,
-  ChevronRight
+  ChevronRight,
+  BookOpen
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import { supabase } from '../../lib/supabase'
@@ -143,6 +144,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Prescriptions', href: '/admin/prescriptions', icon: FileText },
     { name: 'Narcotic Report', href: '/admin/narcotic-report', icon: AlertTriangle },
     { name: 'ERP Inquiries', href: '/admin/erp-inquiries', icon: MessageSquare },
+    { name: 'Demo Requests', href: '/admin/demo-requests', icon: BookOpen },
     { name: 'Wholesalers', href: '/admin/wholesalers', icon: Truck },
     { name: 'Users', href: '/admin/users', icon: UserCheck },
   ]
