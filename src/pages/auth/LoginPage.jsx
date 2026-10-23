@@ -28,8 +28,8 @@ const LoginPage = () => {
     email: "",
     city: "",
     pincode: "",
-    businessType: "Pharmacy / Medical",
-    branches: "1",
+    businessType: "",
+    branches: "",
     specificRequest: ""
   })
   const [demoErrors, setDemoErrors] = useState({})
@@ -153,8 +153,8 @@ const LoginPage = () => {
             email: "",
             city: "",
             pincode: "",
-            businessType: "Pharmacy / Medical",
-            branches: "1",
+            businessType: "",
+            branches: "",
             specificRequest: ""
           })
         }, 2000)
@@ -542,7 +542,7 @@ const LoginPage = () => {
                       onChange={handleDemoInputChange}
                       className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white text-gray-700 transition-colors"
                     >
-                      <option value="Pharmacy / Medical">Business Type</option>
+                      <option value="">-- Select Business Type --</option>
                       <option value="Pharmacy / Medical">Pharmacy / Medical</option>
                       <option value="Retail">Retail</option>
                       <option value="Supermarket">Supermarket</option>
@@ -554,7 +554,7 @@ const LoginPage = () => {
                       onChange={handleDemoInputChange}
                       className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white text-gray-700 transition-colors"
                     >
-                      <option value="1">Branches</option>
+                      <option value="">-- Select Branches --</option>
                       <option value="1">1</option>
                       <option value="2-5">2-5</option>
                       <option value="6-10">6-10</option>
