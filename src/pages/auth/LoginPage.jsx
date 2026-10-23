@@ -19,6 +19,20 @@ const LoginPage = () => {
   const [logo, setLogo] = useState(null)
   const [pharmacyName, setPharmacyName] = useState("BillSprout")
   const [showSupportModal, setShowSupportModal] = useState(false)
+  const [showDemoModal, setShowDemoModal] = useState(false)
+  const [demoFormData, setDemoFormData] = useState({
+    yourName: "",
+    businessName: "",
+    mobileNumber: "",
+    email: "",
+    city: "",
+    pincode: "",
+    businessType: "Pharmacy / Medical",
+    branches: "1",
+    specificRequest: ""
+  })
+  const [demoErrors, setDemoErrors] = useState({})
+  const [demoLoading, setDemoLoading] = useState(false)
   const { signIn } = useAuthStore()
   const navigate = useNavigate()
 
@@ -66,8 +80,82 @@ const LoginPage = () => {
       setIsLoading(false)
     }
   }
+  const handleDemoInputChange = (e) => {
+    const { name, value } = e.target
+    setDemoFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+    if (demoErrors[name]) {
+      setDemoErrors(prev => ({
+        ...prev,
+        [name]: ""
+      }))
+    }
+  }
 
-  return (
+  const validateDemoForm = () => {
+    const newErrors = {}
+    if (!demoFormData.yourName.trim()) newErrors.yourName = "Name is required"
+    if (!demoFormData.businessName.trim()) newErrors.businessName = "Business name is required"
+    if (!demoFormData.mobileNumber.trim()) {
+      newErrors.mobileNumber = "Mobile number is required"
+    } else if (!/^[0-9]{10}$/.test(demoFormData.mobileNumber.replace(/[^0-9]/g, ""))) {
+      newErrors.mobileNumber = "Please enter a valid 10-digit number"
+    }
+    if (!demoFormData.email.trim()) {
+      newErrors.email = "Email is required"
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(demoFormData.email)) {
+      newErrors.email = "Invalid email"
+    }
+    if (!demoFormData.city.trim()) newErrors.city = "City is required"
+    if (!demoFormData.pincode.trim()) newErrors.pincode = "Pincode is required"
+    setDemoErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleDemoSubmit = async (e) => {
+    e.preventDefault()
+    if (!validateDemoForm()) return
+    setDemoLoading(true)
+    try {
+      const { error } = await supabase
+        .from("demo_requests")
+        .insert([{
+          name: demoFormData.yourName,
+          business_name: demoFormData.businessName,
+          mobile_number: demoFormData.mobileNumber,
+          email: demoFormData.email,
+          city: demoFormData.city,
+          pincode: demoFormData.pincode,
+          business_type: demoFormData.businessType,
+          branches: demoFormData.branches,
+          specific_request: demoFormData.specificRequest
+        }])
+      if (error) {
+        toast.error("Failed to submit demo request")
+      } else {
+        toast.success("Demo request submitted! We'll contact you soon.")
+        setShowDemoModal(false)
+        setDemoFormData({
+          yourName: "",
+          businessName: "",
+          mobileNumber: "",
+          email: "",
+          city: "",
+          pincode: "",
+          businessType: "Pharmacy / Medical",
+          branches: "1",
+          specificRequest: ""
+        })
+      }
+    } catch (error) {
+      toast.error("An error occurred")
+    } finally {
+      setDemoLoading(false)
+    }
+  }
+
     <div className="min-h-screen flex bg-gray-50">
       {/* Left Panel - Features */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white p-12 flex-col justify-between">
@@ -262,7 +350,7 @@ const LoginPage = () => {
               <button onClick={() => setShowSupportModal(true)} className="hover:text-blue-900 font-medium">Need Help? Contact Lifessprout Care Support</button>
             </div>
             <div className="flex items-center justify-center gap-4">
-              <button className="hover:text-blue-900 flex items-center gap-1">
+              <button onClick={() => setShowDemoModal(true)} className="hover:text-blue-900 flex items-center gap-1">
                 <span>▶</span> Request a Demo
               </button>
               <span>•</span>
@@ -346,5 +434,7 @@ const LoginPage = () => {
   )
 }
 export default LoginPage
+
+
 
 
