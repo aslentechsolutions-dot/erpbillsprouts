@@ -1006,61 +1006,61 @@ const POSPage = () => {
           </div>
 
           {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto p-7 space-y-7">
+          <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0">
             {items.length === 0 ? (
-              <div className="text-center py-12 text-gray-400">
+              <div className="text-center py-8 text-gray-400">
                 <p className="font-medium">Cart is empty</p>
                 <p className="text-sm mt-1">Add items to start billing</p>
               </div>
             ) : (
-              <div className="space-y-7">
+              <div className="space-y-3">
                 {items.map((item) => (
-                  <div key={item.id} className="bg-gray-50 rounded-lg p-5 border border-gray-300">
-                    <div className="flex items-start justify-between mb-3">
+                  <div key={item.id} className="bg-gray-50 rounded-lg p-3 border border-gray-300">
+                    <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
-                        <h4 className="font-medium text-gray-900 text-base">{item.medicine.name}</h4>
-                        <p className="text-sm text-gray-500">{item.medicine.generic_name}</p>
-                        <p className="text-sm text-gray-500 mt-2">
+                        <h4 className="font-medium text-gray-900 text-sm">{item.medicine.name}</h4>
+                        <p className="text-xs text-gray-500">{item.medicine.generic_name}</p>
+                        <p className="text-xs text-gray-500 mt-1">
                           BATCH: {item.batch.batch_number} | Exp: {new Date(item.batch.expiry_date).toLocaleDateString('en-GB', { month: '2-digit', year: '2-digit' })}
                         </p>
                       </div>
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="p-1 hover:bg-red-100 rounded text-red-600"
+                        className="p-1 hover:bg-red-100 rounded text-red-600 flex-shrink-0"
                       >
-                        <X className="w-4 h-4" />
+                        <X className="w-3 h-3" />
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center space-y-2">
+                    <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center space-y-0 space-x-1">
                         <button
                           onClick={() => updateItemQuantity(item.id, Math.max(1, item.quantity - 1))}
                           className="p-1 bg-gray-200 rounded hover:bg-gray-300"
                         >
-                          <Minus className="w-4 h-4" />
+                          <Minus className="w-3 h-3" />
                         </button>
-                        <span className="w-10 text-center font-medium text-base">{item.quantity}</span>
+                        <span className="w-8 text-center font-medium text-sm">{item.quantity}</span>
                         <button
                           onClick={() => updateItemQuantity(item.id, item.quantity + 1)}
                           className="p-1 bg-blue-900 text-white rounded hover:bg-blue-800"
                         >
-                          <Plus className="w-4 h-4" />
+                          <Plus className="w-3 h-3" />
                         </button>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-gray-900 text-base">₹{(item.quantity * item.price).toFixed(2)}</div>
-                        <div className="text-sm text-gray-500">@ ₹{item.price.toFixed(2)}</div>
+                        <div className="font-bold text-gray-900 text-sm">₹{(item.quantity * item.price).toFixed(2)}</div>
+                        <div className="text-xs text-gray-500">@ ₹{item.price.toFixed(2)}</div>
                       </div>
                     </div>
 
                     {/* Scheme Information */}
                     {item.appliedScheme && (
-                      <div className="mt-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
-                        <p className="text-sm font-semibold text-blue-900">
+                      <div className="mt-2 p-2 bg-blue-50 border-l-4 border-blue-500 rounded">
+                        <p className="text-xs font-semibold text-blue-900">
                           ✓ {item.appliedScheme.scheme_name}
                         </p>
-                        <p className="text-sm text-blue-700 mt-2">
+                        <p className="text-xs text-blue-700 mt-1">
                           {item.freeQuantity} FREE added to cart
                         </p>
                       </div>
@@ -1068,8 +1068,8 @@ const POSPage = () => {
 
                     {/* Free Quantity Display */}
                     {item.freeQuantity > 0 && (
-                      <div className="mt-4 p-3 bg-green-50 rounded border-l-4 border-green-500">
-                        <p className="text-sm font-medium text-green-900">
+                      <div className="mt-2 p-2 bg-green-50 rounded border-l-4 border-green-500">
+                        <p className="text-xs font-medium text-green-900">
                           FREE: {item.freeQuantity} {item.batch.batch_number ? '(included)' : ''}
                         </p>
                       </div>
@@ -1081,10 +1081,10 @@ const POSPage = () => {
           </div>
 
           {/* Cart Footer */}
-          <div className="border-t border-gray-200 p-6 space-y-4 flex-shrink-0 bg-white">
+          <div className="border-t border-gray-200 p-4 space-y-3 flex-shrink-0 bg-white">
             {/* Discount */}
             {items.length > 0 && (
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-gray-600">Discount (%)</span>
                 <input
                   type="number"
@@ -1092,15 +1092,15 @@ const POSPage = () => {
                   max="100"
                   value={discount}
                   onChange={(e) => useCartStore.getState().setDiscount(parseFloat(e.target.value) || 0)}
-                  className="w-16 px-2 py-1 border border-gray-300 rounded text-center"
+                  className="w-14 px-1 py-0.5 border border-gray-300 rounded text-center text-xs"
                 />
               </div>
             )}
 
             {/* Totals */}
-            <div className="space-y-1 text-sm">
+            <div className="space-y-0.5 text-xs">
               {(getPaidQuantity() > 0 || getFreeQuantity() > 0) && (
-                <div className="flex justify-between text-gray-600 pb-1 border-b">
+                <div className="flex justify-between text-gray-600 pb-0.5 border-b">
                   <span>Qty (Paid + Free)</span>
                   <span>{getPaidQuantity()} + {getFreeQuantity()} = {getItemsCount()}</span>
                 </div>
@@ -1113,18 +1113,18 @@ const POSPage = () => {
                 <span>Total GST</span>
                 <span>Rs.{getGST().toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-lg font-bold border-t pt-1">
+              <div className="flex justify-between text-sm font-bold border-t pt-0.5">
                 <span>GRAND TOTAL</span>
                 <span>Rs.{getGrandTotal().toFixed(2)}</span>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="space-y-2 pt-1">
+            <div className="space-y-1.5 pt-1">
               <button
                 onClick={() => handleProcessSale('cash')}
                 disabled={items.length === 0 || loading}
-                className="w-full bg-blue-900 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-800 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="w-full bg-blue-900 text-white py-2 rounded-lg font-semibold text-sm hover:bg-blue-800 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 <CreditCard className="w-4 h-4" />
                 <span>{loading ? 'Processing...' : 'CASH'}</span>
@@ -1133,22 +1133,22 @@ const POSPage = () => {
               <button
                 onClick={handleRazorpayPayment}
                 disabled={items.length === 0 || loading}
-                className="w-full border-2 border-blue-900 text-blue-900 py-2 rounded-lg font-semibold hover:bg-blue-50 disabled:bg-gray-100 disabled:border-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
+                className="w-full border-2 border-blue-900 text-blue-900 py-1.5 rounded-lg font-semibold text-sm hover:bg-blue-50 disabled:bg-gray-100 disabled:border-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
               >
                 RAZORPAY
               </button>
 
-              <div className="text-center py-1">
-                <span className="text-xs text-gray-500">Invoice Type: <span className="font-medium">TAX INVOICE (Customer)</span></span>
+              <div className="text-center py-0.5">
+                <span className="text-xs text-gray-500">Invoice Type: <span className="font-medium">TAX INVOICE</span></span>
               </div>
 
               <button
                 onClick={handleCompleteSaleAndPrint}
                 disabled={items.length === 0 || loading}
-                className="w-full border-2 border-gray-300 py-2 rounded-lg font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="w-full border-2 border-gray-300 py-1.5 rounded-lg font-medium text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 <Printer className="w-4 h-4" />
-                <span>{loading ? 'Processing...' : 'Complete Sale & Print'}</span>
+                <span>{loading ? 'Processing...' : 'Complete & Print'}</span>
               </button>
             </div>
           </div>
