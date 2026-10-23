@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+﻿import React, { useState, useEffect } from 'react'
 import { Package, AlertTriangle, Clock, TrendingUp, Search, Filter, Eye, Edit, Plus } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import toast from 'react-hot-toast'
@@ -167,7 +167,7 @@ const InventoryPage = () => {
         toast.error('Please enter expiry date')
         return
       }
-      if (!formData.initial_quantity) {
+      if (!formData.initial_quantity || formData.initial_quantity === '') {
         toast.error('Please enter initial quantity')
         return
       }
@@ -268,9 +268,11 @@ const InventoryPage = () => {
 
   const handleNumberInputChange = (e) => {
     const { name, value } = e.target
+    // For quantity fields, use parseInt; for price fields, use parseFloat
+    const isQuantityField = ['initial_quantity', 'free_quantity'].includes(name)
     setFormData(prev => ({
       ...prev,
-      [name]: value ? parseFloat(value) : ''
+      [name]: value ? (isQuantityField ? parseInt(value) : parseFloat(value)) : ''
     }))
   }
 
@@ -357,7 +359,7 @@ const InventoryPage = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Stock Value</p>
-              <p className="text-2xl font-bold text-gray-900">₹{stats.stockValue.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-gray-900">â‚¹{stats.stockValue.toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -446,10 +448,10 @@ const InventoryPage = () => {
                             {item.name}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {item.generic_name} • {item.brand}
+                            {item.generic_name} â€¢ {item.brand}
                           </div>
                           <div className="text-xs text-gray-400">
-                            {item.dosage_form} • {item.strength}
+                            {item.dosage_form} â€¢ {item.strength}
                           </div>
                         </div>
                       </td>
@@ -494,9 +496,9 @@ const InventoryPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          <div>Customer: ₹{item.customer_price?.toFixed(2) || item.selling_price?.toFixed(2)}</div>
-                          <div className="text-gray-500">Wholesale: ₹{item.wholesale_price?.toFixed(2)}</div>
-                          <div className="text-gray-400">Purchase: ₹{item.purchase_price?.toFixed(2)}</div>
+                          <div>Customer: â‚¹{item.customer_price?.toFixed(2) || item.selling_price?.toFixed(2)}</div>
+                          <div className="text-gray-500">Wholesale: â‚¹{item.wholesale_price?.toFixed(2)}</div>
+                          <div className="text-gray-400">Purchase: â‚¹{item.purchase_price?.toFixed(2)}</div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -561,7 +563,7 @@ const InventoryPage = () => {
                 }}
                 className="text-gray-400 hover:text-gray-600"
               >
-                ✕
+                âœ•
               </button>
             </div>
 
@@ -579,17 +581,17 @@ const InventoryPage = () => {
                       <div key={inv.id} className="flex justify-between items-center text-sm bg-white p-2 rounded border border-blue-100">
                         <div>
                           <span className="font-medium text-gray-900">Batch: {inv.batch_number}</span>
-                          <span className="text-gray-500 mx-2">•</span>
+                          <span className="text-gray-500 mx-2">â€¢</span>
                           <span className="text-gray-600">Qty: {inv.current_quantity}</span>
                           {inv.supplier && (
                             <>
-                              <span className="text-gray-500 mx-2">•</span>
+                              <span className="text-gray-500 mx-2">â€¢</span>
                               <span className="text-gray-600">{inv.supplier.business_name}</span>
                             </>
                           )}
                         </div>
                         <div className="text-right">
-                          <div className="text-gray-900">₹{inv.supplier_purchase_price?.toFixed(2) || inv.purchase_price?.toFixed(2)}</div>
+                          <div className="text-gray-900">â‚¹{inv.supplier_purchase_price?.toFixed(2) || inv.purchase_price?.toFixed(2)}</div>
                           <div className="text-xs text-gray-500">
                             Exp: {inv.expiry_date ? new Date(inv.expiry_date).toLocaleDateString('en-IN') : 'N/A'}
                           </div>
@@ -889,3 +891,4 @@ const InventoryPage = () => {
 }
 
 export default InventoryPage
+
