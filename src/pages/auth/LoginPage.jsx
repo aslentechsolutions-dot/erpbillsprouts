@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useNavigate } from "react-router-dom"
-import { Eye, EyeOff, AlertCircle, Zap, Package, FileText, RefreshCw, Database, Phone, UserPlus, X } from "lucide-react"
+import { Eye, EyeOff, AlertCircle, Zap, Package, FileText, RefreshCw, Database, Phone, UserPlus, X, Check } from "lucide-react"
 import useAuthStore from "../../store/authStore"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
@@ -20,6 +20,7 @@ const LoginPage = () => {
   const [pharmacyName, setPharmacyName] = useState("BillSprout")
   const [showSupportModal, setShowSupportModal] = useState(false)
   const [showDemoModal, setShowDemoModal] = useState(false)
+  const [showPricingModal, setShowPricingModal] = useState(false)
   const [demoFormData, setDemoFormData] = useState({
     yourName: "",
     businessName: "",
@@ -355,7 +356,7 @@ const LoginPage = () => {
                 <span>▶</span> Request a Demo
               </button>
               <span>•</span>
-              <button className="hover:text-blue-900 flex items-center gap-1">
+              <button onClick={() => setShowPricingModal(true)} className="hover:text-blue-900 flex items-center gap-1">
                 <span>🏷️</span> View Pricing
               </button>
             </div>
@@ -562,6 +563,151 @@ const LoginPage = () => {
                 )}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Pricing Modal */}
+      {showPricingModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-lg max-w-6xl w-full p-8 my-8">
+            {/* Header */}
+            <div className="flex justify-between items-start mb-8">
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900">Pricing</h2>
+                <p className="text-sm text-gray-600 mt-1">One-time license per store. GST applicable as shown.</p>
+              </div>
+              <button onClick={() => setShowPricingModal(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Pricing Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Basic Plan Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Basic Plan</h3>
+                <div className="mb-4">
+                  <span className="text-4xl font-bold text-gray-900">₹5000</span>
+                  <p className="text-sm text-gray-600 mt-1">+ 18% GST</p>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">5 Users</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">1 Branch</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">1000 Products</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Retail Billing</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">GST Reports</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Email Support</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Professional Plan Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Professional Plan</h3>
+                <div className="mb-4">
+                  <span className="text-4xl font-bold text-gray-900">₹20000</span>
+                  <p className="text-sm text-gray-600 mt-1">+ 18% GST</p>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Unlimited Users (Max 5)</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Unlimited Branches (Max 5)</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Unlimited Products</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Retail + Wholesale</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Multi-Tenant Support</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Advanced Reports</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Priority Support</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Gold Edition Card - Recommended */}
+              <div className="bg-white border-2 border-orange-500 rounded-lg p-6 relative hover:shadow-lg transition-shadow">
+                {/* Recommended Badge */}
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold">RECOMMENDED</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2 mt-2">Gold Edition</h3>
+                <div className="mb-4">
+                  <span className="text-4xl font-bold text-gray-900">₹35000</span>
+                  <p className="text-sm text-gray-600 mt-1">+ 18% GST</p>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Unlimited Users (Max 5)</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Unlimited Branches</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Unlimited Products</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Wholesale & Distributors</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Multi-Tenant Support</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Advanced Reports</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">24/7 Support</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="mt-8 text-center">
+              <button onClick={() => setShowPricingModal(false)} className="bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-2 px-6 rounded-lg text-sm transition-colors">
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
