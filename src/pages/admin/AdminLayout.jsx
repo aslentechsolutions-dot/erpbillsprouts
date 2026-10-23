@@ -167,36 +167,33 @@ const AdminLayout = ({ children }) => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Horizontal Sidebar with Icon + Text */}
-      <div className={`fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 w-80 lg:w-64 ${
+      {/* Vertical Card Sidebar with Icon Above Text */}
+      <div className={`fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 w-screen sm:w-80 lg:w-24 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         
-        {/* Sidebar Header - Logo & Name */}
-        <div className="flex items-center justify-between h-16 px-4 bg-gradient-to-br from-primary-600 to-primary-700 flex-shrink-0">
-          <div className="flex items-center gap-3 flex-1">
-            <div className="h-8 w-8 bg-white rounded-lg flex items-center justify-center overflow-hidden shadow-lg flex-shrink-0">
+        {/* Sidebar Header - Logo Only (Compact) */}
+        <div className="flex items-center justify-between h-20 px-2 bg-gradient-to-br from-primary-600 to-primary-700 flex-shrink-0 flex-col sm:flex-row lg:flex-col">
+          <div className="flex items-center justify-center w-16 h-16 mx-auto lg:mx-0">
+            <div className="h-10 w-10 bg-white rounded-lg flex items-center justify-center overflow-hidden shadow-lg">
               {logo ? (
                 <img src={logo} alt="Logo" className="h-full w-full object-contain" />
               ) : (
-                <span className="text-sm font-bold text-primary-600">Rx</span>
+                <span className="text-xs font-bold text-primary-600">Rx</span>
               )}
             </div>
-            <span className="text-white font-semibold text-sm truncate hidden lg:inline">
-              {pharmacyName}
-            </span>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden text-white hover:bg-primary-700 p-1 rounded"
+            className="lg:hidden text-white hover:bg-primary-700 p-1 rounded sm:hidden"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Navigation - Icon + Text Horizontal Layout */}
-        <nav className="flex-1 px-3 py-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
-          <div className="space-y-2">
+        {/* Navigation - Minimal Design */}
+        <nav className="flex-1 px-2 py-3 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+          <div className="flex flex-wrap lg:flex-col gap-2">
             {navigation.map((item) => {
               const Icon = item.icon
               const active = isActive(item.href)
@@ -207,38 +204,37 @@ const AdminLayout = ({ children }) => {
                   to={item.href}
                   onMouseEnter={() => setHoveredItem(item.name)}
                   onMouseLeave={() => setHoveredItem(null)}
-                  className={`group relative flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${
+                  className={`group relative flex flex-col items-center justify-center w-20 h-24 sm:w-24 sm:h-24 rounded-lg transition-all duration-200 flex-shrink-0 ${
                     active
-                      ? 'bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700'
+                      ? 'bg-blue-500'
                       : hoveredItem === item.name
-                      ? 'bg-indigo-50 text-indigo-700'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-gray-100'
+                      : ''
                   }`}
                   onClick={() => setSidebarOpen(false)}
+                  title={item.name}
                 >
+                  {/* Icon */}
                   <Icon
-                    className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+                    className={`h-6 w-6 mb-1 transition-all duration-200 ${
                       active
-                        ? 'text-primary-600'
+                        ? 'text-white'
                         : hoveredItem === item.name
-                        ? 'text-indigo-600'
-                        : 'text-gray-500 group-hover:text-gray-700'
+                        ? 'text-gray-700'
+                        : 'text-gray-500'
                     }`}
                   />
-                  <span className={`text-sm leading-tight truncate transition-all duration-200 ${
+                  
+                  {/* Text */}
+                  <span className={`text-xs leading-tight text-center transition-all duration-200 line-clamp-2 px-1 ${
                     active
-                      ? 'text-primary-700 font-semibold'
+                      ? 'text-white font-medium'
                       : hoveredItem === item.name
-                      ? 'text-indigo-700 font-medium'
-                      : 'text-gray-600 group-hover:text-gray-900'
+                      ? 'text-gray-700 font-medium'
+                      : 'text-gray-600'
                   }`}>
                     {item.name}
                   </span>
-                  
-                  {/* Active indicator line */}
-                  {active && (
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-600 rounded-r-full"></div>
-                  )}
                 </Link>
               )
             })}
@@ -246,82 +242,89 @@ const AdminLayout = ({ children }) => {
         </nav>
 
         {/* User Profile Section - Bottom */}
-        <div className="border-t border-gray-200 p-3 space-y-2 flex-shrink-0">
-          {/* Settings */}
+        <div className="border-t border-gray-200 p-2 flex-shrink-0">
+          {/* Settings Card */}
           <Link
             to="/admin/settings"
-            className={`group relative flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${
+            className={`group relative flex flex-col items-center justify-center w-full h-20 rounded-lg transition-all duration-200 mb-2 ${
               isActive('/admin/settings')
-                ? 'bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700'
+                ? 'bg-blue-500'
                 : hoveredItem === 'Settings' 
-                ? 'bg-indigo-50 text-indigo-700'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-gray-100'
+                : ''
             }`}
             onMouseEnter={() => setHoveredItem('Settings')}
             onMouseLeave={() => setHoveredItem(null)}
             onClick={() => setSidebarOpen(false)}
+            title="Settings"
           >
             <Settings
-              className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+              className={`h-6 w-6 mb-1 transition-all duration-200 ${
                 isActive('/admin/settings')
-                  ? 'text-primary-600'
+                  ? 'text-white'
                   : hoveredItem === 'Settings'
-                  ? 'text-indigo-600'
-                  : 'text-gray-500 group-hover:text-gray-700'
+                  ? 'text-gray-700'
+                  : 'text-gray-500'
               }`}
             />
-            <span className={`text-sm leading-tight transition-all duration-200 ${
+            <span className={`text-xs leading-tight text-center transition-all duration-200 px-1 ${
               isActive('/admin/settings')
-                ? 'text-primary-700 font-semibold'
+                ? 'text-white font-medium'
                 : hoveredItem === 'Settings'
-                ? 'text-indigo-700 font-medium'
-                : 'text-gray-600 group-hover:text-gray-900'
+                ? 'text-gray-700 font-medium'
+                : 'text-gray-600'
             }`}>
               Settings
             </span>
-            {isActive('/admin/settings') && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-600 rounded-r-full"></div>
-            )}
           </Link>
 
-          {/* Sign Out */}
+          {/* Sign Out Card */}
           <button
             onClick={handleSignOut}
-            className="w-full group relative flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:bg-red-50 hover:text-red-700"
+            className={`w-full group relative flex flex-col items-center justify-center h-20 rounded-lg transition-all duration-200 ${
+              hoveredItem === 'SignOut'
+                ? 'bg-gray-100 text-red-700'
+                : 'text-gray-600'
+            }`}
             onMouseEnter={() => setHoveredItem('SignOut')}
             onMouseLeave={() => setHoveredItem(null)}
+            title="Logout"
           >
             <LogOut
-              className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+              className={`h-6 w-6 mb-1 transition-all duration-200 ${
                 hoveredItem === 'SignOut'
                   ? 'text-red-600'
-                  : 'text-gray-500 group-hover:text-red-600'
+                  : 'text-gray-500'
               }`}
             />
-            <span className={`text-sm leading-tight transition-all duration-200 ${
+            <span className={`text-xs leading-tight text-center transition-all duration-200 px-1 ${
               hoveredItem === 'SignOut'
                 ? 'text-red-700 font-medium'
-                : 'text-gray-600 group-hover:text-red-700'
+                : 'text-gray-600'
             }`}>
               Logout
             </span>
           </button>
 
-          {/* User Profile Info */}
-          <div className="flex items-center gap-3 px-3 py-2 border-t border-gray-200 mt-2">
-            <div className={`h-8 w-8 rounded-md flex items-center justify-center text-xs font-semibold flex-shrink-0 transition-all duration-200 ${
+          {/* User Profile Card */}
+          <div className={`flex flex-col items-center justify-center h-20 rounded-lg mt-2 transition-all duration-200 ${
+            hoveredItem === 'Profile'
+              ? 'bg-gray-100'
+              : ''
+          }`}
+            onMouseEnter={() => setHoveredItem('Profile')}
+            onMouseLeave={() => setHoveredItem(null)}
+            title={profile?.full_name || 'User'}
+          >
+            <div className={`h-8 w-8 rounded-md flex items-center justify-center text-xs font-semibold transition-all duration-200 ${
               hoveredItem === 'Profile'
-                ? 'bg-indigo-100 text-indigo-700'
-                : 'bg-primary-100 text-primary-700'
-            }`}
-              onMouseEnter={() => setHoveredItem('Profile')}
-              onMouseLeave={() => setHoveredItem(null)}
-              title={profile?.full_name || 'User'}
-            >
+                ? 'bg-gray-300 text-gray-700'
+                : 'bg-gray-200 text-gray-600'
+            }`}>
               {profile?.full_name?.charAt(0) || 'U'}
             </div>
-            <span className="text-sm text-gray-600 truncate">
-              {profile?.full_name || 'User'}
+            <span className="text-xs text-gray-600 text-center mt-1 px-1 line-clamp-2">
+              {profile?.full_name ? profile.full_name.split(' ')[0] : 'User'}
             </span>
           </div>
         </div>
