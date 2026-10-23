@@ -1,74 +1,77 @@
-import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { UserPlus, Mail, Lock, User, Phone, MapPin, Calendar } from 'lucide-react'
+﻿import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ChevronLeft, User, Mail, Phone, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 
 const CustomerRegisterPage = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     phone: '',
     password: '',
-    confirmPassword: '',
-    address: '',
-    dateOfBirth: '',
-    gender: ''
+    confirmPassword: ''
   })
+  const [errors, setErrors] = useState({})
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+    // Clear error for this field
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }))
+    }
   }
 
   const validateForm = () => {
+    const newErrors = {}
+
     if (!formData.fullName.trim()) {
-      toast.error('Please enter your full name')
-      return false
+      newErrors.fullName = 'Full name is required'
     }
 
     if (!formData.email.trim()) {
-      toast.error('Please enter your email')
-      return false
+      newErrors.email = 'Email is required'
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = 'Please enter a valid email address'
+      }
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(formData.email)) {
-      toast.error('Please enter a valid email address')
-      return false
-    }
-
-    if (!formData.phone.trim()) {
-      toast.error('Please enter your phone number')
-      return false
-    }
-
-    const phoneRegex = /^[0-9]{10}$/
-    if (!phoneRegex.test(formData.phone.replace(/\D/g, ''))) {
-      toast.error('Please enter a valid 10-digit phone number')
-      return false
+    if (formData.phone && !/^[0-9]{10}$/.test(formData.phone)) {
+      newErrors.phone = 'Please enter a valid 10-digit phone number'
     }
 
     if (!formData.password) {
-      toast.error('Please enter a password')
-      return false
+      newErrors.password = 'Password is required'
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters'
     }
 
-    if (formData.password.length < 6) {
-      toast.error('Password must be at least 6 characters long')
-      return false
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password'
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match'
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match')
-      return false
+    if (!agreedToTerms) {
+      newErrors.terms = 'You must agree to the Terms & Conditions'
     }
 
-    return true
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
   const handleSubmit = async (e) => {
@@ -79,312 +82,260 @@ const CustomerRegisterPage = () => {
     }
 
     setLoading(true)
-
     try {
-      console.log('Starting registration...')
-      
-      // Step 1: Create auth user (this is the only critical step)
+      // Sign up with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
           data: {
             full_name: formData.fullName,
+            phone: formData.phone,
             role: 'patient'
-          },
-          emailRedirectTo: undefined // Disable email confirmation
+          }
         }
       })
 
       if (authError) {
-        console.error('Auth error:', authError)
-        throw authError
+        toast.error(authError.message)
+        setLoading(false)
+        return
       }
 
-      if (!authData.user) {
-        throw new Error('Registration failed. Please try again.')
+      // Create profile in profiles table
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([{
+          id: authData.user.id,
+          full_name: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          role: 'patient'
+        }])
+
+      if (profileError) {
+        toast.error('Failed to create profile')
+        setLoading(false)
+        return
       }
 
-      console.log('✅ Auth user created successfully:', authData.user.id)
-
-      // Step 2: Create customer record (optional, won't block registration)
-      try {
-        await supabase
-          .from('customers')
-          .insert({
-            name: formData.fullName,
-            email: formData.email,
-            phone: formData.phone,
-            address: formData.address || null,
-            date_of_birth: formData.dateOfBirth || null,
-            gender: formData.gender || null
-          })
-        console.log('Customer record created')
-      } catch (customerError) {
-        console.warn('Customer creation failed (non-blocking):', customerError)
-      }
-
-      // Step 3: Create profile (optional, won't block registration)
-      try {
-        await supabase
-          .from('profiles')
-          .upsert({
-            id: authData.user.id,
-            full_name: formData.fullName,
-            email: formData.email,
-            phone: formData.phone,
-            role: 'patient',
-            status: 'active'
-          }, {
-            onConflict: 'id'
-          })
-        console.log('Profile created via upsert')
-      } catch (profileError) {
-        console.warn('Profile creation failed (non-blocking):', profileError)
-      }
-
-      // Always show success - auth user was created
-      console.log('Registration completed successfully - auth user created')
-
-      toast.success('Registration successful! You can now login.')
-      
-      // Redirect to login
+      toast.success('Account created successfully! Please check your email to verify.')
       setTimeout(() => {
         navigate('/login')
-      }, 1500)
-
+      }, 2000)
     } catch (error) {
-      console.error('Registration error:', error)
-      
-      // Show specific error messages
-      let errorMessage = 'Registration failed. Please try again.'
-      
-      if (error.message) {
-        if (error.message.includes('already registered') || error.message.includes('already been registered')) {
-          errorMessage = 'This email is already registered. Please login instead.'
-        } else if (error.message.includes('invalid email')) {
-          errorMessage = 'Please enter a valid email address.'
-        } else if (error.message.includes('weak password')) {
-          errorMessage = 'Password is too weak. Please use a stronger password.'
-        } else {
-          errorMessage = error.message
-        }
-      }
-      
-      toast.error(errorMessage)
+      toast.error('An unexpected error occurred')
+      console.error(error)
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
-        {/* Header */}
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <div className="bg-blue-900 text-white p-6">
+        <div className="max-w-2xl mx-auto flex items-center gap-4">
+          <button
+            onClick={() => navigate('/login')}
+            className="p-2 hover:bg-blue-800 rounded-lg transition-colors"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <h1 className="text-lg font-bold">Customer Registration</h1>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-2xl mx-auto p-8">
+        {/* Title Section */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="h-16 w-16 bg-blue-900 rounded-full flex items-center justify-center">
-              <UserPlus className="h-8 w-8 text-white" />
-            </div>
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900">Create Account</h2>
-          <p className="mt-2 text-gray-600">Register to start shopping for medicines</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Your Account</h2>
+          <p className="text-gray-600">Join BillSprout to access your prescriptions and order history.</p>
         </div>
 
-        {/* Registration Form */}
-        <div className="bg-white rounded-lg shadow-xl p-8">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form Card */}
+        <div className="bg-white rounded-lg p-8">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* Full Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name *
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
-                </div>
+              <div className="relative flex items-center">
+                <User className="absolute left-4 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your full name"
-                  required
+                  placeholder="Full Name *"
+                  className={`w-full pl-12 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 ${
+                    errors.fullName ? 'border-red-300' : 'border-gray-300'
+                  }`}
                 />
               </div>
+              {errors.fullName && (
+                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.fullName}
+                </p>
+              )}
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address *
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                </div>
+              <div className="relative flex items-center">
+                <Mail className="absolute left-4 w-5 h-5 text-gray-400" />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="your@email.com"
-                  required
+                  placeholder="Email Address *"
+                  className={`w-full pl-12 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 ${
+                    errors.email ? 'border-red-300' : 'border-gray-300'
+                  }`}
                 />
               </div>
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.email}
+                </p>
+              )}
             </div>
 
-            {/* Phone */}
+            {/* Phone Number */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone Number *
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Phone className="h-5 w-5 text-gray-400" />
-                </div>
+              <div className="relative flex items-center">
+                <Phone className="absolute left-4 w-5 h-5 text-gray-400" />
                 <input
                   type="tel"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="10-digit phone number"
-                  required
+                  placeholder="Phone Number (Optional)"
+                  className={`w-full pl-12 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 ${
+                    errors.phone ? 'border-red-300' : 'border-gray-300'
+                  }`}
                 />
               </div>
+              {errors.phone && (
+                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.phone}
+                </p>
+              )}
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password *
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </div>
+              <div className="relative flex items-center">
+                <Lock className="absolute left-4 w-5 h-5 text-gray-400" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="At least 6 characters"
-                  required
+                  placeholder="Password *"
+                  className={`w-full pl-12 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 ${
+                    errors.password ? 'border-red-300' : 'border-gray-300'
+                  }`}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
               </div>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.password}
+                </p>
+              )}
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password *
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </div>
+              <div className="relative flex items-center">
+                <Lock className="absolute left-4 w-5 h-5 text-gray-400" />
                 <input
-                  type="password"
+                  type={showConfirmPassword ? 'text' : 'password'}
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Re-enter your password"
-                  required
+                  placeholder="Confirm Password *"
+                  className={`w-full pl-12 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 ${
+                    errors.confirmPassword ? 'border-red-300' : 'border-gray-300'
+                  }`}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 text-gray-400 hover:text-gray-600"
+                >
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
               </div>
+              {errors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
 
-            {/* Optional Fields - Collapsible */}
-            <div className="border-t pt-4">
-              <p className="text-sm text-gray-600 mb-3">Optional Information</p>
-              
-              {/* Address */}
-              <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Address
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 pt-2 pointer-events-none">
-                    <MapPin className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <textarea
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    rows="2"
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Your delivery address"
-                  />
-                </div>
-              </div>
-
-              {/* Date of Birth & Gender */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Date of Birth
-                  </label>
-                  <input
-                    type="date"
-                    name="dateOfBirth"
-                    value={formData.dateOfBirth}
-                    onChange={handleChange}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Gender
-                  </label>
-                  <select
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-              </div>
+            {/* Terms & Conditions */}
+            <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+              <input
+                type="checkbox"
+                id="terms"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="mt-1 w-5 h-5 border-gray-300 rounded cursor-pointer"
+              />
+              <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer">
+                I agree to the Terms & Conditions and Privacy Policy
+              </label>
             </div>
+            {errors.terms && (
+              <p className="text-sm text-red-600 flex items-center gap-1">
+                <AlertCircle className="w-4 h-4" />
+                {errors.terms}
+              </p>
+            )}
 
-            {/* Submit Button */}
+            {/* Create Account Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-900 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-blue-900 hover:bg-blue-800 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
             >
-              {loading ? 'Creating Account...' : 'Create Account'}
+              {loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  Creating...
+                </>
+              ) : (
+                'Create Account'
+              )}
             </button>
           </form>
 
-          {/* Login Link */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+          {/* Sign In Link */}
+          <div className="text-center mt-6 pt-6 border-t border-gray-200">
+            <p className="text-gray-600">
               Already have an account?{' '}
-              <Link
-                to="/login"
-                className="font-medium text-blue-900 hover:text-blue-700"
+              <button
+                onClick={() => navigate('/login')}
+                className="text-blue-900 hover:underline font-semibold"
               >
-                Sign in here
-              </Link>
+                Sign In
+              </button>
             </p>
           </div>
         </div>
-
-        {/* Footer Note */}
-        <p className="mt-6 text-center text-xs text-gray-500">
-          By registering, you agree to our Terms of Service and Privacy Policy
-        </p>
       </div>
     </div>
   )
