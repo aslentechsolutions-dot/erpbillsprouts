@@ -168,25 +168,20 @@ const AdminLayout = ({ children }) => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Icon-Based Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+      <div className={`fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 w-80 lg:w-20 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } ${sidebarCollapsed ? 'w-24' : 'w-64 lg:w-24'}`}>
+      }`}>
         
         {/* Sidebar Header - Logo & Name */}
-        <div className="flex items-center justify-between h-20 px-4 bg-gradient-to-br from-primary-600 to-primary-700 flex-shrink-0">
+        <div className="flex items-center justify-center h-16 px-2 bg-gradient-to-br from-primary-600 to-primary-700 flex-shrink-0">
           <div className="flex items-center justify-center w-full">
-            <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center overflow-hidden shadow-lg flex-shrink-0">
+            <div className="h-8 w-8 bg-white rounded-lg flex items-center justify-center overflow-hidden shadow-lg flex-shrink-0">
               {logo ? (
                 <img src={logo} alt="Logo" className="h-full w-full object-contain" />
               ) : (
-                <span className="text-lg font-bold text-primary-600">Rx</span>
+                <span className="text-sm font-bold text-primary-600">Rx</span>
               )}
             </div>
-            {!sidebarCollapsed && (
-              <span className="ml-3 text-base font-bold text-white truncate hidden lg:block">
-                {pharmacyName.split(' ')[0]}
-              </span>
-            )}
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
@@ -197,7 +192,7 @@ const AdminLayout = ({ children }) => {
         </div>
 
         {/* Navigation - Icon-Based Vertical Layout */}
-        <nav className="flex-1 px-3 py-6 overflow-y-auto space-y-2" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+        <nav className="flex-1 px-2 py-4 overflow-y-auto space-y-1" style={{ maxHeight: 'calc(100vh - 200px)' }}>
           {navigation.map((item) => {
             const Icon = item.icon
             const active = isActive(item.href)
@@ -208,7 +203,7 @@ const AdminLayout = ({ children }) => {
                 to={item.href}
                 onMouseEnter={() => setHoveredItem(item.name)}
                 onMouseLeave={() => setHoveredItem(null)}
-                className={`group relative flex flex-col items-center justify-center py-4 px-2 rounded-xl transition-all duration-200 ${
+                className={`group relative flex items-center justify-center py-3 px-2 rounded-lg transition-all duration-200 ${
                   active
                     ? 'bg-gradient-to-br from-primary-50 to-primary-100 text-primary-700'
                     : hoveredItem === item.name
@@ -219,7 +214,7 @@ const AdminLayout = ({ children }) => {
                 title={item.name}
               >
                 <Icon
-                  className={`h-6 w-6 mb-2 transition-all duration-200 ${
+                  className={`h-5 w-5 transition-all duration-200 ${
                     active
                       ? 'text-primary-600 scale-110'
                       : hoveredItem === item.name
@@ -227,19 +222,10 @@ const AdminLayout = ({ children }) => {
                       : 'text-gray-400 group-hover:text-gray-600 group-hover:scale-105'
                   }`}
                 />
-                <span className={`text-xs font-medium text-center leading-tight ${
-                  active
-                    ? 'text-primary-700'
-                    : hoveredItem === item.name
-                    ? 'text-indigo-700'
-                    : 'text-gray-600'
-                }`}>
-                  {item.name.split(' ').slice(0, 2).join('\n')}
-                </span>
                 
                 {/* Active indicator dot */}
                 {active && (
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 h-2 w-2 bg-primary-600 rounded-full"></div>
+                  <div className="absolute right-1 top-1/2 -translate-y-1/2 h-1.5 w-1.5 bg-primary-600 rounded-full"></div>
                 )}
               </Link>
             )
@@ -247,11 +233,11 @@ const AdminLayout = ({ children }) => {
         </nav>
 
         {/* User Profile Section - Bottom */}
-        <div className="border-t border-gray-200 p-3 space-y-2 flex-shrink-0">
+        <div className="border-t border-gray-200 p-2 space-y-1 flex-shrink-0">
           {/* Settings */}
           <Link
             to="/admin/settings"
-            className={`group relative flex flex-col items-center justify-center py-3 px-2 rounded-xl transition-all duration-200 ${
+            className={`group relative flex items-center justify-center py-2 px-2 rounded-lg transition-all duration-200 ${
               isActive('/admin/settings')
                 ? 'bg-gradient-to-br from-primary-50 to-primary-100 text-primary-700'
                 : hoveredItem === 'Settings' 
@@ -264,7 +250,7 @@ const AdminLayout = ({ children }) => {
             title="Settings"
           >
             <Settings
-              className={`h-5 w-5 mb-1 transition-all duration-200 ${
+              className={`h-5 w-5 transition-all duration-200 ${
                 isActive('/admin/settings')
                   ? 'text-primary-600 scale-110'
                   : hoveredItem === 'Settings'
@@ -272,30 +258,28 @@ const AdminLayout = ({ children }) => {
                   : 'text-gray-400 group-hover:text-gray-600 group-hover:scale-105'
               }`}
             />
-            <span className="text-xs font-medium">Settings</span>
           </Link>
 
           {/* Sign Out */}
           <button
             onClick={handleSignOut}
-            className="w-full group relative flex flex-col items-center justify-center py-3 px-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-red-50 hover:text-red-700"
+            className="w-full group relative flex items-center justify-center py-2 px-2 rounded-lg transition-all duration-200 text-gray-600 hover:bg-red-50 hover:text-red-700"
             onMouseEnter={() => setHoveredItem('SignOut')}
             onMouseLeave={() => setHoveredItem(null)}
             title="Sign out"
           >
             <LogOut
-              className={`h-5 w-5 mb-1 transition-all duration-200 ${
+              className={`h-5 w-5 transition-all duration-200 ${
                 hoveredItem === 'SignOut'
                   ? 'text-red-600 scale-105'
                   : 'text-gray-400 group-hover:text-red-600 group-hover:scale-105'
               }`}
             />
-            <span className="text-xs font-medium">Logout</span>
           </button>
 
           {/* User Avatar */}
-          <div className="flex items-center justify-center pt-2 border-t border-gray-200">
-            <div className={`h-10 w-10 rounded-lg flex items-center justify-center text-sm font-semibold transition-all duration-200 ${
+          <div className="flex items-center justify-center pt-1 border-t border-gray-200 mt-1">
+            <div className={`h-8 w-8 rounded-md flex items-center justify-center text-xs font-semibold transition-all duration-200 ${
               hoveredItem === 'Profile'
                 ? 'bg-indigo-100 text-indigo-700'
                 : 'bg-primary-100 text-primary-700 hover:bg-indigo-100 hover:text-indigo-700'
