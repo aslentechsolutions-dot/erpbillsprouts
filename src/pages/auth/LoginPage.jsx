@@ -435,168 +435,97 @@ const LoginPage = () => {
       {showDemoModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
           <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8 my-8">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">Request a Demo</h2>
-                <p className="text-sm text-gray-600 mt-1">Tell us about your business</p>
-              </div>
-              <button onClick={() => setShowDemoModal(false)} className="text-gray-400 hover:text-gray-600">
+            {/* Header */}
+            <div className="flex justify-between items-start mb-2">
+              <h2 className="text-2xl font-bold text-gray-900">Request a Demo</h2>
+              <button onClick={() => setShowDemoModal(false)} className="text-gray-400 hover:text-gray-600 -mt-1">
                 <X className="w-6 h-6" />
               </button>
             </div>
+            <p className="text-sm text-gray-600 mb-6">Tell us about your business and we will set up a walkthrough.</p>
 
             <form onSubmit={handleDemoSubmit} className="space-y-4">
-              {/* Name Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
-                <input
-                  type="text"
-                  name="yourName"
-                  value={demoFormData.yourName}
-                  onChange={handleDemoInputChange}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
-                    demoErrors.yourName ? "border-red-300" : "border-gray-300"
-                  }`}
-                  placeholder="John Doe"
-                />
-                {demoErrors.yourName && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
-                    <AlertCircle className="h-4 w-4 mr-1" />
-                    {demoErrors.yourName}
-                  </p>
-                )}
-              </div>
+              {/* Row 1: Your Name (Full Width) */}
+              <input
+                type="text"
+                name="yourName"
+                value={demoFormData.yourName}
+                onChange={handleDemoInputChange}
+                placeholder="Your Name *"
+                className="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
+              />
 
-              {/* Business Name Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Business Name *</label>
-                <input
-                  type="text"
-                  name="businessName"
-                  value={demoFormData.businessName}
-                  onChange={handleDemoInputChange}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
-                    demoErrors.businessName ? "border-red-300" : "border-gray-300"
-                  }`}
-                  placeholder="Your Pharmacy Name"
-                />
-                {demoErrors.businessName && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
-                    <AlertCircle className="h-4 w-4 mr-1" />
-                    {demoErrors.businessName}
-                  </p>
-                )}
-              </div>
+              {/* Row 2: Business Name (Full Width) */}
+              <input
+                type="text"
+                name="businessName"
+                value={demoFormData.businessName}
+                onChange={handleDemoInputChange}
+                placeholder="Business Name"
+                className="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
+              />
 
-              {/* Mobile Number Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number *</label>
+              {/* Row 3: Mobile Number & Email (2-column grid) */}
+              <div className="grid grid-cols-2 gap-3">
                 <input
                   type="tel"
                   name="mobileNumber"
                   value={demoFormData.mobileNumber}
                   onChange={handleDemoInputChange}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
-                    demoErrors.mobileNumber ? "border-red-300" : "border-gray-300"
-                  }`}
-                  placeholder="10-digit mobile number"
+                  placeholder="Mobile Number *"
+                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
                 />
-                {demoErrors.mobileNumber && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
-                    <AlertCircle className="h-4 w-4 mr-1" />
-                    {demoErrors.mobileNumber}
-                  </p>
-                )}
-              </div>
-
-              {/* Email Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
                 <input
                   type="email"
                   name="email"
                   value={demoFormData.email}
                   onChange={handleDemoInputChange}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
-                    demoErrors.email ? "border-red-300" : "border-gray-300"
-                  }`}
-                  placeholder="your.email@example.com"
+                  placeholder="Email"
+                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
                 />
-                {demoErrors.email && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
-                    <AlertCircle className="h-4 w-4 mr-1" />
-                    {demoErrors.email}
-                  </p>
-                )}
               </div>
 
-              {/* City Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
+              {/* Row 4: City & Pincode (2-column grid) */}
+              <div className="grid grid-cols-2 gap-3">
                 <input
                   type="text"
                   name="city"
                   value={demoFormData.city}
                   onChange={handleDemoInputChange}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
-                    demoErrors.city ? "border-red-300" : "border-gray-300"
-                  }`}
-                  placeholder="Your City"
+                  placeholder="City"
+                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
                 />
-                {demoErrors.city && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
-                    <AlertCircle className="h-4 w-4 mr-1" />
-                    {demoErrors.city}
-                  </p>
-                )}
-              </div>
-
-              {/* Pincode Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Pincode *</label>
                 <input
                   type="text"
                   name="pincode"
                   value={demoFormData.pincode}
                   onChange={handleDemoInputChange}
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
-                    demoErrors.pincode ? "border-red-300" : "border-gray-300"
-                  }`}
-                  placeholder="6-digit pincode"
+                  placeholder="Pincode"
+                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors"
                 />
-                {demoErrors.pincode && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
-                    <AlertCircle className="h-4 w-4 mr-1" />
-                    {demoErrors.pincode}
-                  </p>
-                )}
               </div>
 
-              {/* Business Type Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Business Type</label>
+              {/* Row 5: Business Type & Branches (2-column grid) */}
+              <div className="grid grid-cols-2 gap-3">
                 <select
                   name="businessType"
                   value={demoFormData.businessType}
                   onChange={handleDemoInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white text-gray-700 transition-colors"
                 >
+                  <option value="Pharmacy / Medical">Business Type</option>
                   <option value="Pharmacy / Medical">Pharmacy / Medical</option>
                   <option value="Retail">Retail</option>
                   <option value="Supermarket">Supermarket</option>
                   <option value="Other">Other</option>
                 </select>
-              </div>
-
-              {/* Branches Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Number of Branches</label>
                 <select
                   name="branches"
                   value={demoFormData.branches}
                   onChange={handleDemoInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white text-gray-700 transition-colors"
                 >
+                  <option value="1">Branches</option>
                   <option value="1">1</option>
                   <option value="2-5">2-5</option>
                   <option value="6-10">6-10</option>
@@ -604,32 +533,32 @@ const LoginPage = () => {
                 </select>
               </div>
 
-              {/* Specific Request Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Specific Request or Questions</label>
-                <textarea
-                  name="specificRequest"
-                  value={demoFormData.specificRequest}
-                  onChange={handleDemoInputChange}
-                  rows="3"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"
-                  placeholder="Tell us about your requirements..."
-                />
-              </div>
+              {/* Row 6: Specific Request (Full Width) */}
+              <textarea
+                name="specificRequest"
+                value={demoFormData.specificRequest}
+                onChange={handleDemoInputChange}
+                rows="3"
+                placeholder="Anything specific you want to see?"
+                className="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white placeholder-gray-600 transition-colors resize-none"
+              />
 
               {/* Submit Button */}
               <button
                 type="submit"
                 disabled={demoLoading}
-                className="w-full bg-blue-900 hover:bg-blue-800 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center mt-6"
+                className="w-full bg-blue-900 hover:bg-blue-800 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center mt-6 gap-2"
               >
                 {demoLoading ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Submitting...
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>Request Demo</span>
                   </>
                 ) : (
-                  "Request Demo"
+                  <>
+                    <span>▶</span>
+                    <span>Request Demo</span>
+                  </>
                 )}
               </button>
             </form>
