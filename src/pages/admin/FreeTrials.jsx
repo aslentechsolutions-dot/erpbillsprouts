@@ -469,10 +469,10 @@ const FreeTrials = () => {
 
       {/* Detail Modal */}
       {showDetailModal && selectedTrial && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full p-8">
-            <div className="flex justify-between items-start mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Free Trial Details</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl p-8 my-8">
+            <div className="flex justify-between items-start mb-8">
+              <h2 className="text-3xl font-bold text-gray-900">Free Trial Details</h2>
               <button
                 onClick={() => setShowDetailModal(false)}
                 className="text-gray-400 hover:text-gray-600 p-2 rounded hover:bg-gray-100"
@@ -481,39 +481,39 @@ const FreeTrials = () => {
               </button>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Pharmacy Info */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4">Pharmacy Information</h3>
-                <div className="grid grid-cols-2 gap-4">
+              <div className="pb-6 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Pharmacy Information</h3>
+                <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="text-sm text-gray-600">Pharmacy Name</label>
-                    <p className="text-gray-900 font-medium">{selectedTrial.pharmacy_name}</p>
+                    <label className="text-base text-gray-600 block mb-2">Pharmacy Name</label>
+                    <p className="text-gray-900 font-medium text-base">{selectedTrial.pharmacy_name}</p>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-600">Drug License Number</label>
-                    <p className="text-gray-900 font-medium">{selectedTrial.drug_license_number}</p>
+                    <label className="text-base text-gray-600 block mb-2">Drug License Number</label>
+                    <p className="text-gray-900 font-medium text-base">{selectedTrial.drug_license_number}</p>
                   </div>
                 </div>
               </div>
 
               {/* Owner Info */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4">Owner Information</h3>
-                <div className="grid grid-cols-2 gap-4">
+              <div className="pb-6 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Owner Information</h3>
+                <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="text-sm text-gray-600">Owner Name</label>
-                    <p className="text-gray-900 font-medium">{selectedTrial.owner_name}</p>
+                    <label className="text-base text-gray-600 block mb-2">Owner Name</label>
+                    <p className="text-gray-900 font-medium text-base">{selectedTrial.owner_name}</p>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-600">Email</label>
-                    <a href={`mailto:${selectedTrial.email}`} className="text-blue-600 hover:underline font-medium">
+                    <label className="text-base text-gray-600 block mb-2">Email</label>
+                    <a href={`mailto:${selectedTrial.email}`} className="text-blue-600 hover:underline font-medium text-base">
                       {selectedTrial.email}
                     </a>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-600">Phone Number</label>
-                    <a href={`tel:${selectedTrial.phone_number}`} className="text-blue-600 hover:underline font-medium">
+                    <label className="text-base text-gray-600 block mb-2">Phone Number</label>
+                    <a href={`tel:${selectedTrial.phone_number}`} className="text-blue-600 hover:underline font-medium text-base">
                       {selectedTrial.phone_number}
                     </a>
                   </div>
@@ -521,70 +521,68 @@ const FreeTrials = () => {
               </div>
 
               {/* Address Info */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4">Address Information</h3>
-                <div className="grid grid-cols-2 gap-4">
+              <div className="pb-6 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Address Information</h3>
+                <div className="grid grid-cols-2 gap-6">
                   <div className="col-span-2">
-                    <label className="text-sm text-gray-600">Address</label>
-                    <p className="text-gray-900 font-medium">{selectedTrial.address}</p>
+                    <label className="text-base text-gray-600 block mb-2">Address</label>
+                    <p className="text-gray-900 font-medium text-base">{selectedTrial.address}</p>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-600">City</label>
-                    <p className="text-gray-900 font-medium">{selectedTrial.city}</p>
+                    <label className="text-base text-gray-600 block mb-2">City</label>
+                    <p className="text-gray-900 font-medium text-base">{selectedTrial.city}</p>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-600">State</label>
-                    <p className="text-gray-900 font-medium">{selectedTrial.state}</p>
+                    <label className="text-base text-gray-600 block mb-2">State</label>
+                    <p className="text-gray-900 font-medium text-base">{selectedTrial.state}</p>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-600">Pincode</label>
-                    <p className="text-gray-900 font-medium">{selectedTrial.pincode}</p>
+                    <label className="text-base text-gray-600 block mb-2">Pincode</label>
+                    <p className="text-gray-900 font-medium text-base">{selectedTrial.pincode}</p>
                   </div>
                 </div>
               </div>
 
               {/* Plan Info */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4">Plan Information</h3>
-                <div className="grid grid-cols-2 gap-4">
+              <div className="pb-6 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Plan Information</h3>
+                <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="text-sm text-gray-600">Selected Plan</label>
-                    <span className={`inline-block ${getPlanColor(selectedTrial.selected_plan)} px-3 py-1 rounded-full text-sm font-semibold mt-1`}>
+                    <label className="text-base text-gray-600 block mb-2">Selected Plan</label>
+                    <span className={`inline-block ${getPlanColor(selectedTrial.selected_plan)} px-4 py-2 rounded-full text-base font-semibold`}>
                       {getPlanLabel(selectedTrial.selected_plan)}
                     </span>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-600">Status</label>
-                    <p className="text-gray-900 font-medium mt-1">{selectedTrial.status}</p>
+                    <label className="text-base text-gray-600 block mb-2">Status</label>
+                    <p className="text-gray-900 font-medium text-base">{selectedTrial.status}</p>
                   </div>
                 </div>
               </div>
 
               {/* Metadata */}
-              <div className="border-t border-gray-200 pt-4">
-                <div>
-                  <label className="text-sm text-gray-600">Registered On</label>
-                  <p className="text-gray-900 font-medium">{formatDate(selectedTrial.created_at)}</p>
-                </div>
+              <div>
+                <label className="text-base text-gray-600 block mb-2">Registered On</label>
+                <p className="text-gray-900 font-medium text-base">{formatDate(selectedTrial.created_at)}</p>
               </div>
             </div>
 
-            <div className="mt-8 flex gap-3">
+            <div className="mt-10 flex gap-4">
               <a
                 href={`tel:${selectedTrial.phone_number}`}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg text-center transition-colors"
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg text-center transition-colors"
               >
                 Call
               </a>
               <a
                 href={`mailto:${selectedTrial.email}`}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg text-center transition-colors"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg text-center transition-colors"
               >
                 Email
               </a>
               <button
                 onClick={() => setShowDetailModal(false)}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors"
               >
                 Close
               </button>
