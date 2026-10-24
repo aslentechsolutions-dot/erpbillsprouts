@@ -11,11 +11,6 @@ const SupplierLedgerPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [showAdjustmentModal, setShowAdjustmentModal] = useState(false)
-  const [showLedgerModal, setShowLedgerModal] = useState(false)
-  const [ledgerType, setLedgerType] = useState('PURCHASE')
-  const [ledgerAmount, setLedgerAmount] = useState('')
-  const [ledgerDate, setLedgerDate] = useState(new Date().toISOString().split('T')[0])
-  const [ledgerDesc, setLedgerDesc] = useState('')
   const [paymentAmount, setPaymentAmount] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('cash')
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0])
@@ -386,12 +381,6 @@ const SupplierLedgerPage = () => {
                   <p className="text-sm text-gray-600">{selectedSupplier.phone}</p>
                 </div>
                 <div className="flex space-x-2">
-                  <button
-                    onClick={() => setShowLedgerModal(true)}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Ledger
-                  </button>
                   <button
                   onClick={() => setShowAdjustmentModal(true)}
                     className="btn-secondary text-sm"
