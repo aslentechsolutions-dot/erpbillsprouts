@@ -11,6 +11,13 @@ const SupplierLedgerPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [showAdjustmentModal, setShowAdjustmentModal] = useState(false)
+  const [showLedgerModal, setShowLedgerModal] = useState(false)
+  const [ledgerSupplier, setLedgerSupplier] = useState('')
+  const [ledgerType, setLedgerType] = useState('PURCHASE')
+  const [ledgerAmount, setLedgerAmount] = useState('')
+  const [ledgerDate, setLedgerDate] = useState(new Date().toISOString().split('T')[0])
+  const [ledgerReference, setLedgerReference] = useState('')
+  const [ledgerDescription, setLedgerDescription] = useState('')
   const [paymentAmount, setPaymentAmount] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('cash')
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0])
@@ -249,12 +256,13 @@ const SupplierLedgerPage = () => {
           <h1 className="text-2xl font-bold text-gray-900">Supplier Ledger</h1>
           <p className="text-gray-600">Track purchases, payments, and outstanding payables to suppliers</p>
         </div>
-        {selectedSupplier && (
-          <button onClick={exportLedger} className="btn-secondary">
-            <Download className="h-4 w-4 mr-2" />
-            Export Ledger
-          </button>
-        )}
+        <button 
+          onClick={() => setShowLedgerModal(true)}
+          className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add Ledger
+        </button>
       </div>
 
       {/* Summary Cards */}
@@ -655,6 +663,128 @@ const SupplierLedgerPage = () => {
                   className="btn-primary flex-1"
                 >
                   Add Adjustment
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Add Ledger Modal */}
+      {showLedgerModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Add Ledger Entry</h3>
+              <button
+                onClick={() => setShowLedgerModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Supplier *
+                </label>
+                <select
+                  value={ledgerSupplier}
+                  onChange={(e) => setLedgerSupplier(e.target.value)}
+                  className="input-field"
+                >
+                  <option value="">Select Supplier</option>
+                  {suppliers.map(supplier => (
+                    <option key={supplier.id} value={supplier.id}>
+                      {supplier.business_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Transaction Type *
+                </label>
+                <select
+                  value={ledgerType}
+                  onChange={(e) => setLedgerType(e.target.value)}
+                  className="input-field"
+                >
+                  <option value="PURCHASE">Purchase (Credit)</option>
+                  <option value="PAYMENT">Payment (Debit)</option>
+                  <option value="ADJUSTMENT">Adjustment</option>
+                  <option value="DEBIT_NOTE">Debit Note</option>
+                  <option value="CREDIT_NOTE">Credit Note</option>
+                  <option value="OPENING_BALANCE">Opening Balance</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Amount *
+                </label>
+                <input
+                  type="number"
+                  value={ledgerAmount}
+                  onChange={(e) => setLedgerAmount(e.target.value)}
+                  className="input-field"
+                  placeholder="0.00"
+                  step="0.01"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date
+                </label>
+                <input
+                  type="date"
+                  value={ledgerDate}
+                  onChange={(e) => setLedgerDate(e.target.value)}
+                  className="input-field"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Reference (Invoice/Receipt No.)
+                </label>
+                <input
+                  type="text"
+                  value={ledgerReference}
+                  onChange={(e) => setLedgerReference(e.target.value)}
+                  className="input-field"
+                  placeholder="INV-001"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description
+                </label>
+                <textarea
+                  value={ledgerDescription}
+                  onChange={(e) => setLedgerDescription(e.target.value)}
+                  className="input-field"
+                  rows="3"
+                  placeholder="Transaction details..."
+                />
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <button
+                  onClick={() => setShowLedgerModal(false)}
+                  className="btn-secondary flex-1"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddLedger}
+                  disabled={loading}
+                  className="btn-primary flex-1"
+                >
+                  {loading ? 'Saving...' : 'Add Entry'}
                 </button>
               </div>
             </div>
