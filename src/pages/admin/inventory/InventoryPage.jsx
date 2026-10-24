@@ -221,7 +221,6 @@ const InventoryPage = () => {
         manufacturing_date: formData.manufacturing_date || null,
         expiry_date: formData.expiry_date,
         initial_quantity: qty,
-        current_quantity: qty,
         free_quantity: Math.max(0, Number(formData.free_quantity) || 0),
         supplier_purchase_price: Number(formData.supplier_purchase_price) || 0,
         purchase_price: Number(formData.purchase_price) || 0,
@@ -898,6 +897,7 @@ const InventoryPage = () => {
 }
 
 export default InventoryPage
+
 
 
 
