@@ -448,10 +448,10 @@ const InventoryPage = () => {
                             {item.name}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {item.generic_name} â€¢ {item.brand}
+                            {item.generic_name} • {item.brand}
                           </div>
                           <div className="text-xs text-gray-400">
-                            {item.dosage_form} â€¢ {item.strength}
+                            {item.dosage_form} • {item.strength}
                           </div>
                         </div>
                       </td>
@@ -563,7 +563,7 @@ const InventoryPage = () => {
                 }}
                 className="text-gray-400 hover:text-gray-600"
               >
-                âœ•
+                ✕
               </button>
             </div>
 
@@ -581,17 +581,17 @@ const InventoryPage = () => {
                       <div key={inv.id} className="flex justify-between items-center text-sm bg-white p-2 rounded border border-blue-100">
                         <div>
                           <span className="font-medium text-gray-900">Batch: {inv.batch_number}</span>
-                          <span className="text-gray-500 mx-2">â€¢</span>
+                          <span className="text-gray-500 mx-2">•</span>
                           <span className="text-gray-600">Qty: {inv.current_quantity}</span>
                           {inv.supplier && (
                             <>
-                              <span className="text-gray-500 mx-2">â€¢</span>
+                              <span className="text-gray-500 mx-2">•</span>
                               <span className="text-gray-600">{inv.supplier.business_name}</span>
                             </>
                           )}
                         </div>
                         <div className="text-right">
-                          <div className="text-gray-900">â‚¹{inv.supplier_purchase_price?.toFixed(2) || inv.purchase_price?.toFixed(2)}</div>
+                          <div className="text-gray-900">Rs. {inv.supplier_purchase_price?.toFixed(2) || inv.purchase_price?.toFixed(2)}</div>
                           <div className="text-xs text-gray-500">
                             Exp: {inv.expiry_date ? new Date(inv.expiry_date).toLocaleDateString('en-IN') : 'N/A'}
                           </div>
