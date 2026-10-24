@@ -376,7 +376,6 @@ const PurchaseModal = ({ onClose, onSave }) => {
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Qty</th>
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Free</th>
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">MRP</th>
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">GST%</th>
                         <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Batch</th>
@@ -556,6 +555,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
 }
 
 export default PurchaseModal
+
 
 
 
