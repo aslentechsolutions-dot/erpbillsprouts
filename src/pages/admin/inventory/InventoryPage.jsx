@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react'
-import { Package, AlertTriangle, Clock, TrendingUp, Search, Filter, Eye, Edit, Plus } from 'lucide-react'
+import { Package, AlertTriangle, Clock, TrendingUp, Search, Filter, Eye, Edit, Plus, Trash2 } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import toast from 'react-hot-toast'
 
@@ -282,6 +282,26 @@ const InventoryPage = () => {
     }))
   }
 
+  const handleDeleteBatch = async (batchId, medicineName, batchNumber) => {
+    if (!confirm(`Are you sure you want to delete batch "${batchNumber}" of "${medicineName}"? This action cannot be undone.`)) {
+      return
+    }
+
+    try {
+      const { error } = await supabase
+        .from('medicine_batches')
+        .delete()
+        .eq('id', batchId)
+
+      if (error) throw error
+
+      toast.success('Batch deleted successfully')
+      fetchInventory()
+    } catch (error) {
+      console.error('Error deleting batch:', error)
+      toast.error('Error deleting batch: ' + error.message)
+    }
+  }
   const formatDate = (dateString) => {
     if (!dateString) return '-'
     return new Date(dateString).toLocaleDateString('en-IN')
@@ -443,6 +463,9 @@ const InventoryPage = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Supplier
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -516,6 +539,15 @@ const InventoryPage = () => {
                             Reg: {item.supplier_drug_reg}
                           </div>
                         )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <button
+                          onClick={() => handleDeleteBatch(item.batch_id, item.name, item.batch_number)}
+                          className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                          title="Delete Batch"
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -897,6 +929,10 @@ const InventoryPage = () => {
 }
 
 export default InventoryPage
+
+
+
+
 
 
 
