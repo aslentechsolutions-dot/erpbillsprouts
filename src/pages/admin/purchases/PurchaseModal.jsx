@@ -81,7 +81,6 @@ const PurchaseModal = ({ onClose, onSave }) => {
         quantity: 1,
         free_quantity: 0,
         purchase_price: 0,
-        amount: 0,
         mrp: medicine.mrp || 0,
         gst_percentage: medicine.gst_percentage || 12,
         batch_number: '',
@@ -544,6 +543,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
 }
 
 export default PurchaseModal
+
 
 
 
