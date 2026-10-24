@@ -341,7 +341,7 @@ const SupplierLedgerPage = () => {
             <div>
               <p className="text-sm text-gray-600">Total Payable</p>
               <p className="text-2xl font-bold text-red-600">
-                â‚¹{suppliers.reduce((sum, s) => sum + (s.outstanding_amount || 0), 0).toFixed(2)}
+                ₹{suppliers.reduce((sum, s) => sum + (s.outstanding_amount || 0), 0).toFixed(2)}
               </p>
             </div>
             <DollarSign className="h-10 w-10 text-red-500" />
@@ -353,7 +353,7 @@ const SupplierLedgerPage = () => {
             <div>
               <p className="text-sm text-gray-600">Total Purchases</p>
               <p className="text-2xl font-bold text-gray-900">
-                â‚¹{suppliers.reduce((sum, s) => sum + (s.total_purchases || 0), 0).toFixed(2)}
+                ₹{suppliers.reduce((sum, s) => sum + (s.total_purchases || 0), 0).toFixed(2)}
               </p>
             </div>
             <TrendingUp className="h-10 w-10 text-blue-500" />
@@ -365,7 +365,7 @@ const SupplierLedgerPage = () => {
             <div>
               <p className="text-sm text-gray-600">Total Payments</p>
               <p className="text-2xl font-bold text-gray-900">
-                â‚¹{suppliers.reduce((sum, s) => sum + (s.total_payments || 0), 0).toFixed(2)}
+                ₹{suppliers.reduce((sum, s) => sum + (s.total_payments || 0), 0).toFixed(2)}
               </p>
             </div>
             <TrendingDown className="h-10 w-10 text-green-500" />
@@ -432,7 +432,7 @@ const SupplierLedgerPage = () => {
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-semibold text-red-600">
-                          â‚¹{supplier.outstanding_amount?.toFixed(2)}
+                          ₹{supplier.outstanding_amount?.toFixed(2)}
                         </p>
                         <span className={`text-xs px-2 py-1 rounded ${getPayableStatusColor(supplier.payable_status)}`}>
                           {supplier.payable_status}
@@ -479,13 +479,13 @@ const SupplierLedgerPage = () => {
                 <div>
                   <p className="text-sm text-gray-600">Outstanding Payable</p>
                   <p className="text-lg font-bold text-red-600">
-                    â‚¹{selectedSupplier.outstanding_amount?.toFixed(2)}
+                    ₹{selectedSupplier.outstanding_amount?.toFixed(2)}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Credit Limit</p>
                   <p className="text-lg font-bold text-gray-900">
-                    â‚¹{selectedSupplier.credit_limit?.toFixed(2)}
+                    ₹{selectedSupplier.credit_limit?.toFixed(2)}
                   </p>
                 </div>
                 <div>
@@ -528,13 +528,13 @@ const SupplierLedgerPage = () => {
                           {entry.description}
                         </td>
                         <td className="px-4 py-3 text-sm text-right text-green-600 font-medium">
-                          {entry.debit_amount > 0 ? `â‚¹${entry.debit_amount.toFixed(2)}` : '-'}
+                          {entry.debit_amount > 0 ? `₹${entry.debit_amount.toFixed(2)}` : '-'}
                         </td>
                         <td className="px-4 py-3 text-sm text-right text-red-600 font-medium">
-                          {entry.credit_amount > 0 ? `â‚¹${entry.credit_amount.toFixed(2)}` : '-'}
+                          {entry.credit_amount > 0 ? `₹${entry.credit_amount.toFixed(2)}` : '-'}
                         </td>
                         <td className="px-4 py-3 text-sm text-right font-semibold text-gray-900">
-                          â‚¹{entry.balance.toFixed(2)}
+                          ₹{entry.balance.toFixed(2)}
                         </td>
                       </tr>
                     ))}
@@ -574,7 +574,7 @@ const SupplierLedgerPage = () => {
                   {selectedSupplier?.business_name}
                 </p>
                 <p className="text-sm text-red-600">
-                  Payable: â‚¹{selectedSupplier?.outstanding_amount?.toFixed(2)}
+                  Payable: ₹{selectedSupplier?.outstanding_amount?.toFixed(2)}
                 </p>
               </div>
 
