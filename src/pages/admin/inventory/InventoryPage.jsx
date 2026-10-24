@@ -214,13 +214,13 @@ const InventoryPage = () => {
         batch_number: formData.batch_number,
         manufacturing_date: formData.manufacturing_date || null,
         expiry_date: formData.expiry_date,
-        current_quantity: parseInt(formData.initial_quantity),
-        free_quantity: parseInt(formData.free_quantity) || 0,
-        supplier_purchase_price: parseFloat(formData.supplier_purchase_price),
-        purchase_price: parseFloat(formData.purchase_price),
-        mrp: parseFloat(formData.mrp),
-        selling_price: parseFloat(formData.selling_price),
-        wholesale_price: parseFloat(formData.wholesale_price),
+        current_quantity: parseInt(formData.initial_quantity) || 1,
+        free_quantity: Math.max(0, parseInt(formData.free_quantity) || 0),
+        supplier_purchase_price: parseFloat(formData.supplier_purchase_price) || 0,
+        purchase_price: parseFloat(formData.purchase_price) || 0,
+        mrp: parseFloat(formData.mrp) || 0,
+        selling_price: parseFloat(formData.selling_price) || 0,
+        wholesale_price: parseFloat(formData.wholesale_price) || 0,
         gst_percentage: parseInt(formData.gst_percentage),
         rack_location: formData.rack_location || null,
         created_at: new Date().toISOString()
@@ -891,4 +891,5 @@ const InventoryPage = () => {
 }
 
 export default InventoryPage
+
 
