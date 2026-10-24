@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { ShoppingBag, Plus, TrendingUp, Package, Search, Eye, Filter, Printer, X } from 'lucide-react'
+﻿import React, { useState, useEffect } from 'react'
+import { ShoppingBag, Plus, TrendingUp, Package, Search, Eye, Filter, X } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import toast from 'react-hot-toast'
 import PurchaseModal from './PurchaseModal'
@@ -108,12 +108,7 @@ const PurchasesPage = () => {
     setShowDetailModal(true)
   }
 
-  const handlePrint = (purchase) => {
-    // Open print dialog for the browser
-    window.print()
-  }
-
-  return (
+return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
@@ -274,13 +269,7 @@ const PurchasesPage = () => {
                       >
                         <Eye className="h-4 w-4 inline" />
                       </button>
-                      <button
-                        onClick={() => handlePrint(purchase)}
-                        className="text-gray-600 hover:text-gray-900 ml-3"
-                      >
-                        <Printer className="h-4 w-4 inline" />
-                      </button>
-                    </td>
+</td>
                   </tr>
                 ))
               )}
@@ -425,14 +414,7 @@ const PurchasesPage = () => {
 
             {/* Modal Footer */}
             <div className="flex justify-end space-x-3 p-6 border-t border-gray-200 bg-gray-50">
-              <button
-                onClick={() => handlePrint(selectedPurchase)}
-                className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-              >
-                <Printer className="h-4 w-4 mr-2" />
-                Print
-              </button>
-              <button
+<button
                 onClick={() => setShowDetailModal(false)}
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
               >
