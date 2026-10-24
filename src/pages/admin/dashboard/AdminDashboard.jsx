@@ -404,7 +404,7 @@ const AdminDashboard = () => {
         <div>
           <p className="text-sm font-medium text-gray-600">{title}</p>
           <p className="text-2xl font-bold text-gray-900">
-            {typeof value === 'number' && title.includes('â‚¹') ? `â‚¹${value.toLocaleString()}` : value.toLocaleString()}
+            {typeof value === 'number' && title.includes('Rs. ') ? `Rs. ${value.toLocaleString()}` : value.toLocaleString()}
           </p>
           {change && (
             <p className={`text-sm flex items-center mt-1 ${changeType === 'positive' ? 'text-green-600' : 'text-red-600'}`}>
@@ -596,7 +596,7 @@ const AdminDashboard = () => {
             <AlertTriangle className="h-8 w-8 text-yellow-500" />
           </div>
           <button className="mt-3 text-sm text-yellow-700 hover:text-yellow-800 font-medium">
-            View Details â†’
+            View Details →
           </button>
         </div>
 
@@ -613,7 +613,7 @@ const AdminDashboard = () => {
             <Clock className="h-8 w-8 text-red-500" />
           </div>
           <button className="mt-3 text-sm text-red-700 hover:text-red-800 font-medium">
-            View Details â†’
+            View Details →
           </button>
         </div>
 
@@ -625,12 +625,12 @@ const AdminDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-semibold text-gray-900">Pending Payments</h4>
-              <p className="text-sm text-gray-600">â‚¹{dashboardData.stats.pendingPayments.toLocaleString()} pending</p>
+              <p className="text-sm text-gray-600">Rs. {dashboardData.stats.pendingPayments.toLocaleString()} pending</p>
             </div>
             <DollarSign className="h-8 w-8 text-blue-500" />
           </div>
           <button className="mt-3 text-sm text-blue-700 hover:text-blue-800 font-medium">
-            View Details â†’
+            View Details →
           </button>
         </div>
       </div>
