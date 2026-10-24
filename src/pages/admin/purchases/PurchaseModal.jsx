@@ -180,28 +180,6 @@ const PurchaseModal = ({ onClose, onSave }) => {
 
       // Create purchase items and batches
       for (const item of items) {
-        // First, create or get the batch
-        const totalQuantity = item.quantity + (item.free_quantity || 0)
-        const { data: batch, error: batchError } = await supabase
-          .from('medicine_batches')
-          .insert({
-            medicine_id: item.medicine_id,
-            batch_number: item.batch_number,
-            expiry_date: item.expiry_date,
-            manufacturing_date: new Date().toISOString().split('T')[0],
-            initial_quantity: totalQuantity,
-            current_quantity: totalQuantity,
-            purchase_price: parseFloat(item.purchase_price),
-            mrp: parseFloat(item.mrp),
-            selling_price: parseFloat(item.mrp),
-            wholesale_price: parseFloat(item.mrp)
-          })
-          .select()
-          .single()
-
-        if (batchError) throw batchError
-
-        // Create purchase item
         const itemTotal = item.quantity * parseFloat(item.purchase_price)
         const gstAmount = (itemTotal * parseFloat(item.gst_percentage)) / 100
 
@@ -210,7 +188,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
           .insert({
             purchase_id: purchase.id,
             medicine_id: item.medicine_id,
-            batch_id: batch.id,
+            batch_id: null,
             quantity: item.quantity,
             free_quantity: item.free_quantity || 0,
             purchase_price: parseFloat(item.purchase_price),
