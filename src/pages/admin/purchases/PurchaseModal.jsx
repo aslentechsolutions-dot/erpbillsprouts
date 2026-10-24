@@ -192,7 +192,8 @@ const PurchaseModal = ({ onClose, onSave }) => {
             initial_quantity: totalQuantity,
             current_quantity: totalQuantity,
             purchase_price: parseFloat(item.purchase_price),
-            mrp: parseFloat(item.mrp)
+            mrp: parseFloat(item.mrp),
+            selling_price: parseFloat(item.mrp)
           })
           .select()
           .single()
@@ -213,6 +214,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
             free_quantity: item.free_quantity || 0,
             purchase_price: parseFloat(item.purchase_price),
             mrp: parseFloat(item.mrp),
+            selling_price: parseFloat(item.mrp),
             gst_percentage: parseFloat(item.gst_percentage),
             gst_amount: gstAmount,
             total: itemTotal + gstAmount
@@ -543,6 +545,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
 }
 
 export default PurchaseModal
+
 
 
 
