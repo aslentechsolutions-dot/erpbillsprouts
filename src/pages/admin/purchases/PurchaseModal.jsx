@@ -455,7 +455,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
                               />
                             </td>
                             <td className="px-3 py-2 text-right text-sm font-medium">
-                              â‚¹{total.toFixed(2)}
+                              Rs. {total.toFixed(2)}
                             </td>
                             <td className="px-3 py-2">
                               <button
