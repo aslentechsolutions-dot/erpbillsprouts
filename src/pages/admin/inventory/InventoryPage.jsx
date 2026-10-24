@@ -208,20 +208,27 @@ const InventoryPage = () => {
         return
       }
 
+      const qty = Number(formData.initial_quantity) || 0;
+      if (qty <= 0) {
+        toast.error("Quantity must be greater than 0");
+        return;
+      }
+      
       const batchData = {
         medicine_id: formData.medicine_id,
         supplier_id: formData.supplier_id || null,
         batch_number: formData.batch_number,
         manufacturing_date: formData.manufacturing_date || null,
         expiry_date: formData.expiry_date,
-        current_quantity: parseInt(formData.initial_quantity) || 1,
-        free_quantity: Math.max(0, parseInt(formData.free_quantity) || 0),
-        supplier_purchase_price: parseFloat(formData.supplier_purchase_price) || 0,
-        purchase_price: parseFloat(formData.purchase_price) || 0,
-        mrp: parseFloat(formData.mrp) || 0,
-        selling_price: parseFloat(formData.selling_price) || 0,
-        wholesale_price: parseFloat(formData.wholesale_price) || 0,
-        gst_percentage: parseInt(formData.gst_percentage),
+        initial_quantity: qty,
+        current_quantity: qty,
+        free_quantity: Math.max(0, Number(formData.free_quantity) || 0),
+        supplier_purchase_price: Number(formData.supplier_purchase_price) || 0,
+        purchase_price: Number(formData.purchase_price) || 0,
+        mrp: Number(formData.mrp) || 0,
+        selling_price: Number(formData.selling_price) || 0,
+        wholesale_price: Number(formData.wholesale_price) || 0,
+        gst_percentage: Number(formData.gst_percentage) || 12,
         rack_location: formData.rack_location || null,
         created_at: new Date().toISOString()
       }
@@ -891,5 +898,6 @@ const InventoryPage = () => {
 }
 
 export default InventoryPage
+
 
 
