@@ -359,7 +359,7 @@ const InventoryPage = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Stock Value</p>
-              <p className="text-2xl font-bold text-gray-900">â‚¹{stats.stockValue.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-gray-900">Rs. {stats.stockValue.toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -496,9 +496,9 @@ const InventoryPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          <div>Customer: â‚¹{item.customer_price?.toFixed(2) || item.selling_price?.toFixed(2)}</div>
-                          <div className="text-gray-500">Wholesale: â‚¹{item.wholesale_price?.toFixed(2)}</div>
-                          <div className="text-gray-400">Purchase: â‚¹{item.purchase_price?.toFixed(2)}</div>
+                          <div>Customer: Rs. {item.customer_price?.toFixed(2) || item.selling_price?.toFixed(2)}</div>
+                          <div className="text-gray-500">Wholesale: Rs. {item.wholesale_price?.toFixed(2)}</div>
+                          <div className="text-gray-400">Purchase: Rs. {item.purchase_price?.toFixed(2)}</div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
