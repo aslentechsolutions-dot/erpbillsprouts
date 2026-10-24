@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+﻿import React, { useState, useEffect } from 'react'
 import { X, Plus, Trash2, Search } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import toast from 'react-hot-toast'
@@ -20,6 +20,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
   
   // Purchase items
   const [items, setItems] = useState([])
+  const [paidAmount, setPaidAmount] = useState('')
   
   useEffect(() => {
     fetchSuppliers()
@@ -467,7 +468,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
                               />
                             </td>
                             <td className="px-3 py-2 text-right text-sm font-medium">
-                              ₹{total.toFixed(2)}
+                              â‚¹{total.toFixed(2)}
                             </td>
                             <td className="px-3 py-2">
                               <button
@@ -494,15 +495,15 @@ const PurchaseModal = ({ onClose, onSave }) => {
                   <div className="w-64 space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Subtotal:</span>
-                      <span className="font-medium">₹{totals.subtotal}</span>
+                      <span className="font-medium">â‚¹{totals.subtotal}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">GST:</span>
-                      <span className="font-medium">₹{totals.gst_amount}</span>
+                      <span className="font-medium">â‚¹{totals.gst_amount}</span>
                     </div>
                     <div className="flex justify-between text-lg font-bold border-t pt-2">
                       <span>Total:</span>
-                      <span>₹{totals.total}</span>
+                      <span>â‚¹{totals.total}</span>
                     </div>
                   </div>
                 </div>
@@ -534,3 +535,6 @@ const PurchaseModal = ({ onClose, onSave }) => {
 }
 
 export default PurchaseModal
+
+
+
