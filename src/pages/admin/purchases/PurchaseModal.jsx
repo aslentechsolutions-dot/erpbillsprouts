@@ -423,16 +423,6 @@ const PurchaseModal = ({ onClose, onSave }) => {
                             <td className="px-3 py-2">
                               <input
                                 type="number"
-                                value={item.amount}
-                                onChange={(e) => updateItem(index, 'amount', e.target.value)}
-                                className="w-20 px-2 py-1 border border-gray-300 rounded"
-                                step="0.01"
-                                placeholder="0.00"
-                              />
-                            </td>
-                            <td className="px-3 py-2">
-                              <input
-                                type="number"
                                 value={item.mrp}
                                 onChange={(e) => updateItem(index, 'mrp', e.target.value)}
                                 className="w-20 px-2 py-1 border border-gray-300 rounded"
@@ -554,6 +544,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
 }
 
 export default PurchaseModal
+
 
 
 
