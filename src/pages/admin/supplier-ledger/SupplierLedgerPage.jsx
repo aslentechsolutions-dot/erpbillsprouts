@@ -222,6 +222,21 @@ const SupplierLedgerPage = () => {
       const amount = parseFloat(ledgerAmount)
       const isDebit = ledgerType === 'PAYMENT' || ledgerType === 'DEBIT_NOTE'
       
+      // Get the last balance for this supplier
+      const { data: lastEntry } = await supabase
+        .from('supplier_ledger')
+        .select('balance')
+        .eq('supplier_id', ledgerSupplier)
+        .order('transaction_date', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single()
+
+      const previousBalance = lastEntry?.balance || 0
+      const newBalance = isDebit 
+        ? previousBalance - amount 
+        : previousBalance + amount
+
       const { error } = await supabase
         .from('supplier_ledger')
         .insert({
@@ -231,6 +246,7 @@ const SupplierLedgerPage = () => {
           reference_type: ledgerReference || null,
           debit_amount: isDebit ? amount : 0,
           credit_amount: isDebit ? 0 : amount,
+          balance: newBalance,
           description: ledgerDescription
         })
 
