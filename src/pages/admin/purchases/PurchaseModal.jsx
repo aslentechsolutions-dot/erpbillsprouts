@@ -193,8 +193,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
             initial_quantity: totalQuantity,
             current_quantity: totalQuantity,
             purchase_price: parseFloat(item.purchase_price),
-            mrp: parseFloat(item.mrp),
-            status: 'active'
+            mrp: parseFloat(item.mrp)
           })
           .select()
           .single()
@@ -555,6 +554,7 @@ const PurchaseModal = ({ onClose, onSave }) => {
 }
 
 export default PurchaseModal
+
 
 
 
