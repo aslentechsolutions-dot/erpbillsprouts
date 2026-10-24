@@ -1,0 +1,84 @@
+﻿import sys
+
+# Read file
+with open('src/pages/admin/purchases/PurchaseModal.jsx', 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# Replace rupee symbols
+content = content.replace('₹', 'Rs. ')
+
+# Replace the old totals section with new one including paid amount
+old_section = '''            {/* Totals */}
+            {items.length > 0 && (
+              <div className="border-t border-gray-200 pt-6">
+                <div className="flex justify-end">
+                  <div className="w-64 space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Subtotal:</span>
+                      <span className="font-medium">Rs. {totals.subtotal}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">GST:</span>
+                      <span className="font-medium">Rs. {totals.gst_amount}</span>
+                    </div>
+                    <div className="flex justify-between text-lg font-bold border-t pt-2">
+                      <span>Total:</span>
+                      <span>Rs. {totals.total}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}'''
+
+new_section = '''            {/* Totals */}
+            {items.length > 0 && (
+              <div className="border-t border-gray-200 pt-6">
+                <div className="flex justify-end">
+                  <div className="w-80 space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Subtotal:</span>
+                      <span className="font-medium">Rs. {totals.subtotal}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">GST:</span>
+                      <span className="font-medium">Rs. {totals.gst_amount}</span>
+                    </div>
+                    <div className="flex justify-between text-lg font-bold border-t pt-2">
+                      <span>Total Amount:</span>
+                      <span>Rs. {totals.total}</span>
+                    </div>
+                    
+                    {/* Paid Amount Field */}
+                    <div className="flex justify-between items-center border-t pt-3">
+                      <label className="text-sm font-medium text-gray-700">Paid Amount:</label>
+                      <input
+                        type="number"
+                        value={paidAmount}
+                        onChange={(e) => setPaidAmount(e.target.value)}
+                        placeholder="0.00"
+                        step="0.01"
+                        className="w-36 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-right font-medium"
+                      />
+                    </div>
+                    
+                    {/* Balance/Change */}
+                    {paidAmount && parseFloat(paidAmount) > 0 && (
+                      <div className={`flex justify-between text-base font-bold border-t pt-2 ${
+                        parseFloat(paidAmount) >= parseFloat(totals.total) ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        <span>{parseFloat(paidAmount) >= parseFloat(totals.total) ? 'Balance to Return:' : 'Balance Due:'}</span>
+                        <span>Rs. {Math.abs(parseFloat(paidAmount) - parseFloat(totals.total)).toFixed(2)}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}'''
+
+content = content.replace(old_section, new_section)
+
+# Write back
+with open('src/pages/admin/purchases/PurchaseModal.jsx', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print('Fixed PurchaseModal.jsx successfully')
