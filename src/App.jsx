@@ -47,6 +47,8 @@ import SchemesPage from './pages/admin/schemes/SchemesPage'
 import DemoRequests from './pages/admin/DemoRequests'
 import FreeTrials from './pages/admin/FreeTrials'
 
+import GlobalSearchResults from './pages/admin/GlobalSearchResults'
+
 // Other Role Pages
 import PharmacistDashboard from './pages/pharmacist/PharmacistDashboard'
 import StaffDashboard from './pages/staff/StaffDashboard'
@@ -108,6 +110,7 @@ function App() {
                 <AdminLayout>
                   <Routes>
                     <Route index element={<AdminDashboard />} />
+                    <Route path="search" element={<GlobalSearchResults />} />
                     <Route path="medicines" element={<MedicinesPage />} />
                     <Route path="inventory" element={<InventoryPage />} />
                     <Route path="pos" element={<POSPage />} />
@@ -243,3 +246,5 @@ function RoleBasedRedirect() {
 }
 
 export default App
+
+
