@@ -139,7 +139,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Purchases', href: '/admin/purchases', icon: ShoppingBag },
     { name: 'Sales', href: '/admin/sales', icon: Receipt },
     { name: 'Customers', href: '/admin/customers', icon: Users },
-    { name: 'Customer Orders', href: '/admin/customer-orders', icon: OnlineOrders },
+    { name: 'Orders', href: '/admin/customer-orders', icon: OnlineOrders },
     { name: 'Customer Ledger', href: '/admin/ledger', icon: DollarSign },
     { name: 'Supplier Ledger', href: '/admin/supplier-ledger', icon: Truck },
     { name: 'Prescriptions', href: '/admin/prescriptions', icon: FileText },
@@ -413,4 +413,5 @@ const AdminLayout = ({ children }) => {
 }
 
 export default AdminLayout
+
 
