@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+﻿import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { 
   LayoutDashboard, 
@@ -351,6 +351,18 @@ const AdminLayout = ({ children }) => {
                 <input
                   type="text"
                   placeholder="Search medicines, customers..."
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && e.target.value.trim()) {
+                      const query = e.target.value.trim()
+                      if (location.pathname.includes("/medicines")) {
+                        navigate(`/admin/medicines?search=${encodeURIComponent(query)}`)
+                      } else if (location.pathname.includes("/customers")) {
+                        navigate(`/admin/customers?search=${encodeURIComponent(query)}`)
+                      } else {
+                        navigate(`/admin/medicines?search=${encodeURIComponent(query)}`)
+                      }
+                    }
+                  }}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
