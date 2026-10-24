@@ -205,6 +205,59 @@ const SupplierLedgerPage = () => {
     }
   }
 
+  const handleAddLedger = async () => {
+    if (!ledgerSupplier) {
+      toast.error('Please select a supplier')
+      return
+    }
+
+    if (!ledgerAmount || parseFloat(ledgerAmount) <= 0) {
+      toast.error('Please enter a valid amount')
+      return
+    }
+
+    try {
+      setLoading(true)
+
+      const amount = parseFloat(ledgerAmount)
+      const isDebit = ledgerType === 'PAYMENT' || ledgerType === 'DEBIT_NOTE'
+      
+      const { error } = await supabase
+        .from('supplier_ledger')
+        .insert({
+          supplier_id: ledgerSupplier,
+          transaction_type: ledgerType,
+          transaction_date: ledgerDate,
+          reference_type: ledgerReference || null,
+          debit_amount: isDebit ? amount : 0,
+          credit_amount: isDebit ? 0 : amount,
+          description: ledgerDescription
+        })
+
+      if (error) throw error
+
+      toast.success('Ledger entry added successfully')
+      
+      setShowLedgerModal(false)
+      setLedgerSupplier('')
+      setLedgerType('PURCHASE')
+      setLedgerAmount('')
+      setLedgerDate(new Date().toISOString().split('T')[0])
+      setLedgerReference('')
+      setLedgerDescription('')
+      
+      fetchSuppliers()
+      if (selectedSupplier && selectedSupplier.id === ledgerSupplier) {
+        fetchLedgerEntries(ledgerSupplier)
+      }
+    } catch (error) {
+      console.error('Error adding ledger:', error)
+      toast.error('Failed to add ledger entry')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const exportLedger = () => {
     if (!selectedSupplier) {
       toast.error('Please select a supplier')
