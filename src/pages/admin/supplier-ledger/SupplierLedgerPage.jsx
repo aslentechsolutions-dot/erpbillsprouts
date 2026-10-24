@@ -549,9 +549,9 @@ const SupplierLedgerPage = () => {
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Supplier
                 </label>
                 <p className="text-gray-900 font-medium">
@@ -563,7 +563,7 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Payment Amount *
                 </label>
                 <input
@@ -577,7 +577,7 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Payment Date
                 </label>
                 <input
@@ -589,7 +589,7 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Payment Method
                 </label>
                 <select
@@ -606,14 +606,14 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Notes
                 </label>
                 <textarea
                   value={paymentNotes}
                   onChange={(e) => setPaymentNotes(e.target.value)}
                   className="input-field"
-                  rows="3"
+                  rows="2"
                   placeholder="Payment notes..."
                 />
               </div>
@@ -651,9 +651,9 @@ const SupplierLedgerPage = () => {
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Supplier
                 </label>
                 <p className="text-gray-900 font-medium">
@@ -662,7 +662,7 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Adjustment Type
                 </label>
                 <select
@@ -678,7 +678,7 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Amount *
                 </label>
                 <input
@@ -692,14 +692,14 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Notes
                 </label>
                 <textarea
                   value={adjustmentNotes}
                   onChange={(e) => setAdjustmentNotes(e.target.value)}
                   className="input-field"
-                  rows="3"
+                  rows="2"
                   placeholder="Adjustment notes..."
                 />
               </div>
@@ -727,7 +727,7 @@ const SupplierLedgerPage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Add Ledger Entry</h3>
+              <h3 className="text-base font-semibold text-gray-900">Add Ledger Entry</h3>
               <button
                 onClick={() => setShowLedgerModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -736,9 +736,9 @@ const SupplierLedgerPage = () => {
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Supplier *
                 </label>
                 <select
@@ -756,7 +756,7 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Transaction Type *
                 </label>
                 <select
@@ -774,7 +774,7 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Amount *
                 </label>
                 <input
@@ -788,7 +788,7 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Date
                 </label>
                 <input
@@ -800,7 +800,7 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Reference (Invoice/Receipt No.)
                 </label>
                 <input
@@ -813,14 +813,14 @@ const SupplierLedgerPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Description
                 </label>
                 <textarea
                   value={ledgerDescription}
                   onChange={(e) => setLedgerDescription(e.target.value)}
                   className="input-field"
-                  rows="3"
+                  rows="2"
                   placeholder="Transaction details..."
                 />
               </div>
