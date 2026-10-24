@@ -201,6 +201,24 @@ const PurchaseModal = ({ onClose, onSave }) => {
         if (itemError) throw itemError
       }
 
+      // Create supplier ledger entry
+      const { error: ledgerError } = await supabase
+        .from('supplier_ledger')
+        .insert({
+          supplier_id: formData.supplier_id,
+          transaction_date: new Date().toISOString(),
+          transaction_type: 'PURCHASE',
+          reference_type: 'PURCHASE',
+          reference_id: purchase.id,
+          debit_amount: 0,
+          credit_amount: parseFloat(totals.total),
+          balance: parseFloat(totals.total),
+          description: 'Purchase Invoice: ' + formData.invoice_number,
+          created_by: user?.id
+        })
+
+      if (ledgerError) throw ledgerError
+
       toast.success('Purchase added successfully!')
       onSave()
     } catch (error) {
